@@ -21,6 +21,23 @@ void clearDraw() {
   }
 }
 
+bool ndsHeldKeys[4] = {0};
+bool ndsPressedKeys[4] = {0};
+
+void collectKeys() {
+  ulReadKeys(0);
+
+  ndsHeldKeys[0] = ul_keys.held.left;
+  ndsHeldKeys[1] = ul_keys.held.right;
+  ndsHeldKeys[2] = ul_keys.held.up;
+  ndsHeldKeys[3] = ul_keys.held.down;
+
+  ndsPressedKeys[0] = ul_keys.pressed.left;
+  ndsPressedKeys[1] = ul_keys.pressed.right;
+  ndsPressedKeys[2] = ul_keys.pressed.up;
+  ndsPressedKeys[3] = ul_keys.pressed.down;
+}
+
 m3ApiRawFunction(m3_swiWaitForVBlank) {
   swiWaitForVBlank();
   m3ApiSuccess();
@@ -62,23 +79,6 @@ m3ApiRawFunction(m3_scanKeys) {
   m3ApiSuccess();
 };
 
-/*m3ApiRawFunction(ulib_gfx_init) {*/
-/*  ulInit(UL_INIT_ALL);*/
-/*  ulInitGfx();*/
-/*  ulInitText();*/
-/*  m3ApiSuccess();*/
-/*}*/
-
-/*m3ApiRawFunction(ulib_startDraw) {*/
-/*  ulStartDrawing2D();*/
-/*  m3ApiSuccess();*/
-/*}*/
-
-/*m3ApiRawFunction(ulib_endDraw) {*/
-/*  ulEndDrawing();*/
-/*  m3ApiSuccess();*/
-/*}*/
-
 m3ApiRawFunction(ulib_fillRedRect) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
@@ -93,7 +93,20 @@ m3ApiRawFunction(ulib_fillRedRect) {
 m3ApiRawFunction(ulib_syncFrame) {
   clearDraw();
   ulSyncFrame();
+  collectKeys();
   m3ApiSuccess();
+}
+
+m3ApiRawFunction(ulib_btn) {
+  m3ApiReturnType(bool);
+  m3ApiGetArg(uint8_t, btn);
+  m3ApiReturn(ndsHeldKeys[btn]);
+}
+
+m3ApiRawFunction(ulib_btnp) {
+  m3ApiReturnType(bool);
+  m3ApiGetArg(uint8_t, btnp);
+  m3ApiReturn(ndsPressedKeys[btnp]);
 }
 
 void LinkNDSFunctions(IM3Module module) {
@@ -111,5 +124,7 @@ void LinkNDSFunctions(IM3Module module) {
   /*m3_LinkRawFunction (module, "nds", "ulibEndDraw", "v()", &ulib_endDraw);*/
   m3_LinkRawFunction (module, "nds", "_fillRedRect", "v(iiii)", &ulib_fillRedRect);
   m3_LinkRawFunction (module, "nds", "syncFrame", "v()", &ulib_syncFrame);
+  m3_LinkRawFunction (module, "nds", "_btn", "i(i)", &ulib_btn);
+  m3_LinkRawFunction (module, "nds", "_btnp", "i(i)", &ulib_btnp);
 }
 

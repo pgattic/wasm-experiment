@@ -25,14 +25,20 @@ export enum KEYS {
 
 export declare function rand(): u8;
 
-//export declare function ulibInit(): void;
-//export declare function ulibStartDraw(): void;
-//export declare function ulibEndDraw(): void;
-
 declare function _fillRedRect(x: u8, y: u8, w: u8, h: u8): void;
 export function fillRedRect(x: u8, y: u8, w: u8, h: u8): void {
   _fillRedRect(x, y, w, h);
 }
 
 export declare function syncFrame(): void;
+
+declare function _btn(btn: u8): bool;
+export function btn(btn: u8): bool {
+  return _btn(btn);
+}
+
+declare function _btnp(btn: u8): bool;
+export function btnp(btn: u8): bool {
+  return _btnp(btn);
+}
 
