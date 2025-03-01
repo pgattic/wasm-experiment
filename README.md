@@ -3,8 +3,9 @@
 
 ## Roadmap
 
-- [ ] Learn some Docker
-- [ ] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
+- [X] Learn some Docker
+- [X] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
+    - NOTE: Partially done (but satisfactory), It is confirmed to execute WASM code!
 - [ ] Have it run a wasm file compiled from a different language than AssemblyScript
 - [ ] Have it load a file from file storage instead of embedding it?
     - [ ] Also add file picker?

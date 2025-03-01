@@ -1,0 +1,13 @@
+build/
+source/app.wasm.h
+node_modules
+
+*.wasm
+*.wasm.map
+*.wat
+
+*.d
+*.o
+
+*.nds
+

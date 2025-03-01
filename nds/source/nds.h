@@ -1,0 +1,2 @@
+void LinkNDSFunctions(IM3Module module);
+
