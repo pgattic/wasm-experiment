@@ -43,7 +43,7 @@ RUN wf-pacman -Syu --noconfirm && \
     wf-config repo enable blocksds && \
     wf-pacman -Syu --noconfirm && \
     wf-pacman -S --noconfirm blocksds-toolchain && \
-    wf-pacman -Sy --noconfirm blocksds-nflib
+    wf-pacman -Sy --noconfirm blocksds-ulibrary
 
 # Setup the environment variables for a wf-pacman installation
 ENV BLOCKSDS=/opt/wonderful/thirdparty/blocksds/core

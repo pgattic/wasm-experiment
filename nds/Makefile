@@ -47,9 +47,10 @@ DEFINES		:= -DSAMPLE_DEFINE -DSAMPLE_DEFINE_WITH_VALUE=123
 
 ARM7ELF		:= $(BLOCKSDS)/sys/arm7/main_core/arm7_dswifi_maxmod.elf
 
-LIBS		:= -lmm9 -lnds9 -lwasm3 -lnflib
+# lul for ulibrary
+LIBS		:= -lmm9 -lnds9 -lwasm3 -lul
 LIBDIRS		:= $(BLOCKSDS)/libs/maxmod \
-		   $(BLOCKSDS)/libs/libnds $(BLOCKSDSEXT)/nflib $(BLOCKSDSEXT)/wasm3
+		   $(BLOCKSDS)/libs/libnds $(BLOCKSDSEXT)/ulibrary $(BLOCKSDSEXT)/wasm3
 
 # Build artifacts
 # ---------------
