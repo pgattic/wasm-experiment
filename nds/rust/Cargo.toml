@@ -9,10 +9,9 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
-[profile.release]
-opt-level = "z"         # Optimize for size (or "s" for a trade-off)
-lto = true              # Enable Link Time Optimization
-panic = "abort"         # Use abort on panic to reduce overhead
-codegen-units = 1       # Fewer codegen units can improve optimization
-
+# [profile.release]
+# opt-level = "z"         # Optimize for size (or "s" for a trade-off)
+# lto = true              # Enable Link Time Optimization
+# panic = "abort"         # Use abort on panic to reduce overhead
+# codegen-units = 1       # Fewer codegen units can improve optimization
 

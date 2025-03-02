@@ -1,4 +1,19 @@
+#![no_std]
+
+use core::panic::PanicInfo;
+
+/// This function is called on panic.
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    // Optionally, you could log panic info if you have a logging mechanism.
+    fill_red_rect(0, 0, 255, 192);
+    loop {
+        sync_frame();
+    }
+}
+
 mod index;
+mod circ_buf;
 
 //#[global_allocator]
 //static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
