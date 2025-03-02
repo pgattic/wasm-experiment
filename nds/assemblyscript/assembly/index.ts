@@ -1,11 +1,6 @@
-import * as nds from "./nds";
+import * as env from "./env";
 
-enum Direction {
-  Up,
-  Down,
-  Left,
-  Right,
-}
+enum Direction { Up, Down, Left, Right, }
 
 export function start(): void {
 
@@ -15,8 +10,7 @@ export function start(): void {
 
   const gridDimensions: Array<u8> = [(screenDimensions[0] / gridSize as u16) as u8, (screenDimensions[1] / gridSize as u16) as u8];
 
-  let x: u8 = 12;
-  let y: u8 = 12;
+  let paused: bool = false;
 
   let playerBody: Array<Array<u8>> = [[0, 0]];
   let playerDirection = Direction.Right;
@@ -24,23 +18,24 @@ export function start(): void {
 
   let frameCount: u8 = 0;
 
-  let foodPos: Array<u8> = [nds.rand() % gridDimensions[0], nds.rand() % gridDimensions[1]];
+  let foodPos: Array<u8> = [env.rand() % gridDimensions[0], env.rand() % gridDimensions[1]];
 
   while (true) {
-    if (nds.btnp(0) && playerDirection != Direction.Right) { playerDirection = Direction.Left; }
-    if (nds.btnp(1) && playerDirection != Direction.Left) { playerDirection = Direction.Right; }
-    if (nds.btnp(2) && playerDirection != Direction.Down) { playerDirection = Direction.Up; }
-    if (nds.btnp(3) && playerDirection != Direction.Up) { playerDirection = Direction.Down; }
+    if (env.btnp(0) && playerDirection != Direction.Right) { playerDirection = Direction.Left; }
+    if (env.btnp(1) && playerDirection != Direction.Left) { playerDirection = Direction.Right; }
+    if (env.btnp(2) && playerDirection != Direction.Down) { playerDirection = Direction.Up; }
+    if (env.btnp(3) && playerDirection != Direction.Up) { playerDirection = Direction.Down; }
+    if (env.btnp(4)) { paused = !paused; }
 
     // Game loop
-    if (frameCount >= 6) {
+    if (frameCount >= 6 && !paused) {
       frameCount = 0;
       let playerHead = playerBody[0];
 
       // Eat food
       if (playerHead[0] == foodPos[0] && playerHead[1] == foodPos[1]) {
         playerSize += 5;
-        foodPos = [nds.rand() % gridDimensions[0], nds.rand() % gridDimensions[1]];
+        foodPos = [env.rand() % gridDimensions[0], env.rand() % gridDimensions[1]];
       }
 
       // Advance player
@@ -71,7 +66,7 @@ export function start(): void {
           playerBody = [[0, 0]];
           playerDirection = Direction.Right;
           playerSize = 5;
-          foodPos = [nds.rand() % gridDimensions[0], nds.rand() % gridDimensions[1]];
+          foodPos = [env.rand() % gridDimensions[0], env.rand() % gridDimensions[1]];
           break;
         }
       }
@@ -79,21 +74,21 @@ export function start(): void {
         playerBody = [[0, 0]];
         playerDirection = Direction.Right;
         playerSize = 5;
-        foodPos = [nds.rand() % gridDimensions[0], nds.rand() % gridDimensions[1]];
+        foodPos = [env.rand() % gridDimensions[0], env.rand() % gridDimensions[1]];
       }
     }
 
     // Rendering
     for (let s = 0; s < playerBody.length; s++) {
       let segment = playerBody[s];
-      nds.fillRedRect(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize);
+      env.fillRedRect(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize);
     }
 
-    nds.fillRedRect(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize);
+    env.fillRedRect(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize);
 
     frameCount++;
 
-    nds.syncFrame();
+    env.syncFrame();
   }
 }
 

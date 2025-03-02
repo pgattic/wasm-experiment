@@ -2,13 +2,6 @@
 #include <nds.h>
 #include <ulib/ulib.h>
 
-// System functions
-m3ApiRawFunction(_print) {
-  m3ApiGetArgMem (const char *, str)
-  printf(str);
-  m3ApiSuccess();
-}
-
 m3ApiRawFunction(m3_rand) {
   m3ApiReturnType (uint32_t)
   m3ApiReturn(rand());
@@ -33,8 +26,8 @@ void clearDraw() {
   }
 }
 
-bool ndsHeldKeys[4] = {0};
-bool ndsPressedKeys[4] = {0};
+bool ndsHeldKeys[8] = {0};
+bool ndsPressedKeys[8] = {0};
 
 void collectKeys() {
   ulReadKeys(0);
@@ -43,11 +36,19 @@ void collectKeys() {
   ndsHeldKeys[1] = ul_keys.held.right;
   ndsHeldKeys[2] = ul_keys.held.up;
   ndsHeldKeys[3] = ul_keys.held.down;
+  ndsHeldKeys[4] = ul_keys.held.A;
+  ndsHeldKeys[5] = ul_keys.held.B;
+  ndsHeldKeys[6] = ul_keys.held.X;
+  ndsHeldKeys[7] = ul_keys.held.Y;
 
   ndsPressedKeys[0] = ul_keys.pressed.left;
   ndsPressedKeys[1] = ul_keys.pressed.right;
   ndsPressedKeys[2] = ul_keys.pressed.up;
   ndsPressedKeys[3] = ul_keys.pressed.down;
+  ndsPressedKeys[4] = ul_keys.pressed.A;
+  ndsPressedKeys[5] = ul_keys.pressed.B;
+  ndsPressedKeys[6] = ul_keys.pressed.X;
+  ndsPressedKeys[7] = ul_keys.pressed.Y;
 }
 
 // ulib abstractions
@@ -83,12 +84,10 @@ m3ApiRawFunction(ulib_btnp) {
 }
 
 void LinkNDSFunctions(IM3Module module) {
-  m3_LinkRawFunction (module, "nds", "_print", "v(i)", &_print);
-  m3_LinkRawFunction (module, "nds", "rand", "i()", &m3_rand);
-
-  m3_LinkRawFunction (module, "nds", "_fillRedRect", "v(iiii)", &ulib_fillRedRect);
-  m3_LinkRawFunction (module, "nds", "syncFrame", "v()", &ulib_syncFrame);
-  m3_LinkRawFunction (module, "nds", "_btn", "i(i)", &ulib_btn);
-  m3_LinkRawFunction (module, "nds", "_btnp", "i(i)", &ulib_btnp);
+  m3_LinkRawFunction (module, "env", "_rand", "i()", &m3_rand);
+  m3_LinkRawFunction (module, "env", "_fillRedRect", "v(iiii)", &ulib_fillRedRect);
+  m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &ulib_syncFrame);
+  m3_LinkRawFunction (module, "env", "_btn", "i(i)", &ulib_btn);
+  m3_LinkRawFunction (module, "env", "_btnp", "i(i)", &ulib_btnp);
 }
 

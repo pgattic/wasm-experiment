@@ -5,14 +5,20 @@ export function print(str: string): void {
   _print(encode(str));
 }
 
-export declare function rand(): u8;
+declare function _rand(): u8;
+export function rand(): u8 {
+  return _rand();
+}
 
 declare function _fillRedRect(x: u8, y: u8, w: u8, h: u8): void;
 export function fillRedRect(x: u8, y: u8, w: u8, h: u8): void {
   _fillRedRect(x, y, w, h);
 }
 
-export declare function syncFrame(): void;
+declare function _syncFrame(): void;
+export function syncFrame(): void {
+  _syncFrame();
+}
 
 declare function _btn(btn: u8): bool;
 export function btn(btn: u8): bool {

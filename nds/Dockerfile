@@ -42,8 +42,7 @@ RUN wf-pacman -Syu --noconfirm && \
     wf-pacman -Syu --noconfirm wf-tools && \
     wf-config repo enable blocksds && \
     wf-pacman -Syu --noconfirm && \
-    wf-pacman -S --noconfirm blocksds-toolchain && \
-    wf-pacman -Sy --noconfirm blocksds-ulibrary
+    wf-pacman -S --noconfirm blocksds-toolchain
 
 # Setup the environment variables for a wf-pacman installation
 ENV BLOCKSDS=/opt/wonderful/thirdparty/blocksds/core
@@ -69,6 +68,8 @@ RUN set -e; \
 
 # Use /work/ as working directory of this container.
 WORKDIR /work/
+
+RUN wf-pacman -Sy --noconfirm blocksds-ulibrary
 
 # AssemblyScript compiler (Must be run after workdir is specified)
 RUN npm install -g assemblyscript

@@ -1,7 +1,7 @@
 build/
-source/app.wasm.h
 node_modules
 
+*.wasm.h
 *.wasm
 *.wasm.map
 *.wat
