@@ -7,7 +7,7 @@
 - [X] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
     - NOTE: Partially done (but satisfactory), It is confirmed to execute WASM code!
 - [X] Have it run a wasm file compiled from a different language than AssemblyScript
-- [ ] Have it load a file from file storage instead of embedding it?
+- [X] Have it load a file from file storage instead of embedding it?
     - [ ] Also add file picker?
 - [ ] Port to GBA
     - [ ] Will require learning a new graphice library for GBA
@@ -22,10 +22,11 @@
 
 | Section | Bytes | Address range |
 | - | - | - |
-| Header | 16 | 0x0000-0x000F |
-| Global Palette | 48 | 0x0010-0x003F |
-| Sprite Tiles | 8192 | 0x0040 - 0x203F |
-| BG Tiles | 8192 | 0x2040-0x4040 |
+| Header | 16 | `0x00000-0x0000F` |
+| Global Palette | 48 | `0x00010-0x0003F` |
+| Sprite Tiles | 8192 | `0x00040-0x0203F` |
+| BG Tiles | 8192 | `0x02040-0x0403F` |
+| Program Code | 1032128 | `0x04040-0xFFFFF` |
 
 ### Graphics
 
