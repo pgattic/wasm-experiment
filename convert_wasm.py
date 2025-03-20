@@ -50,16 +50,17 @@ def main():
 
     # Create the Program Code section (1032128 bytes).
     # Copy the WASM data into the beginning of the section and leave the rest as zeros.
-    program_code = bytearray(PRG_CODE_SIZE)
-    program_code[:len(wasm_data)] = wasm_data
+    # This pads the file.
+    # program_code = bytearray(PRG_CODE_SIZE)
+    # program_code[:len(wasm_data)] = wasm_data
 
     # Combine all sections into one final binary blob.
-    final_data = header + global_palette + sprite_tiles + bg_tiles + program_code
+    final_data = header + global_palette + sprite_tiles + bg_tiles + wasm_data
 
     # Verify final size.
-    if len(final_data) != FILE_SIZE:
-        print(f"Error: Final file size is {len(final_data)} bytes, expected {FILE_SIZE} bytes.")
-        sys.exit(1)
+    # if len(final_data) != FILE_SIZE:
+    #     print(f"Error: Final file size is {len(final_data)} bytes, expected {FILE_SIZE} bytes.")
+    #     sys.exit(1)
 
     # Write the output file.
     try:
