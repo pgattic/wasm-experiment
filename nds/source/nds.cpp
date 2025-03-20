@@ -83,6 +83,7 @@ m3ApiRawFunction(ulib_btnp) {
   m3ApiReturn(ndsPressedKeys[btnp]);
 }
 
+// Hook all the engine-relevant functions declared here into the WASM module
 void LinkNDSFunctions(IM3Module module) {
   m3_LinkRawFunction (module, "env", "_rand", "i()", &m3_rand);
   m3_LinkRawFunction (module, "env", "_fillRedRect", "v(iiii)", &ulib_fillRedRect);

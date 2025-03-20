@@ -19,7 +19,7 @@ mod circ_buf;
 //static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[link(wasm_import_module = "env")]
-extern "C" {
+unsafe extern "C" {
     //#[link_name = "_print"]
     //fn native_print(string: *const u8);
     #[link_name = "_rand"]
@@ -60,7 +60,7 @@ pub fn btnp(btn: u8) -> bool {
 }
 
 // User-code entrypoint
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn start() {
     index::start();
 }

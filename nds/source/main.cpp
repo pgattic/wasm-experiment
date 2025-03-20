@@ -26,7 +26,7 @@ typedef struct __attribute__((__packed__)) {
 } CustomFile;
 
 // Loads the entire file into memory and casts the buffer to a CustomFile pointer.
-CustomFile * loadCustomFile(const char *filepath, int *fileSize) {
+CustomFile * loadCustomFile(const char *filepath, size_t *fileSize) {
   FILE *fp = fopen(filepath, "rb");
   if (!fp) {
     printf("Error opening file: %s\n", filepath);
@@ -39,7 +39,7 @@ CustomFile * loadCustomFile(const char *filepath, int *fileSize) {
   }
   *fileSize = file_stats.st_size;
 
-  unsigned char *buffer = (unsigned char*) malloc(*fileSize);
+  uint8_t *buffer = (uint8_t*) malloc(*fileSize);
   if (!buffer) {
     printf("Memory allocation failed.\n");
     fclose(fp);
@@ -65,24 +65,32 @@ int main(void) {
   printf("\n");
 
   if (!fatInitDefault()) {
-    printf("FAT initialization failed!\n");
+    printf("FAT initialization failed.\n");
     while (1) {}
   }
 
-  int fileSize;
+  size_t fileSize;
   CustomFile *customFile = loadCustomFile("fat:/myfile.bin", &fileSize);
 
   if (!customFile) {
-    printf("Failed to load custom file.\n");
+    printf("Failed to load file.\n");
     while (1) {}
   }
+
+  size_t wasmSize = fileSize - METAPROG_SIZE;
+
+  printf(" \"fat:/myfile.bin\"\n");
+  printf(" File size: %d bytes\n", fileSize);
+  printf(" WASM size: %d bytes\n", wasmSize);
 
   IM3Environment env = m3_NewEnvironment();
   IM3Runtime runtime = m3_NewRuntime(env, 1024, NULL);
   IM3Module module;
   M3Result result;
 
-  uint32_t wasmSize = fileSize - METAPROG_SIZE;
+  printf("\n");
+  printf(" Initialized WASM runtime\n");
+
   result = m3_ParseModule(env, &module, customFile->prg_code, wasmSize);
   if (result) {
     printf("Error parsing module: %s\n", result);
@@ -99,6 +107,8 @@ int main(void) {
 
   LinkNDSFunctions(module);
 
+  printf(" Loaded WASM module\n");
+
   IM3Function f;
   result = m3_FindFunction(&f, runtime, "start");
   if (result) {
@@ -110,6 +120,8 @@ int main(void) {
   ulInit(UL_INIT_ALL);
   ulInitGfx();
   ulInitText();
+
+  printf(" Started WASM program\n");
   result = m3_CallV(f, 10);
   if (result) {
     printf("Error calling function: %s\n", result);
