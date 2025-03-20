@@ -1,7 +1,7 @@
 
-# TypeScript -> Nintendo DS Example Using WASM
+# Nintendo DS WASM Runtime + Game Framework
 
-Note that this is very much a work-in-progress. All that can be built right now is a "Hello World". The Nintendo DS is running compiled AssemblyScript successfully though.
+Note that this is very much a work-in-progress
 
 ## Setup
 
@@ -9,7 +9,7 @@ The installation scripts require [Docker](https://www.docker.com/) be installed 
 
 - `./docker_build.sh` (may require `sudo`)
 - `./dev_env.sh` (may require `sudo`)
-    - Within the dev environment: `./compile.sh`
+    - Within the dev environment: `make`
 
 ## Resources
 

@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "nds-rust"
+name = "rust-wasm-snake"
 version = "0.1.0"

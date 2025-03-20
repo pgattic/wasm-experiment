@@ -1,9 +1,5 @@
 build/
-node_modules
-
-*.wasm
-*.wasm.map
-*.wat
+fat/
 
 *.d
 *.o

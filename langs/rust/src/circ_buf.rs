@@ -1,4 +1,13 @@
 
+//#[inline]
+//pub fn unwrap_abort<T>(o: Option<T>) -> T {
+//    use std::process;
+//    match o {
+//        Some(t) => t,
+//        None => process::abort(),
+//    }
+//}
+
 pub struct CircBuf<T> where T: Copy {
     data: [T; 256],
     head: u8,
@@ -30,9 +39,9 @@ impl<T> CircBuf<T> where T: Copy {
     /// Dequeues an element. Panics if the buffer is empty.
     pub fn dequeue(&mut self) -> T {
         //assert_ne!(self.len(), 0, "Buffer is empty");
-        let result = self.data[self.tail as usize];
+        let result = self.data.get(self.tail as usize).unwrap();
         self.tail = self.tail.wrapping_add(1);
-        result
+        *result
     }
 
     /// Returns the last enqueued element.
@@ -57,7 +66,7 @@ pub struct CircBufRevIter<'a, T: Copy> {
 impl<'a, T: Copy> Iterator for CircBufRevIter<'a, T> {
     type Item = T;
 
-    fn next(&mut self) -> Option<T> {
+    fn next(&mut self) -> Option<Self::Item> {
         if self.remaining == 0 {
             None
         } else {
