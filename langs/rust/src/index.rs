@@ -48,11 +48,6 @@ pub fn start() {
             frame_count = 0;
             let player_head = &player.body.peek_head();
 
-            if *player_head == food {
-                player.score += 5;
-                food = new_food();
-            }
-
             player.body.enqueue(match player.direction {
                 Direction::Right => { (player_head.0 + 1, player_head.1) },
                 Direction::Left => { (player_head.0 - 1, player_head.1) },
@@ -61,6 +56,11 @@ pub fn start() {
             });
             while player.body.len() > player.score {
                 player.body.dequeue();
+            }
+
+            if player.body.peek_head() == food {
+                player.score += 5;
+                food = new_food();
             }
 
             for segment in player.body.into_iter().skip(1) {
@@ -77,10 +77,10 @@ pub fn start() {
         }
 
         for segment in &player.body {
-            crate::fill_red_rect(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            crate::fill_rect(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
         }
 
-        crate::fill_red_rect(food.0 * GRID_SIZE, food.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+        crate::fill_rect(food.0 * GRID_SIZE, food.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 8);
 
         frame_count += 1;
         crate::sync_frame();

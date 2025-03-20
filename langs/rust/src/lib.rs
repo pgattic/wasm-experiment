@@ -6,7 +6,6 @@ use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     // Optionally, you could log panic info if you have a logging mechanism.
-    fill_red_rect(0, 0, 255, 192);
     loop {
         sync_frame();
     }
@@ -24,8 +23,10 @@ unsafe extern "C" {
     //fn native_print(string: *const u8);
     #[link_name = "_rand"]
     fn native_rand() -> u8;
-    #[link_name = "_fillRedRect"]
-    fn native_fillRedRect(x: u8, y: u8, w: u8, h: u8);
+    #[link_name = "_rect"]
+    fn native_rect(x: u8, y: u8, w: u8, h: u8, c: u8);
+    #[link_name = "_fillRect"]
+    fn native_fillRect(x: u8, y: u8, w: u8, h: u8, c: u8);
     #[link_name = "_syncFrame"]
     fn native_syncFrame();
     #[link_name = "_btn"]
@@ -43,18 +44,27 @@ pub fn rand() -> u8 {
     unsafe { native_rand() }
 }
 
-pub fn fill_red_rect(x: u8, y: u8, w: u8, h: u8) {
-    unsafe { native_fillRedRect(x, y, w, h) }
+/// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
+pub fn rect(x: u8, y: u8, w: u8, h: u8, c: u8) {
+    unsafe { native_rect(x, y, w, h, c) }
 }
 
+/// Draw a filled Rectangle, with the specified x and y position, width, height, and color index.
+pub fn fill_rect(x: u8, y: u8, w: u8, h: u8, c: u8) {
+    unsafe { native_fillRect(x, y, w, h, c) }
+}
+
+/// Wait for the current frame to finish (usually used at the end of the game loop)
 pub fn sync_frame() {
     unsafe { native_syncFrame() }
 }
 
+/// Discover if the given button is being held down
 pub fn btn(btn: u8) -> bool {
     unsafe { native_btn(btn) }
 }
 
+/// Discover if the given button was pressed this frame.
 pub fn btnp(btn: u8) -> bool {
     unsafe { native_btnp(btn) }
 }

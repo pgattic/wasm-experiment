@@ -29,6 +29,25 @@ void clearDraw() {
 bool ndsHeldKeys[8] = {0};
 bool ndsPressedKeys[8] = {0};
 
+UL_COLOR palette[16] = { // PICO-8 palette
+  RGB15(  0 >> 3,   0 >> 3,   0 >> 3),
+  RGB15( 29 >> 3,  43 >> 3,  83 >> 3),
+  RGB15(126 >> 3,  37 >> 3,  83 >> 3),
+  RGB15(  0 >> 3, 135 >> 3,  81 >> 3),
+  RGB15(171 >> 3,  82 >> 3,  54 >> 3),
+  RGB15( 95 >> 3,  87 >> 3,  79 >> 3),
+  RGB15(194 >> 3, 195 >> 3, 199 >> 3),
+  RGB15(255 >> 3, 241 >> 3, 232 >> 3),
+  RGB15(255 >> 3,   0 >> 3,  77 >> 3),
+  RGB15(255 >> 3, 163 >> 3,   0 >> 3),
+  RGB15(255 >> 3, 236 >> 3,  39 >> 3),
+  RGB15(  0 >> 3, 228 >> 3,  54 >> 3),
+  RGB15( 41 >> 3, 173 >> 3, 255 >> 3),
+  RGB15(131 >> 3, 118 >> 3, 156 >> 3),
+  RGB15(255 >> 3, 119 >> 3, 168 >> 3),
+  RGB15(255 >> 3, 204 >> 3, 170 >> 3),
+};
+
 void collectKeys() {
   ulReadKeys(0);
 
@@ -53,14 +72,27 @@ void collectKeys() {
 
 // ulib abstractions
 
-m3ApiRawFunction(ulib_fillRedRect) {
+m3ApiRawFunction(ulib_rect) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, w);
   m3ApiGetArg(uint8_t, h);
+  m3ApiGetArg(uint8_t, c);
 
   setDraw();
-  ulDrawFillRect(x, y, x + w, y + h, RGB15(31, 0, 0));
+  ulDrawRect(x, y, x + w, y + h, palette[c]);
+  m3ApiSuccess();
+}
+
+m3ApiRawFunction(ulib_fillRect) {
+  m3ApiGetArg(uint8_t, x);
+  m3ApiGetArg(uint8_t, y);
+  m3ApiGetArg(uint8_t, w);
+  m3ApiGetArg(uint8_t, h);
+  m3ApiGetArg(uint8_t, c);
+
+  setDraw();
+  ulDrawFillRect(x, y, x + w, y + h, palette[c]);
   m3ApiSuccess();
 }
 
@@ -74,19 +106,20 @@ m3ApiRawFunction(ulib_syncFrame) {
 m3ApiRawFunction(ulib_btn) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, btn);
-  m3ApiReturn(ndsHeldKeys[btn]);
+  m3ApiReturn(btn > 7 ? 0 : ndsHeldKeys[btn]);
 }
 
 m3ApiRawFunction(ulib_btnp) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, btnp);
-  m3ApiReturn(ndsPressedKeys[btnp]);
+  m3ApiReturn(btnp > 7 ? 0 : ndsPressedKeys[btnp]);
 }
 
 // Hook all the engine-relevant functions declared here into the WASM module
 void LinkNDSFunctions(IM3Module module) {
   m3_LinkRawFunction (module, "env", "_rand", "i()", &m3_rand);
-  m3_LinkRawFunction (module, "env", "_fillRedRect", "v(iiii)", &ulib_fillRedRect);
+  m3_LinkRawFunction (module, "env", "_rect", "v(iiiii)", &ulib_rect);
+  m3_LinkRawFunction (module, "env", "_fillRect", "v(iiiii)", &ulib_fillRect);
   m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &ulib_syncFrame);
   m3_LinkRawFunction (module, "env", "_btn", "i(i)", &ulib_btn);
   m3_LinkRawFunction (module, "env", "_btnp", "i(i)", &ulib_btnp);

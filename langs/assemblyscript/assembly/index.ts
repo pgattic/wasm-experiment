@@ -81,10 +81,10 @@ export function start(): void {
     // Rendering
     for (let s = 0; s < playerBody.length; s++) {
       let segment = playerBody[s];
-      env.fillRedRect(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize);
+      env.fillRect(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize, 11);
     }
 
-    env.fillRedRect(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize);
+    env.fillRect(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize, 8);
 
     frameCount++;
 

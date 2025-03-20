@@ -10,9 +10,14 @@ export function rand(): u8 {
   return _rand();
 }
 
-declare function _fillRedRect(x: u8, y: u8, w: u8, h: u8): void;
-export function fillRedRect(x: u8, y: u8, w: u8, h: u8): void {
-  _fillRedRect(x, y, w, h);
+declare function _rect(x: u8, y: u8, w: u8, h: u8, c: u8): void;
+export function rect(x: u8, y: u8, w: u8, h: u8, c: u8): void {
+  _rect(x, y, w, h, c);
+}
+
+declare function _fillRect(x: u8, y: u8, w: u8, h: u8, c: u8): void;
+export function fillRect(x: u8, y: u8, w: u8, h: u8, c: u8): void {
+  _fillRect(x, y, w, h, c);
 }
 
 declare function _syncFrame(): void;
