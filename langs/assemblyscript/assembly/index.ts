@@ -21,11 +21,11 @@ export function start(): void {
   let foodPos: Array<u8> = [env.rand() % gridDimensions[0], env.rand() % gridDimensions[1]];
 
   while (true) {
-    if (env.btnp(0) && playerDirection != Direction.Right) { playerDirection = Direction.Left; }
-    if (env.btnp(1) && playerDirection != Direction.Left) { playerDirection = Direction.Right; }
-    if (env.btnp(2) && playerDirection != Direction.Down) { playerDirection = Direction.Up; }
-    if (env.btnp(3) && playerDirection != Direction.Up) { playerDirection = Direction.Down; }
-    if (env.btnp(4)) { paused = !paused; }
+    if (env.btnP(0) && playerDirection != Direction.Right) { playerDirection = Direction.Left; }
+    if (env.btnP(1) && playerDirection != Direction.Left) { playerDirection = Direction.Right; }
+    if (env.btnP(2) && playerDirection != Direction.Down) { playerDirection = Direction.Up; }
+    if (env.btnP(3) && playerDirection != Direction.Up) { playerDirection = Direction.Down; }
+    if (env.btnP(4)) { paused = !paused; }
 
     // Game loop
     if (frameCount >= 6 && !paused) {
@@ -81,10 +81,10 @@ export function start(): void {
     // Rendering
     for (let s = 0; s < playerBody.length; s++) {
       let segment = playerBody[s];
-      env.fillRect(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize, 11);
+      env.rectFill(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize, 11);
     }
 
-    env.fillRect(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize, 8);
+    env.rectFill(foodPos[0] * gridSize, foodPos[1] * gridSize, gridSize, gridSize, 8);
 
     frameCount++;
 

@@ -44,11 +44,11 @@ pub fn start() {
     let mut paused = false;
     let mut frame_count: u8 = 0;
     loop {
-        if env::btnp(0) && player.direction != Direction::Right { player.direction = Direction::Left; }
-        if env::btnp(1) && player.direction != Direction::Left { player.direction = Direction::Right; }
-        if env::btnp(2) && player.direction != Direction::Down { player.direction = Direction::Up; }
-        if env::btnp(3) && player.direction != Direction::Up { player.direction = Direction::Down; }
-        if env::btnp(4) { paused = !paused; }
+        if env::btn_p(0) && player.direction != Direction::Right { player.direction = Direction::Left; }
+        if env::btn_p(1) && player.direction != Direction::Left { player.direction = Direction::Right; }
+        if env::btn_p(2) && player.direction != Direction::Down { player.direction = Direction::Up; }
+        if env::btn_p(3) && player.direction != Direction::Up { player.direction = Direction::Down; }
+        if env::btn_p(4) { paused = !paused; }
 
         if frame_count >= 6 && !paused {
             frame_count = 0;
@@ -83,7 +83,7 @@ pub fn start() {
         }
 
         for segment in &player.body {
-            env::fill_rect(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
+            env::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
         }
 
         env::rect(food.0 * GRID_SIZE, food.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 8);

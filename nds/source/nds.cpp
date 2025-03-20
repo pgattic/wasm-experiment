@@ -72,6 +72,16 @@ void collectKeys() {
 
 // ulib abstractions
 
+m3ApiRawFunction(ulib_pSet) {
+  m3ApiGetArg(uint8_t, x);
+  m3ApiGetArg(uint8_t, y);
+  m3ApiGetArg(uint8_t, c);
+
+  setDraw();
+  ulDrawLine(x, y, x+1, y+1, palette[c]);
+  m3ApiSuccess();
+}
+
 m3ApiRawFunction(ulib_rect) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
@@ -84,7 +94,7 @@ m3ApiRawFunction(ulib_rect) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(ulib_fillRect) {
+m3ApiRawFunction(ulib_rectFill) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, w);
@@ -109,19 +119,20 @@ m3ApiRawFunction(ulib_btn) {
   m3ApiReturn(btn > 7 ? 0 : ndsHeldKeys[btn]);
 }
 
-m3ApiRawFunction(ulib_btnp) {
+m3ApiRawFunction(ulib_btnP) {
   m3ApiReturnType(bool);
-  m3ApiGetArg(uint8_t, btnp);
-  m3ApiReturn(btnp > 7 ? 0 : ndsPressedKeys[btnp]);
+  m3ApiGetArg(uint8_t, btn);
+  m3ApiReturn(btn > 7 ? 0 : ndsPressedKeys[btn]);
 }
 
 // Hook all the engine-relevant functions declared here into the WASM module
 void LinkNDSFunctions(IM3Module module) {
   m3_LinkRawFunction (module, "env", "_rand", "i()", &m3_rand);
+  m3_LinkRawFunction (module, "env", "_pSet", "v(iii)", &ulib_pSet);
   m3_LinkRawFunction (module, "env", "_rect", "v(iiiii)", &ulib_rect);
-  m3_LinkRawFunction (module, "env", "_fillRect", "v(iiiii)", &ulib_fillRect);
+  m3_LinkRawFunction (module, "env", "_rectFill", "v(iiiii)", &ulib_rectFill);
   m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &ulib_syncFrame);
   m3_LinkRawFunction (module, "env", "_btn", "i(i)", &ulib_btn);
-  m3_LinkRawFunction (module, "env", "_btnp", "i(i)", &ulib_btnp);
+  m3_LinkRawFunction (module, "env", "_btnP", "i(i)", &ulib_btnP);
 }
 
