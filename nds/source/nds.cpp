@@ -2,14 +2,6 @@
 #include <nds.h>
 #include <gl2d.h>
 
-m3ApiRawFunction(m3_rand) {
-  m3ApiReturnType (uint32_t)
-  m3ApiReturn(rand());
-};
-
-bool ndsHeldKeys[8] = {0};
-bool ndsPressedKeys[8] = {0};
-
 uint32_t palette[16] = { // PICO-8 palette
   RGB15(  0 >> 3,   0 >> 3,   0 >> 3),
   RGB15( 29 >> 3,  43 >> 3,  83 >> 3),
@@ -28,6 +20,9 @@ uint32_t palette[16] = { // PICO-8 palette
   RGB15(255 >> 3, 119 >> 3, 168 >> 3),
   RGB15(255 >> 3, 204 >> 3, 170 >> 3),
 };
+
+bool ndsHeldKeys[8] = {0};
+bool ndsPressedKeys[8] = {0};
 
 void collectKeys() {
   scanKeys();
@@ -53,6 +48,11 @@ void collectKeys() {
   ndsPressedKeys[6] = (pressed & KEY_X) != 0;
   ndsPressedKeys[7] = (pressed & KEY_Y) != 0;
 }
+
+m3ApiRawFunction(nds_rand) {
+  m3ApiReturnType (uint32_t)
+  m3ApiReturn(rand());
+};
 
 m3ApiRawFunction(gl_pSet) {
   m3ApiGetArg(uint8_t, x);
@@ -95,26 +95,33 @@ m3ApiRawFunction(gl_syncFrame) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_btn) {
+m3ApiRawFunction(nds_btn) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, btn);
   m3ApiReturn(btn > 7 ? 0 : ndsHeldKeys[btn]);
 }
 
-m3ApiRawFunction(gl_btnP) {
+m3ApiRawFunction(nds_btnP) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, btn);
   m3ApiReturn(btn > 7 ? 0 : ndsPressedKeys[btn]);
 }
 
+m3ApiRawFunction(nds_printDbg) {
+    m3ApiGetArgMem (const char *, str)
+    printf("%s\n", str);
+    m3ApiSuccess();
+}
+
 // Hook all the engine-relevant functions declared here into the WASM module
 void LinkNDSFunctions(IM3Module module) {
-  m3_LinkRawFunction (module, "env", "_rand", "i()", &m3_rand);
+  m3_LinkRawFunction (module, "env", "_rand", "i()", &nds_rand);
   m3_LinkRawFunction (module, "env", "_pSet", "v(iii)", &gl_pSet);
   m3_LinkRawFunction (module, "env", "_rect", "v(iiiii)", &gl_rect);
   m3_LinkRawFunction (module, "env", "_rectFill", "v(iiiii)", &gl_rectFill);
   m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &gl_syncFrame);
-  m3_LinkRawFunction (module, "env", "_btn", "i(i)", &gl_btn);
-  m3_LinkRawFunction (module, "env", "_btnP", "i(i)", &gl_btnP);
+  m3_LinkRawFunction (module, "env", "_btn", "i(i)", &nds_btn);
+  m3_LinkRawFunction (module, "env", "_btnP", "i(i)", &nds_btnP);
+  m3_LinkRawFunction (module, "env", "_printLnDbg", "v(i)", &nds_printDbg);
 }
 

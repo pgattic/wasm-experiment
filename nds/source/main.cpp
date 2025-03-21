@@ -78,9 +78,9 @@ int main(void) {
 
   size_t wasmSize = fileSize - METAPROG_SIZE;
 
-  printf(" \"fat:/myfile.bin\"\n");
-  printf(" File size: %d bytes\n", fileSize);
-  printf(" WASM size: %d bytes\n", wasmSize);
+  printf("\"fat:/myfile.bin\"\n");
+  printf("File size: %d bytes\n", fileSize);
+  printf("WASM size: %d bytes\n", wasmSize);
 
   IM3Environment env = m3_NewEnvironment();
   IM3Runtime runtime = m3_NewRuntime(env, 1024, NULL);
@@ -88,7 +88,7 @@ int main(void) {
   M3Result result;
 
   printf("\n");
-  printf(" Initialized WASM runtime\n");
+  printf("Initialized WASM runtime\n");
 
   result = m3_ParseModule(env, &module, customFile->prg_code, wasmSize);
   if (result) {
@@ -106,7 +106,7 @@ int main(void) {
 
   LinkNDSFunctions(module);
 
-  printf(" Loaded WASM module\n");
+  printf("Loaded WASM module\n");
 
   IM3Function f;
   result = m3_FindFunction(&f, runtime, "start");
@@ -118,10 +118,9 @@ int main(void) {
 
   videoSetMode(MODE_0_3D);
   glScreen2D();
-  /*swiWaitForVBlank();*/
-  /*consoleClear();*/
 
-  printf(" Started WASM program\n");
+  printf("Started WASM program\n");
+  consoleClear();
   result = m3_CallV(f, 10);
   if (result) {
     printf("Error calling function: %s\n", result);

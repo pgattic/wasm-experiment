@@ -29,6 +29,8 @@ unsafe extern "C" {
     fn native_btn(btn: u8) -> bool;
     #[link_name = "_btnP"]
     fn native_btnP(btn: u8) -> bool;
+    #[link_name = "_printLnDbg"]
+    fn _printLnDbg(arg: i32);
 }
 
 //pub fn print(string: &str) {
@@ -68,6 +70,20 @@ pub fn btn(btn: u8) -> bool {
 /// Discover if the given button was pressed this frame.
 pub fn btn_p(btn: u8) -> bool {
     unsafe { native_btnP(btn) }
+}
+
+/// Prints a C-style (null-terminated string) to the debug console.
+///
+/// Example:
+/// ```
+/// mod env;
+///
+/// // NOTE the "\0" at the end of the string
+/// let message = b"Hello, world!\0";
+/// env::println_dbg(message);
+/// ```
+pub fn println_dbg(msg: &[u8]) {
+    unsafe { _printLnDbg(msg.as_ptr() as i32); }
 }
 
 // User-code entrypoint

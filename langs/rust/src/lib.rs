@@ -43,6 +43,9 @@ pub fn start() {
     let mut food: (u8, u8) = new_food();
     let mut paused = false;
     let mut frame_count: u8 = 0;
+
+    env::println_dbg(b"Hello from Rust!\0");
+
     loop {
         if env::btn_p(0) && player.direction != Direction::Right { player.direction = Direction::Left; }
         if env::btn_p(1) && player.direction != Direction::Left { player.direction = Direction::Right; }
