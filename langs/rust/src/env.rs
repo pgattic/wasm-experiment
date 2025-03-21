@@ -41,18 +41,18 @@ pub fn rand() -> u8 {
 }
 
 /// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
-pub fn p_set(x: u8, y: u8, c: u8) {
-    unsafe { native_pSet(x, y, c) }
+pub fn p_set(x: u8, y: u8, color: u8) {
+    unsafe { native_pSet(x, y, color) }
 }
 
 /// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
-pub fn rect(x: u8, y: u8, w: u8, h: u8, c: u8) {
-    unsafe { native_rect(x, y, w, h, c) }
+pub fn rect(x: u8, y: u8, w: u8, h: u8, color: u8) {
+    unsafe { native_rect(x, y, w, h, color) }
 }
 
 /// Draw a filled Rectangle, with the specified x and y position, width, height, and color index.
-pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, c: u8) {
-    unsafe { native_rectFill(x, y, w, h, c) }
+pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
+    unsafe { native_rectFill(x, y, w, h, color) }
 }
 
 /// Wait for the current frame to finish (usually used at the end of the game loop)

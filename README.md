@@ -39,7 +39,21 @@
 
 ### Functions
 
-<!--| Function | Usage | Description |-->
-<!--| - | - | - |-->
-<!--| `cls(color)` | -->
+#### Graphics
+rand
+
+| Done | Function/Usage | Description |
+| - | - | - |
+| ✅ | `pSet(x, y, color)` | Draw a single pixel at the specified location |
+| ✅ | `rect(x, y, w, h, color)` | Draw an outlined rectangle at the specified position and size |
+| ✅ | `rectFill(x, y, w, h, color)` | Draw a filled rectangle at the specified position and size |
+| ✅ | `syncFrame()` | Wait for the frame time to finish |
+| ❌ | `cls(color)` | Clear the screen to the specified color |
+
+#### Input
+
+| Done | Function/Usage | Description |
+| - | - | - |
+| ✅ | `btn(btn)` | Check if a given button ID is being held |
+| ✅ | `btnP(btn)` | Check if a given button ID was just pressed |
 

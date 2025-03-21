@@ -1,5 +1,5 @@
 #include <nds.h>
-#include <ulib/ulib.h>
+#include <gl2d.h>
 #include <fat.h>
 #include <stdio.h>
 #include <wasm3.h>
@@ -16,7 +16,6 @@
 #define METAPROG_SIZE     (HEADER_SIZE + PALETTE_SIZE + SPR_TILES_SIZE + BG_TILES_SIZE) // 16448
 #define PRG_CODE_SIZE     (FILE_SIZE - METAPROG_SIZE) // 1032128
 
-// Packed struct that exactly matches the file layout.
 typedef struct __attribute__((__packed__)) {
   uint8_t header[HEADER_SIZE];           // 0x00000-0x0000F
   uint8_t palette[PALETTE_SIZE];         // 0x00010-0x0003F
@@ -117,9 +116,10 @@ int main(void) {
     while (1) {}
   }
 
-  ulInit(UL_INIT_ALL);
-  ulInitGfx();
-  ulInitText();
+  videoSetMode(MODE_0_3D);
+  glScreen2D();
+  /*swiWaitForVBlank();*/
+  /*consoleClear();*/
 
   printf(" Started WASM program\n");
   result = m3_CallV(f, 10);
