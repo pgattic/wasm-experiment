@@ -12,6 +12,25 @@ BG_TILES_SIZE   = 0x2000 # 4bit/px * 8px * 8px * 256tiles = 32768bits (8192 byte
 METAPROG_SIZE   = HEADER_SIZE + PALETTE_SIZE + SPR_TILES_SIZE + BG_TILES_SIZE # 16448
 PRG_CODE_SIZE   = FILE_SIZE - METAPROG_SIZE # 1032128
 
+DEFAULT_PALETTE = [ # PICO-8 Palette
+      0,   0,   0,
+     29,  43,  83,
+    126,  37,  83,
+      0, 135,  81,
+    171,  82,  54,
+     95,  87,  79,
+    194, 195, 199,
+    255, 241, 232,
+    255,   0,  77,
+    255, 163,   0,
+    255, 236,  39,
+      0, 228,  54,
+     41, 173, 255,
+    131, 118, 156,
+    255, 119, 168,
+    255, 204, 170,
+]
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: {} input.wasm output.bin".format(sys.argv[0]))
@@ -39,8 +58,8 @@ def main():
     magic = b"MYHEADER"
     header[:len(magic)] = magic
 
-    # Create the Global Palette section (48 bytes) filled with zeros.
-    global_palette = bytearray(PALETTE_SIZE)
+    # Fill the Global Palette section (`bytearray()` can be used with a list of ints too)
+    global_palette = bytearray(DEFAULT_PALETTE)
 
     # Create the Sprite Tiles section (8192 bytes) filled with zeros.
     sprite_tiles = bytearray(SPR_TILES_SIZE)

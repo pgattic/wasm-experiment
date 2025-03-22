@@ -1,6 +1,5 @@
 use iced::{Alignment, Color, Element};
 use iced::widget::{Button, text};
-use iced::widget::button::Style;
 use iced::Background;
 
 use iced_aw::helpers::color_picker;
@@ -52,7 +51,7 @@ impl PalEntry {
             .width(24)
             .align_x(Alignment::End);
         let button = Button::new(rect)
-            .style(|_theme, _status| Style::default().with_background(Background::Color(self.color)))
+            .style(|_theme, _status| iced::widget::button::Style::default().with_background(Background::Color(self.color)))
             .on_press(PalEntryMessage::OpenPicker);
 
         color_picker(
@@ -61,7 +60,7 @@ impl PalEntry {
             button,
             PalEntryMessage::ClosePicker,
             PalEntryMessage::SetColor
-        ) .into()
+        ).into()
     }
 }
 

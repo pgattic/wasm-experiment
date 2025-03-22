@@ -1,25 +1,19 @@
 #include "m3_env.h"
 #include <nds.h>
 #include <gl2d.h>
+#include <stdint.h>
+#include "cartridge.h"
 
-uint32_t palette[16] = { // PICO-8 palette
-  RGB15(  0 >> 3,   0 >> 3,   0 >> 3),
-  RGB15( 29 >> 3,  43 >> 3,  83 >> 3),
-  RGB15(126 >> 3,  37 >> 3,  83 >> 3),
-  RGB15(  0 >> 3, 135 >> 3,  81 >> 3),
-  RGB15(171 >> 3,  82 >> 3,  54 >> 3),
-  RGB15( 95 >> 3,  87 >> 3,  79 >> 3),
-  RGB15(194 >> 3, 195 >> 3, 199 >> 3),
-  RGB15(255 >> 3, 241 >> 3, 232 >> 3),
-  RGB15(255 >> 3,   0 >> 3,  77 >> 3),
-  RGB15(255 >> 3, 163 >> 3,   0 >> 3),
-  RGB15(255 >> 3, 236 >> 3,  39 >> 3),
-  RGB15(  0 >> 3, 228 >> 3,  54 >> 3),
-  RGB15( 41 >> 3, 173 >> 3, 255 >> 3),
-  RGB15(131 >> 3, 118 >> 3, 156 >> 3),
-  RGB15(255 >> 3, 119 >> 3, 168 >> 3),
-  RGB15(255 >> 3, 204 >> 3, 170 >> 3),
-};
+uint32_t palette[16] = {0};
+
+/// Loads a Palette from the game's cartridge data
+void loadPalette(Cart * cart) {
+  for (uint8_t i = 0; i < 16; i++) {
+    palette[i] = RGB15(cart->palette[i*3] >> 3,
+                       cart->palette[i*3+1] >> 3,
+                       cart->palette[i*3+2] >> 3);
+  }
+}
 
 bool ndsHeldKeys[8] = {0};
 bool ndsPressedKeys[8] = {0};
@@ -88,8 +82,6 @@ m3ApiRawFunction(gl_rectFill) {
 m3ApiRawFunction(gl_syncFrame) {
   glEnd2D();
   glFlush(0);
-  swiWaitForVBlank();
-  /*consoleClear();*/
   collectKeys();
   glBegin2D();
   m3ApiSuccess();

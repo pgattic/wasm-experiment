@@ -6,17 +6,6 @@ use crate::pal_entry::PalEntry;
 mod options;
 use crate::options::Options;
 
-//enum AbsOrRel {
-//    Absolute(PathBuf),
-//    Relative(PathBuf),
-//}
-//
-//impl Default for AbsOrRel {
-//    fn default() -> Self {
-//        Self::Relative(PathBuf::new())
-//    }
-//}
-
 struct App {
     pal_entries: [PalEntry; 16],
     options: Options,
@@ -27,7 +16,6 @@ enum AppMessage {
     PalEntryMsg(usize, pal_entry::PalEntryMessage),
     OptionMsg(options::OptionsMessage),
 }
-
 
 impl Default for App {
     fn default() -> Self {
