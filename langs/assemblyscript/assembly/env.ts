@@ -5,8 +5,8 @@ const encode = (str: string): ArrayBuffer => String.UTF8.encode(str, true);
 //  _print(encode(str));
 //}
 
-declare function _rand(): u8;
-export function rand(): u8 {
+declare function _rand(): u32;
+export function rand(): u32 {
   return _rand();
 }
 

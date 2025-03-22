@@ -16,7 +16,7 @@ unsafe extern "C" {
     //#[link_name = "_print"]
     //fn native_print(string: *const u8);
     #[link_name = "_rand"]
-    fn native_rand() -> u8;
+    fn native_rand() -> u32;
     #[link_name = "_pSet"]
     fn native_pSet(x: u8, y: u8, c: u8);
     #[link_name = "_rect"]
@@ -33,12 +33,8 @@ unsafe extern "C" {
     fn _printLnDbg(arg: i32);
 }
 
-//pub fn print(string: &str) {
-//    let c_str = CString::new(string).unwrap();
-//    unsafe { native_print(c_str.as_ptr() as *const u8)}
-//}
-
-pub fn rand() -> u8 {
+/// Generates a random 32-bit integer.
+pub fn rand() -> u32 {
     unsafe { native_rand() }
 }
 
