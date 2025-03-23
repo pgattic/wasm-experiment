@@ -8,24 +8,7 @@
 #include <sys/stat.h>
 #include "cartridge.h"
 
-int main(void) {
-  consoleDemoInit();
-
-  printf("\n");
-
-  if (!fatInitDefault()) {
-    printf("FAT initialization failed.\n");
-    while (1) {}
-  }
-
-  size_t fileSize;
-  Cart *cart = loadCartridge("fat:/myfile.bin", &fileSize);
-
-  if (!cart) {
-    printf("Failed to load file.\n");
-    while (1) {}
-  }
-
+IM3Function wasmInit(Cart * cart, size_t fileSize) {
   size_t wasmSize = fileSize - METAPROG_SIZE;
   printf("\"fat:/myfile.bin\"\n");
   printf("File size: %d bytes\n", fileSize);
@@ -66,13 +49,35 @@ int main(void) {
     free(cart);
     while (1) {}
   }
+  return f;
+}
+
+int main(void) {
+  consoleDemoInit();
+
+  printf("\n");
+
+  if (!fatInitDefault()) {
+    printf("FAT initialization failed.\n");
+    while (1) {}
+  }
+
+  size_t fileSize;
+  Cart *cart = loadCartridge("fat:/myfile.bin", &fileSize);
+
+  if (!cart) {
+    printf("Failed to load file.\n");
+    while (1) {}
+  }
+
+  IM3Function startF = wasmInit(cart, fileSize);
 
   videoSetMode(MODE_0_3D);
   glScreen2D();
 
   printf("Started WASM program\n");
   consoleClear();
-  result = m3_CallV(f, 10);
+  M3Result result = m3_CallV(startF, 10);
   if (result) {
     printf("Error calling function: %s\n", result);
     while (1) {}

@@ -80,8 +80,11 @@ m3ApiRawFunction(gl_rectFill) {
 }
 
 m3ApiRawFunction(gl_syncFrame) {
+  // "End of frame" stuff
   glEnd2D();
   glFlush(0);
+
+  // "Beginning of frame" stuff
   collectKeys();
   glBegin2D();
   m3ApiSuccess();
