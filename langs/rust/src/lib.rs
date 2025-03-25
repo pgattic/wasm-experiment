@@ -40,7 +40,7 @@ fn new_food() -> (u8, u8) {
 
 pub fn start() {
     let mut player = Player::new();
-    let mut food: (u8, u8) = new_food();
+    let mut foods = [new_food(), new_food(), new_food()];
     let mut paused = false;
     let mut frame_count: u8 = 0;
 
@@ -67,21 +67,23 @@ pub fn start() {
                 player.body.dequeue();
             }
 
-            if player.body.peek_head() == food {
-                player.score += 5;
-                food = new_food();
+            for i in 0..foods.len() {
+                if player.body.peek_head() == foods[i] {
+                    player.score += 5;
+                    foods[i] = new_food();
+                }
             }
 
             for segment in player.body.into_iter().skip(1) {
                 if player.body.peek_head() == segment {
                     player = Player::new();
-                    food = new_food();
+                    foods = [new_food(), new_food(), new_food()];
                     break;
                 }
             }
             if player.body.peek_head().0 >= GRID_DIMENSIONS.0 || player.body.peek_head().1 >= GRID_DIMENSIONS.1 {
                 player = Player::new();
-                food = new_food();
+                foods = [new_food(), new_food(), new_food()];
             }
         }
 
@@ -95,8 +97,10 @@ pub fn start() {
             env::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
         }
 
-        env::sprite(player.body.peek_head().0 * GRID_SIZE, player.body.peek_head().1 * GRID_SIZE, 0); // Smiley
-        env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, 1); // Apple
+        //env::sprite(player.body.peek_head().0 * GRID_SIZE, player.body.peek_head().1 * GRID_SIZE, 0); // Smiley
+        for food in foods {
+            env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, 1); // Apple
+        }
 
         frame_count += 1;
         env::sync_frame();

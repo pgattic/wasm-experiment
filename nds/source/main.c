@@ -1,5 +1,6 @@
 #include <nds.h>
 #include <gl2d.h>
+#include <dirent.h>
 #include <fat.h>
 #include <stdio.h>
 #include <wasm3.h>
@@ -10,7 +11,6 @@
 
 IM3Function wasmInit(Cart * cart, size_t fileSize) {
   size_t wasmSize = fileSize - METAPROG_SIZE;
-  printf("\"fat:/myfile.bin\"\n");
   printf("File size: %d bytes\n", fileSize);
   printf("WASM size: %d bytes\n", wasmSize);
 
@@ -50,8 +50,74 @@ IM3Function wasmInit(Cart * cart, size_t fileSize) {
   return f;
 }
 
+int browseFiles(char *targetFile) {
+  // Get dir entries
+  char cwd[100] = "fat:/wasmcarts/";
+  DIR *dirp = opendir(cwd);
+  if (dirp == NULL) {
+    perror("Error");
+    return 1;
+  }
+
+  char entries[10][20] = {0};
+  bool is_dir[10] = {0};
+  int num_dirs = 0;
+
+  for (int i=0; i < 10; i++) {
+    struct dirent *cur = readdir(dirp);
+    if (cur == NULL)
+      break;
+
+    if (strlen(cur->d_name) == 0)
+      break;
+
+    strcpy(entries[i], cur->d_name);
+    if (cur->d_type == DT_DIR) is_dir[i] = 1;
+    num_dirs++;
+  }
+  closedir(dirp);
+
+  // Select file
+  consoleClear();
+  int curr = 0;
+  for (int i = 0; i < 10; i++) {
+    printf("%s %s%s\n", (i==curr ? ">":" "), entries[i], (is_dir[i] ? "/" : " "));
+  }
+
+  while (1) {
+    swiWaitForVBlank();
+
+    scanKeys();
+    bool changed = false;
+
+    uint32_t keys_down = keysDown();
+    if (keys_down & KEY_UP && curr > 0) {
+      curr--;
+      changed = true;
+    }
+    if (keys_down & KEY_DOWN && curr < num_dirs-1) {
+      curr++;
+      changed = true;
+    }
+    if (keys_down & KEY_A) {
+      strcpy(targetFile, cwd);
+      strcat(targetFile, entries[curr]);
+      return 0;
+    }
+
+    if (changed) {
+      consoleClear();
+      for (int i = 0; i < 10; i++) {
+        printf("%s %s%s\n", (i==curr ? ">":" "), entries[i], (is_dir[i] ? "/" : " "));
+      }
+    }
+  }
+}
+
 int main(void) {
   consoleDemoInit();
+  videoSetMode(MODE_0_3D);
+  glScreen2D();
 
   printf("\n");
 
@@ -60,8 +126,14 @@ int main(void) {
     while (1) {}
   }
 
+  char targetFile[100] = {0};
+  int browseRes = browseFiles(targetFile);
+  if (browseRes) {
+    while (1) {}
+  }
+
   size_t fileSize;
-  Cart *cart = loadCartridge("fat:/myfile.bin", &fileSize);
+  Cart *cart = loadCartridge(targetFile, &fileSize);
 
   if (!cart) {
     printf("Failed to load file.\n");
@@ -71,9 +143,6 @@ int main(void) {
   loadPalette(cart); // Read the cartridge's palette data
 
   IM3Function startF = wasmInit(cart, fileSize);
-
-  videoSetMode(MODE_0_3D);
-  glScreen2D();
 
   vramSetBankA(VRAM_A_TEXTURE);
   vramSetBankE(VRAM_E_TEX_PALETTE);
