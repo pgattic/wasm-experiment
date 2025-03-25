@@ -4,15 +4,51 @@
 #include <stdint.h>
 #include "cartridge.h"
 
-uint32_t palette[16] = {0};
+uint16_t nds_palette[16] = {0};
 
 /// Loads a Palette from the game's cartridge data
 void loadPalette(Cart * cart) {
   for (uint8_t i = 0; i < 16; i++) {
-    palette[i] = RGB15(cart->palette[i*3] >> 3,
-                       cart->palette[i*3+1] >> 3,
-                       cart->palette[i*3+2] >> 3);
+    nds_palette[i] = RGB15(((cart->palette)[i*3]) >> 3,
+                       ((cart->palette)[i*3+1]) >> 3,
+                       ((cart->palette)[i*3+2]) >> 3);
   }
+}
+
+glImage sprTiles[256];
+
+int loadSpriteTiles(Cart * cart) {
+  /*int textureID = glLoadTileSet(*/
+  /*  sprTiles,    // Pointer to glImage array*/
+  /*  8, 8,        // Sprite Dimensions*/
+  /*  8, 8*128,       // Bitmap Dimensions (the part that contains useful images)*/
+  /*  GL_RGB16,    // Texture type for glTexImage2D()*/
+  /*  8, 8*128,        // Full texture (image) dimensions*/
+  /*  TEXGEN_TEXCOORD | GL_TEXTURE_COLOR0_TRANSPARENT, // Parameters for glTexImage2D()*/
+  /*  16,          // Length of the palette to use (# of colors)*/
+  /*  &nds_palette, // Pointer to texture palette data*/
+  /*  cart->spr_tiles // Pointer to texture data*/
+  /*);*/
+
+  int textureID;
+  int numTiles = 128;
+  glGenTextures( 1, &textureID );
+  glBindTexture( 0, textureID );
+  glTexImage2D( 0, 0, GL_RGB16, 8, 8*numTiles, 0, TEXGEN_TEXCOORD | GL_TEXTURE_COLOR0_TRANSPARENT, cart->spr_tiles );
+  glColorTableEXT( 0, 0, 16, 0, 0, &nds_palette );
+
+  // init sprites texture coords and texture ID
+  for (int i = 0; i < numTiles; i++) {
+    sprTiles[i].width        = 8;
+    sprTiles[i].height       = 8;
+    sprTiles[i].u_off        = 0;
+    sprTiles[i].v_off        = i*8; 
+    sprTiles[i].textureID    = textureID;
+  }
+
+  if (textureID < 0)
+    printf("Failed to load texture: %d\n", textureID);
+  return textureID;
 }
 
 bool ndsHeldKeys[8] = {0};
@@ -48,12 +84,19 @@ m3ApiRawFunction(nds_rand) {
   m3ApiReturn(rand());
 };
 
+m3ApiRawFunction(gl_clearScreen) {
+  m3ApiGetArg(uint8_t, c);
+
+  glBoxFilled(0, 0, 255, 191, nds_palette[c]);
+  m3ApiSuccess();
+}
+
 m3ApiRawFunction(gl_pSet) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, c);
 
-  glPutPixel(x, y, palette[c]);
+  glPutPixel(x, y, nds_palette[c]);
   m3ApiSuccess();
 }
 
@@ -64,7 +107,7 @@ m3ApiRawFunction(gl_rect) {
   m3ApiGetArg(uint8_t, h);
   m3ApiGetArg(uint8_t, c);
 
-  glBox(x, y, x + w - 2, y + h - 2, palette[c]);
+  glBox(x, y, x + w - 2, y + h - 2, nds_palette[c]);
   m3ApiSuccess();
 }
 
@@ -75,7 +118,16 @@ m3ApiRawFunction(gl_rectFill) {
   m3ApiGetArg(uint8_t, h);
   m3ApiGetArg(uint8_t, c);
 
-  glBoxFilled(x, y, x + w - 1, y + h - 1, palette[c]);
+  glBoxFilled(x, y, x + w - 1, y + h - 1, nds_palette[c]);
+  m3ApiSuccess();
+}
+
+m3ApiRawFunction(gl_sprite) {
+  m3ApiGetArg(uint8_t, x);
+  m3ApiGetArg(uint8_t, y);
+  m3ApiGetArg(uint8_t, sprite);
+
+  glSprite(x, y, GL_FLIP_NONE, &sprTiles[sprite]);
   m3ApiSuccess();
 }
 
@@ -85,6 +137,7 @@ m3ApiRawFunction(gl_syncFrame) {
   glFlush(0);
 
   // "Beginning of frame" stuff
+  oamUpdate(&oamMain);
   collectKeys();
   glBegin2D();
   m3ApiSuccess();
@@ -111,9 +164,11 @@ m3ApiRawFunction(nds_printDbg) {
 // Hook all the engine-relevant functions declared here into the WASM module
 void LinkNDSFunctions(IM3Module module) {
   m3_LinkRawFunction (module, "env", "_rand", "i()", &nds_rand);
+  m3_LinkRawFunction (module, "env", "_clearScreen", "v(i)", &gl_clearScreen);
   m3_LinkRawFunction (module, "env", "_pSet", "v(iii)", &gl_pSet);
   m3_LinkRawFunction (module, "env", "_rect", "v(iiiii)", &gl_rect);
   m3_LinkRawFunction (module, "env", "_rectFill", "v(iiiii)", &gl_rectFill);
+  m3_LinkRawFunction (module, "env", "_sprite", "v(iii)", &gl_sprite);
   m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &gl_syncFrame);
   m3_LinkRawFunction (module, "env", "_btn", "i(i)", &nds_btn);
   m3_LinkRawFunction (module, "env", "_btnP", "i(i)", &nds_btnP);

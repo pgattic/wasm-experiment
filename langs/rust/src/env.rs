@@ -17,12 +17,16 @@ unsafe extern "C" {
     //fn native_print(string: *const u8);
     #[link_name = "_rand"]
     fn native_rand() -> u32;
+    #[link_name = "_clearScreen"]
+    fn native_clearScreen(c: u8);
     #[link_name = "_pSet"]
     fn native_pSet(x: u8, y: u8, c: u8);
     #[link_name = "_rect"]
     fn native_rect(x: u8, y: u8, w: u8, h: u8, c: u8);
     #[link_name = "_rectFill"]
     fn native_rectFill(x: u8, y: u8, w: u8, h: u8, c: u8);
+    #[link_name = "_sprite"]
+    fn native_sprite(x: u8, y: u8, sprite_id: u8);
     #[link_name = "_syncFrame"]
     fn native_syncFrame();
     #[link_name = "_btn"]
@@ -38,6 +42,11 @@ pub fn rand() -> u32 {
     unsafe { native_rand() }
 }
 
+/// Clears the screen to a given color.
+pub fn clear_screen(color: u8) {
+    unsafe { native_clearScreen(color) }
+}
+
 /// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
 pub fn p_set(x: u8, y: u8, color: u8) {
     unsafe { native_pSet(x, y, color) }
@@ -51,6 +60,11 @@ pub fn rect(x: u8, y: u8, w: u8, h: u8, color: u8) {
 /// Draw a filled Rectangle, with the specified x and y position, width, height, and color index.
 pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
     unsafe { native_rectFill(x, y, w, h, color) }
+}
+
+/// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
+pub fn sprite(x: u8, y: u8, sprite_id: u8) {
+    unsafe { native_sprite(x, y, sprite_id) }
 }
 
 /// Wait for the current frame to finish (usually used at the end of the game loop)

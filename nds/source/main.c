@@ -14,8 +14,6 @@ IM3Function wasmInit(Cart * cart, size_t fileSize) {
   printf("File size: %d bytes\n", fileSize);
   printf("WASM size: %d bytes\n", wasmSize);
 
-  loadPalette(cart); // Read the cartridge's palette data
-
   IM3Environment env = m3_NewEnvironment();
   IM3Runtime runtime = m3_NewRuntime(env, 1024, NULL);
   IM3Module module;
@@ -70,10 +68,17 @@ int main(void) {
     while (1) {}
   }
 
+  loadPalette(cart); // Read the cartridge's palette data
+
   IM3Function startF = wasmInit(cart, fileSize);
 
   videoSetMode(MODE_0_3D);
   glScreen2D();
+
+  vramSetBankA(VRAM_A_TEXTURE);
+  vramSetBankE(VRAM_E_TEX_PALETTE);
+
+  int tiles_id = loadSpriteTiles(cart);
 
   printf("Started WASM program\n");
   consoleClear();
@@ -84,6 +89,8 @@ int main(void) {
   }
 
   free(cart);
+  glDeleteTextures(1, &tiles_id);
+
   return 0;
 }
 

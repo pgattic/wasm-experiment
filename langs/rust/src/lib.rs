@@ -35,7 +35,7 @@ impl Player {
 }
 
 fn new_food() -> (u8, u8) {
-    (env::rand() % GRID_DIMENSIONS.0, env::rand() % GRID_DIMENSIONS.1)
+    ((env::rand() % GRID_DIMENSIONS.0 as u32) as u8, (env::rand() % GRID_DIMENSIONS.1 as u32) as u8)
 }
 
 pub fn start() {
@@ -84,6 +84,14 @@ pub fn start() {
                 food = new_food();
             }
         }
+
+        env::clear_screen(1);
+
+        for i in 0..16 {
+            env::rect_fill((i % 8)*8, (i/8) * 8, 8, 8, i);
+        }
+
+        env::sprite(12, 16, 0);
 
         for segment in &player.body {
             env::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
