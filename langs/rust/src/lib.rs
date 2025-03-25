@@ -91,13 +91,12 @@ pub fn start() {
             env::rect_fill((i % 8)*8, (i/8) * 8, 8, 8, i);
         }
 
-        env::sprite(12, 16, 0);
-
         for segment in &player.body {
             env::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
         }
 
-        env::rect(food.0 * GRID_SIZE, food.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 8);
+        env::sprite(player.body.peek_head().0 * GRID_SIZE, player.body.peek_head().1 * GRID_SIZE, 0); // Smiley
+        env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, 1); // Apple
 
         frame_count += 1;
         env::sync_frame();

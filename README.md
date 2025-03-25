@@ -9,9 +9,18 @@
 - [X] Have it run a wasm file compiled from a different language than AssemblyScript
 - [X] Have it load a file from file storage instead of embedding it?
     - [ ] Also add file picker?
+- [ ] Support sprites
+- [ ] Support background tiles
+- [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Port to GBA
     - [ ] Will require learning a new graphice library for GBA
 - [ ] Define functions for game engine to expose
+
+## Stretch Goals
+
+Mostly writing these down just for the heck of it.
+
+- Networking???
 
 ## Engine Spec
 
@@ -47,8 +56,9 @@ rand
 | ✅ | `pSet(x, y, color)` | Draw a single pixel at the specified location |
 | ✅ | `rect(x, y, w, h, color)` | Draw an outlined rectangle at the specified position and size |
 | ✅ | `rectFill(x, y, w, h, color)` | Draw a filled rectangle at the specified position and size |
+| ✅ | `sprite(x, y, id)` | Render a sprite of the designated id |
 | ✅ | `syncFrame()` | Wait for the frame time to finish |
-| ❌ | `cls(color)` | Clear the screen to the specified color |
+| ✅ | `cls(color)` | Clear the screen to the specified color |
 
 #### Input
 
