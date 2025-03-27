@@ -39,7 +39,8 @@ Mostly writing these down just for the heck of it.
 | Global Palette | 48 | `0x00010-0x0003F` |
 | Sprite Tiles | 8192 | `0x00040-0x0203F` |
 | BG Tiles | 8192 | `0x02040-0x0403F` |
-| Program Code | 1032128 | `0x04040-0xFFFFF` |
+| Tile Map (256x256 tiles) | 65536 | `0x04040-0x1403F`
+| Program Code | 966592 | `0x14040-0xFFFFF` |
 
 TODO: Background Tilemaps
 

@@ -8,6 +8,7 @@
 #include "nds.h"
 #include <sys/stat.h>
 #include "cartridge.h"
+#include "memory.h"
 
 IM3Function wasmInit(Cart * cart, size_t fileSize) {
   size_t wasmSize = fileSize - METAPROG_SIZE;
@@ -140,7 +141,7 @@ int main(void) {
     while (1) {}
   }
 
-  loadPalette(cart); // Read the cartridge's palette data
+  loadMemory(cart);
 
   IM3Function startF = wasmInit(cart, fileSize);
 
