@@ -1,13 +1,4 @@
 
-//#[inline]
-//pub fn unwrap_abort<T>(o: Option<T>) -> T {
-//    use std::process;
-//    match o {
-//        Some(t) => t,
-//        None => process::abort(),
-//    }
-//}
-
 pub struct CircBuf<T> where T: Copy {
     data: [T; 256],
     head: u8,

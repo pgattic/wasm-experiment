@@ -1,10 +1,7 @@
-// BUNNIES TEST CARTRIDGE
-// by pgattic
-
 #![no_std]
 #![no_main]
 
-mod env;
+use wasm_experiment as env;
 
 const MAX_BUNNIES: usize = 400;
 
@@ -13,8 +10,9 @@ const MAX_BUNNIES: usize = 400;
 const MAPPED_SCREEN_DIMENSIONS: (i16, i16) = (16384, 12288);
 const MAPPED_SCREEN_CENTER: (i16, i16) = (MAPPED_SCREEN_DIMENSIONS.0/2, MAPPED_SCREEN_DIMENSIONS.1/2);
 
-pub fn start() {
-
+// User-code entrypoint
+#[unsafe(no_mangle)]
+pub extern "C" fn start() {
     let mut num_bunnies = 0;
     let mut bunnies: [(i16, i16, i16 ,i16); MAX_BUNNIES] = [(0, 0, 0, 0); MAX_BUNNIES];
 
@@ -28,6 +26,8 @@ pub fn start() {
             );
             num_bunnies += 1;
         }
+
+        env::sample_bg();
 
         for i in 0..num_bunnies {
             bunnies[i].0 += bunnies[i].2;

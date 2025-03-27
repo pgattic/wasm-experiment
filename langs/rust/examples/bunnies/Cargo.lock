@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
-name = "rust-wasm-snake"
+name = "rust-wasm-bunnies"
+version = "0.1.0"
+dependencies = [
+ "wasm_experiment",
+]
+
+[[package]]
+name = "wasm_experiment"
 version = "0.1.0"

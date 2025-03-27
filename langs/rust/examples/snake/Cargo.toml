@@ -1,0 +1,14 @@
+[package]
+name = "rust-wasm-snake"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm_experiment = { path = "../../crates/wasm_experiment" }
+
+[profile.release]
+lto = true # Link Time Optimization
+

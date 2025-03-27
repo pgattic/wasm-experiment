@@ -59,7 +59,9 @@ def main():
     header[:len(magic)] = magic
 
     # Open palette file
-    global_palette = open("pico8.pal", "rb").read()
+    palette_file = open("pico8.pal", "rb").read()
+    global_palette = bytearray(PALETTE_SIZE)
+    global_palette[:len(palette_file)] = palette_file
 
     # Open sprites file
     sprites_chr = open("sprites.chr", "rb").read()

@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-mod env;
+use wasm_experiment as env;
 mod circ_buf;
 
 use crate::circ_buf::CircBuf;
@@ -34,13 +34,20 @@ impl Player {
     }
 }
 
-fn new_food() -> (u8, u8) {
-    ((env::rand() % GRID_DIMENSIONS.0 as u32) as u8, (env::rand() % GRID_DIMENSIONS.1 as u32) as u8)
+fn new_food() -> (u8, u8, u8) {
+    let sprite_id = match env::rand() % 3 {
+        0 => 1,
+        1 => 4,
+        2 => 5,
+        _ => unreachable!()
+    };
+    ((env::rand() % GRID_DIMENSIONS.0 as u32) as u8, (env::rand() % GRID_DIMENSIONS.1 as u32) as u8, sprite_id)
 }
 
-pub fn start() {
+#[unsafe(no_mangle)]
+pub extern "C" fn start() {
     let mut player = Player::new();
-    let mut foods = [new_food(), new_food(), new_food()];
+    let mut foods = [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()];
     let mut paused = false;
     let mut frame_count: u8 = 0;
 
@@ -68,7 +75,7 @@ pub fn start() {
             }
 
             for i in 0..foods.len() {
-                if player.body.peek_head() == foods[i] {
+                if player.body.peek_head() == (foods[i].0, foods[i].1) {
                     player.score += 5;
                     foods[i] = new_food();
                 }
@@ -77,29 +84,24 @@ pub fn start() {
             for segment in player.body.into_iter().skip(1) {
                 if player.body.peek_head() == segment {
                     player = Player::new();
-                    foods = [new_food(), new_food(), new_food()];
+                    foods = [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()];
                     break;
                 }
             }
             if player.body.peek_head().0 >= GRID_DIMENSIONS.0 || player.body.peek_head().1 >= GRID_DIMENSIONS.1 {
                 player = Player::new();
-                foods = [new_food(), new_food(), new_food()];
+                foods = [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()];
             }
         }
 
         env::clear_screen(1);
 
-        for i in 0..16 {
-            env::rect_fill((i % 8)*8, (i/8) * 8, 8, 8, i);
-        }
-
         for segment in &player.body {
             env::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
         }
 
-        //env::sprite(player.body.peek_head().0 * GRID_SIZE, player.body.peek_head().1 * GRID_SIZE, 0); // Smiley
         for food in foods {
-            env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, 1); // Apple
+            env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, food.0); // Apple
         }
 
         frame_count += 1;

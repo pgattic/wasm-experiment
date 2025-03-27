@@ -1,13 +1,11 @@
-//! This module links to the functions exposed in the game engine environment
-
-#![allow(dead_code)]
+#![no_std]
 
 use core::panic::PanicInfo;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     loop {
-        sync_frame();
+        crate::sync_frame();
     }
 }
 
@@ -25,6 +23,8 @@ unsafe extern "C" {
     fn native_rect(x: u8, y: u8, w: u8, h: u8, c: u8);
     #[link_name = "_rectFill"]
     fn native_rectFill(x: u8, y: u8, w: u8, h: u8, c: u8);
+    #[link_name = "_sampleBg"]
+    fn native_sample_bg();
     #[link_name = "_sprite"]
     fn native_sprite(x: u8, y: u8, sprite_id: u8);
     #[link_name = "_syncFrame"]
@@ -62,6 +62,10 @@ pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
     unsafe { native_rectFill(x, y, w, h, color) }
 }
 
+pub fn sample_bg() {
+    unsafe { native_sample_bg() }
+}
+
 /// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
 pub fn sprite(x: u8, y: u8, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
@@ -94,11 +98,5 @@ pub fn btn_p(btn: u8) -> bool {
 /// ```
 pub fn println_dbg(msg: &[u8]) {
     unsafe { _printLnDbg(msg.as_ptr() as i32); }
-}
-
-// User-code entrypoint
-#[unsafe(no_mangle)]
-pub extern "C" fn start() {
-    crate::start();
 }
 

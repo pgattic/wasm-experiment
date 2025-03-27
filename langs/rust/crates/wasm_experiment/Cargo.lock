@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "rust-wasm-bunnies"
+name = "wasm_experiment"
 version = "0.1.0"
