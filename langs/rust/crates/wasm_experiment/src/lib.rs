@@ -9,6 +9,24 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
+/// The various buttons supported by WASMCart.
+///
+/// Used by functions like `btn()` and `btnp()`
+pub enum Button {
+    Left = 0,
+    Right = 1,
+    Up = 2,
+    Down = 3,
+    A = 4,
+    B = 5,
+    X = 6,
+    Y = 7,
+    L = 8,
+    R = 9,
+    Start = 10,
+    Select = 11,
+}
+
 #[link(wasm_import_module = "env")]
 unsafe extern "C" {
     //#[link_name = "_print"]
@@ -66,35 +84,66 @@ pub fn sample_bg() {
     unsafe { native_sample_bg() }
 }
 
-/// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
+/// Draw a sprite with the specified screen x and y position, and a given sprite id.
+///
+/// Example:
+/// ```rust
+/// sprite(player_x, player_y, 2);
+/// ```
 pub fn sprite(x: u8, y: u8, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
 }
 
-/// Wait for the current frame to finish (usually used at the end of the game loop)
+/// Wait for the current frame to finish.
+/// Usually used at the end of the game loop.
+///
+/// Example:
+/// ```rust
+/// loop {
+///     // Game Logic...
+///     // Rendering Logic...
+///
+///     wasm_experiment::sync_frame(); // Wait until the end of the frame before looping again
+/// }
+/// ```
 pub fn sync_frame() {
     unsafe { native_syncFrame() }
 }
 
 /// Discover if the given button is being held down
-pub fn btn(btn: u8) -> bool {
-    unsafe { native_btn(btn) }
+///
+/// Example:
+/// ```rust
+/// if btn(Button::Left) {
+///     player_x -= 1;
+/// }
+/// if btn(Button::Right) {
+///     player_y += 1;
+/// }
+/// ```
+pub fn btn(button: Button) -> bool {
+    unsafe { native_btn(button as u8) }
 }
 
 /// Discover if the given button was pressed this frame.
-pub fn btn_p(btn: u8) -> bool {
-    unsafe { native_btnP(btn) }
+///
+/// Example:
+/// ```rust
+/// if btn_p(Button::Start) {
+///     paused = !paused;
+/// }
+/// ```
+pub fn btn_p(button: Button) -> bool {
+    unsafe { native_btnP(button as u8) }
 }
 
 /// Prints a C-style (null-terminated string) to the debug console.
 ///
 /// Example:
 /// ```
-/// mod env;
-///
 /// // NOTE the "\0" at the end of the string
 /// let message = b"Hello, world!\0";
-/// env::println_dbg(message);
+/// println_dbg(message);
 /// ```
 pub fn println_dbg(msg: &[u8]) {
     unsafe { _printLnDbg(msg.as_ptr() as i32); }

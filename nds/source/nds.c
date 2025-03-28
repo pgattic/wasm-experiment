@@ -54,8 +54,8 @@ int loadSpriteTiles(Cart * cart) {
   return textureID;
 }
 
-bool ndsHeldKeys[8] = {0};
-bool ndsPressedKeys[8] = {0};
+bool ndsHeldKeys[12] = {0};
+bool ndsPressedKeys[12] = {0};
 
 void collectKeys() {
   scanKeys();
@@ -71,6 +71,10 @@ void collectKeys() {
   ndsHeldKeys[5] = (held & KEY_B) != 0;
   ndsHeldKeys[6] = (held & KEY_X) != 0;
   ndsHeldKeys[7] = (held & KEY_Y) != 0;
+  ndsHeldKeys[8] = (held & KEY_L) != 0;
+  ndsHeldKeys[9] = (held & KEY_R) != 0;
+  ndsHeldKeys[10] = (held & KEY_START) != 0;
+  ndsHeldKeys[11] = (held & KEY_SELECT) != 0;
 
   ndsPressedKeys[0] = (pressed & KEY_LEFT) != 0;
   ndsPressedKeys[1] = (pressed & KEY_RIGHT) != 0;
@@ -80,6 +84,10 @@ void collectKeys() {
   ndsPressedKeys[5] = (pressed & KEY_B) != 0;
   ndsPressedKeys[6] = (pressed & KEY_X) != 0;
   ndsPressedKeys[7] = (pressed & KEY_Y) != 0;
+  ndsPressedKeys[8] = (pressed & KEY_L) != 0;
+  ndsPressedKeys[9] = (pressed & KEY_R) != 0;
+  ndsPressedKeys[10] = (pressed & KEY_START) != 0;
+  ndsPressedKeys[11] = (pressed & KEY_SELECT) != 0;
 }
 
 m3ApiRawFunction(nds_rand) {

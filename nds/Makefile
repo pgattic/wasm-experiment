@@ -11,11 +11,11 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # User config
 # ===========
 
-NAME		:= template_arm9
+NAME		:= WASMCarts
 
-GAME_TITLE	:= ARM9 only template
-GAME_SUBTITLE	:= Built with BlocksDS
-GAME_AUTHOR	:= github.com/blocksds/sdk
+GAME_TITLE	:= WASMCarts
+GAME_SUBTITLE	:= WASM-powered Fantasy Console
+GAME_AUTHOR	:= By pgattic
 GAME_ICON	:= icon.bmp
 
 # DLDI and internal SD slot of DSi

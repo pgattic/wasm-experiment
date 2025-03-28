@@ -52,8 +52,8 @@ IM3Function wasmInit(Cart * cart, size_t fileSize) {
 }
 
 int browseFiles(char *targetFile) {
-  // Get dir entries
-  char cwd[100] = "fat:/wasmcarts/";
+  // Relative path is safer (would expect "fat:" on NDS, "SD:" on DSi I think, etc.)
+  char cwd[100] = "./wasmcarts/";
   DIR *dirp = opendir(cwd);
   if (dirp == NULL) {
     perror("Error");
@@ -78,21 +78,16 @@ int browseFiles(char *targetFile) {
   }
   closedir(dirp);
 
-  // Select file
-  consoleClear();
-  int curr = 0;
-  for (int i = 0; i < 10; i++) {
-    printf("%s %s%s\n", (i==curr ? ">":" "), entries[i], (is_dir[i] ? "/" : " "));
-  }
+  int curr = 2;
+  bool changed = true;
 
   while (1) {
     swiWaitForVBlank();
 
     scanKeys();
-    bool changed = false;
 
     uint32_t keys_down = keysDown();
-    if (keys_down & KEY_UP && curr > 0) {
+    if (keys_down & KEY_UP && curr > 2) {
       curr--;
       changed = true;
     }
@@ -108,9 +103,11 @@ int browseFiles(char *targetFile) {
 
     if (changed) {
       consoleClear();
-      for (int i = 0; i < 10; i++) {
+      printf("%s\n", cwd);
+      for (int i = 2; i < 10; i++) {
         printf("%s %s%s\n", (i==curr ? ">":" "), entries[i], (is_dir[i] ? "/" : " "));
       }
+      changed = false;
     }
   }
 }

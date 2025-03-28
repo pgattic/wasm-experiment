@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment as env;
+use wasm_experiment::{self as env, Button};
 
 const MAX_BUNNIES: usize = 400;
 
@@ -17,7 +17,7 @@ pub extern "C" fn start() {
     let mut bunnies: [(i16, i16, i16 ,i16); MAX_BUNNIES] = [(0, 0, 0, 0); MAX_BUNNIES];
 
     loop {
-        if env::btn(4) && num_bunnies < MAX_BUNNIES { // "A" button
+        if env::btn(Button::A) && num_bunnies < MAX_BUNNIES {
             bunnies[num_bunnies] = (
                 MAPPED_SCREEN_CENTER.0,
                 MAPPED_SCREEN_CENTER.1,

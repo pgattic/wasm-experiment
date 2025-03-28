@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment as env;
+use wasm_experiment::{self as env, Button};
 mod circ_buf;
 
 use crate::circ_buf::CircBuf;
@@ -54,11 +54,11 @@ pub extern "C" fn start() {
     env::println_dbg(b"Hello from Rust!\0");
 
     loop {
-        if env::btn_p(0) && player.direction != Direction::Right { player.direction = Direction::Left; }
-        if env::btn_p(1) && player.direction != Direction::Left { player.direction = Direction::Right; }
-        if env::btn_p(2) && player.direction != Direction::Down { player.direction = Direction::Up; }
-        if env::btn_p(3) && player.direction != Direction::Up { player.direction = Direction::Down; }
-        if env::btn_p(4) { paused = !paused; }
+        if env::btn_p(Button::Left) && player.direction != Direction::Right { player.direction = Direction::Left; }
+        if env::btn_p(Button::Right) && player.direction != Direction::Left { player.direction = Direction::Right; }
+        if env::btn_p(Button::Up) && player.direction != Direction::Down { player.direction = Direction::Up; }
+        if env::btn_p(Button::Down) && player.direction != Direction::Up { player.direction = Direction::Down; }
+        if env::btn_p(Button::Start) { paused = !paused; }
 
         if frame_count >= 6 && !paused {
             frame_count = 0;
@@ -101,7 +101,7 @@ pub extern "C" fn start() {
         }
 
         for food in foods {
-            env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, food.0); // Apple
+            env::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, food.2);
         }
 
         frame_count += 1;
