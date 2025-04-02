@@ -14,7 +14,7 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 NAME		:= WASMCarts
 
 GAME_TITLE	:= WASMCarts
-GAME_SUBTITLE	:= WASM-powered Fantasy Console
+GAME_SUBTITLE	:= Lightweight Fantasy Console
 GAME_AUTHOR	:= By pgattic
 GAME_ICON	:= icon.bmp
 

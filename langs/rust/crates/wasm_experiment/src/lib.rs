@@ -1,12 +1,13 @@
 #![no_std]
 
+pub(crate) mod lazy_mut;
+pub mod game_state;
+
 use core::panic::PanicInfo;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    loop {
-        crate::sync_frame();
-    }
+    loop { }
 }
 
 /// The various buttons supported by WASMCart.
@@ -45,8 +46,6 @@ unsafe extern "C" {
     fn native_sample_bg();
     #[link_name = "_sprite"]
     fn native_sprite(x: u8, y: u8, sprite_id: u8);
-    #[link_name = "_syncFrame"]
-    fn native_syncFrame();
     #[link_name = "_btn"]
     fn native_btn(btn: u8) -> bool;
     #[link_name = "_btnP"]
@@ -92,22 +91,6 @@ pub fn sample_bg() {
 /// ```
 pub fn sprite(x: u8, y: u8, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
-}
-
-/// Wait for the current frame to finish.
-/// Usually used at the end of the game loop.
-///
-/// Example:
-/// ```rust
-/// loop {
-///     // Game Logic...
-///     // Rendering Logic...
-///
-///     wasm_experiment::sync_frame(); // Wait until the end of the frame before looping again
-/// }
-/// ```
-pub fn sync_frame() {
-    unsafe { native_syncFrame() }
 }
 
 /// Discover if the given button is being held down
