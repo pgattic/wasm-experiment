@@ -10,7 +10,7 @@
 #include "cartridge.h"
 #include "memory.h"
 
-IM3Function wasmInit(Cart * cart, size_t fileSize) {
+void wasmInit(Cart * cart, size_t fileSize, IM3Function * setup, IM3Function * update) {
   size_t wasmSize = fileSize - METAPROG_SIZE;
   printf("File size: %d bytes\n", fileSize);
   printf("WASM size: %d bytes\n", wasmSize);
@@ -41,14 +41,19 @@ IM3Function wasmInit(Cart * cart, size_t fileSize) {
 
   printf("Loaded WASM module\n");
 
-  IM3Function f;
-  result = m3_FindFunction(&f, runtime, "start");
+  result = m3_FindFunction(setup, runtime, "setup");
   if (result) {
-    printf("Function 'start' not found: %s\n", result);
+    printf("Function 'setup' not found: %s\n", result);
     free(cart);
     while (1) {}
   }
-  return f;
+
+  result = m3_FindFunction(update, runtime, "update");
+  if (result) {
+    printf("Function 'update' not found: %s\n", result);
+    free(cart);
+    while (1) {}
+  }
 }
 
 int browseFiles(char *targetFile) {
@@ -140,7 +145,10 @@ int main(void) {
 
   loadMemory(cart);
 
-  IM3Function startF = wasmInit(cart, fileSize);
+  // References to the functions exposed to the WASM runtime
+  IM3Function setup;
+  IM3Function update;
+  wasmInit(cart, fileSize, &setup, &update);
 
   vramSetBankA(VRAM_A_TEXTURE);
   vramSetBankE(VRAM_E_TEX_PALETTE);
@@ -149,10 +157,25 @@ int main(void) {
 
   printf("Started WASM program\n");
   consoleClear();
-  M3Result result = m3_CallV(startF, 10);
+  M3Result result = m3_CallV(setup, 10);
   if (result) {
     printf("Error calling function: %s\n", result);
     while (1) {}
+  }
+
+  while (1) {
+    oamUpdate(&oamMain);
+    collectKeys();
+    glBegin2D();
+
+    result = m3_CallV(update, 10);
+    if (result) {
+      printf("Error calling function: %s\n", result);
+      while (1) {}
+    }
+
+    glEnd2D();
+    glFlush(0);
   }
 
   free(cart);

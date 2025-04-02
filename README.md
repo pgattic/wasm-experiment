@@ -14,7 +14,7 @@
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Printing text on the screen
 - [ ] Port to GBA?
-    - [ ] Will require learning a new graphice library for GBA
+    - [ ] Will require learning a new graphics library for GBA
 - [ ] Define functions for game engine to expose
 - [ ] Good editor/terminal
     - Goal: have it share a renderer with the main engine, hopefully make it equally/similarly portable
@@ -69,7 +69,6 @@ TODO: Background Tilemaps
 | ✅ | `rect(x, y, w, h, color)` | Draw an outlined rectangle at the specified position and size |
 | ✅ | `rectFill(x, y, w, h, color)` | Draw a filled rectangle at the specified position and size |
 | ✅ | `sprite(x, y, id)` | Render a sprite of the designated id |
-| ✅ | `syncFrame()` | Wait for the frame time to finish (currently also clears the screen to black) |
 | ❌ | `tileMap(x, y, tileX, tileY, mapW, mapH)` | Display a tilemap |
 
 #### Input

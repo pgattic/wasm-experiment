@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment::{self as env, Button};
+use wasm_experiment::*;
 
 const MAX_BUNNIES: usize = 400;
 
@@ -16,23 +16,23 @@ struct GameState {
     bunnies: [(i16, i16, i16 ,i16); MAX_BUNNIES]
 }
 
-impl wasm_experiment::game_state::Game for GameState {
+impl game_state::Game for GameState {
     fn setup() -> Self {
         Self { num_bunnies: 0, bunnies: [(0, 0, 0, 0); MAX_BUNNIES] }
     }
 
     fn update(&mut self) {
-        if env::btn(Button::A) && self.num_bunnies < MAX_BUNNIES {
+        if api::btn(Button::A) && self.num_bunnies < MAX_BUNNIES {
             self.bunnies[self.num_bunnies] = (
                 MAPPED_SCREEN_CENTER.0,
                 MAPPED_SCREEN_CENTER.1,
-                ((env::rand() % 65535) - 32768) as i16 % 128, // At the aforementioned coord space,
-                ((env::rand() % 65535) - 32768) as i16 % 128  // 128 maps to the number 2
+                ((api::rand() % 65535) - 32768) as i16 % 128, // At the aforementioned coord space,
+                ((api::rand() % 65535) - 32768) as i16 % 128  // 128 maps to the number 2
             );
             self.num_bunnies += 1;
         }
 
-        env::sample_bg();
+        api::sample_bg();
 
         for i in 0..self.num_bunnies {
             self.bunnies[i].0 += self.bunnies[i].2;
@@ -45,10 +45,10 @@ impl wasm_experiment::game_state::Game for GameState {
                 self.bunnies[i].3 *= -1;
                 self.bunnies[i].1 += self.bunnies[i].3;
             }
-            env::sprite((self.bunnies[i].0 >> 6) as u8, (self.bunnies[i].1 >> 6) as u8, 3);
+            api::sprite((self.bunnies[i].0 >> 6) as u8, (self.bunnies[i].1 >> 6) as u8, 3);
         }
     }
 }
 
-wasm_experiment::static_game!(GameState);
+wasm_game!(GameState);
 

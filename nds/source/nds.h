@@ -8,6 +8,7 @@
 void LinkNDSFunctions(IM3Module module);
 void loadPalette(Cart * cart);
 int loadSpriteTiles(Cart * cart);
+void collectKeys();
 
 extern uint16_t nds_palette[16];
 extern glImage sprTiles[256];

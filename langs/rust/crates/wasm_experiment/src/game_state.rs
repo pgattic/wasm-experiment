@@ -21,7 +21,7 @@ impl<T: Game> GameWrapper<T> {
     }
 
     pub fn update(&self) {
-        if let Some(mut game) = self.state.get_mut() {
+        if let Some(game) = self.state.get_mut() {
             game.update();
         }
     }
@@ -46,7 +46,7 @@ impl<T: Game> GameWrapper<T> {
 /// }
 /// ```
 #[macro_export]
-macro_rules! static_game {
+macro_rules! wasm_game {
     ($ty:ty) => {
         static GAME: $crate::game_state::GameWrapper<$ty> = $crate::game_state::GameWrapper::new();
 

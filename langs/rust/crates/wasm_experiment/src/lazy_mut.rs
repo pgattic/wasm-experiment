@@ -18,8 +18,8 @@ impl<T> LazyMut<T> {
         unsafe { *self.value.get() = Some(value); }
     }
 
-    pub fn get_mut(&self) -> Option<T> {
-        unsafe { (*self.value.get()).take() }
+    pub fn get_mut(&self) -> Option<&mut T> {
+        unsafe { (*self.value.get()).as_mut() }
     }
 }
 

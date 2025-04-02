@@ -142,20 +142,6 @@ m3ApiRawFunction(gl_sprite) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_syncFrame) {
-  // "End of frame" stuff
-  /*glBoxFilled(GAME_SC_W, 0, NDS_SC_W - 1, NDS_SC_H - 1, nds_palette[0]);*/
-  /*glBoxFilled(0, GAME_SC_H, NDS_SC_W - 1, NDS_SC_H - 1, nds_palette[0]);*/
-  glEnd2D();
-  glFlush(0);
-
-  // "Beginning of frame" stuff
-  oamUpdate(&oamMain);
-  collectKeys();
-  glBegin2D();
-  m3ApiSuccess();
-}
-
 m3ApiRawFunction(draw_sample_bg) {
   // TEST rendering a map
   for (int y = 0; y < (192/8); y++) {
@@ -194,7 +180,6 @@ void LinkNDSFunctions(IM3Module module) {
   m3_LinkRawFunction (module, "env", "_rect", "v(iiiii)", &gl_rect);
   m3_LinkRawFunction (module, "env", "_rectFill", "v(iiiii)", &gl_rectFill);
   m3_LinkRawFunction (module, "env", "_sprite", "v(iii)", &gl_sprite);
-  m3_LinkRawFunction (module, "env", "_syncFrame", "v()", &gl_syncFrame);
   m3_LinkRawFunction (module, "env", "_sampleBg", "v()", &draw_sample_bg);
   m3_LinkRawFunction (module, "env", "_btn", "i(i)", &nds_btn);
   m3_LinkRawFunction (module, "env", "_btnP", "i(i)", &nds_btnP);
