@@ -1,8 +1,8 @@
 use core::cell::UnsafeCell;
 
-// A simple module that just lets you create a lazy, mutable object.
-// Definitely not thread-safe, which is fine for me. Code speed go vroom, code size go nyoom
-
+/// A simple struct that just lets you create a lazy, mutable object.
+/// Definitely not thread-safe, which is fine for me. Code speed go vroom, code size go nyoom
+/// Has no external dependencies, works allocator-free. Just the way the good Lord intended.
 pub struct LazyMut<T> {
     value: UnsafeCell<Option<T>>,
 }

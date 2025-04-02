@@ -1,8 +1,6 @@
 
 #[link(wasm_import_module = "env")]
 unsafe extern "C" {
-    //#[link_name = "_print"]
-    //fn native_print(string: *const u8);
     #[link_name = "_rand"]
     fn native_rand() -> u32;
     #[link_name = "_clearScreen"]
@@ -25,12 +23,12 @@ unsafe extern "C" {
     fn _printLnDbg(arg: i32);
 }
 
-/// Generates a random 32-bit integer.
+/// Generate a random 32-bit integer.
 pub fn rand() -> u32 {
     unsafe { native_rand() }
 }
 
-/// Clears the screen to a given color.
+/// Clear the screen to a given color.
 pub fn clear_screen(color: u8) {
     unsafe { native_clearScreen(color) }
 }
