@@ -4,16 +4,7 @@
 #include <stdint.h>
 #include "cartridge.h"
 #include "memory.h"
-
-#define NDS_SC_W 256
-#define NDS_SC_H 192
-
-/*#define GAME_SC_W 160*/
-/*#define GAME_SC_H 144*/
-
-/*#define SCREEN_SCALE 2*/
-/*#define LEFT_MARGIN ((NDS_SC_W - (GAME_SC_W * SCREEN_SCALE)) / 2) // 8*/
-/*#define TOP_MARGIN ((NDS_SC_H - (GAME_SC_H * SCREEN_SCALE)) / 2) // 16*/
+#include "nds.h"
 
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 32
@@ -91,7 +82,7 @@ void collectKeys() {
 }
 
 m3ApiRawFunction(nds_rand) {
-  m3ApiReturnType (uint32_t)
+  m3ApiReturnType(uint32_t)
   m3ApiReturn(rand());
 };
 
@@ -107,7 +98,7 @@ m3ApiRawFunction(gl_pSet) {
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, c);
 
-  glPutPixel(x, y, ndsPalette[c]);
+  glPutPixel(LEFT_MARGIN + x, TOP_MARGIN + y, ndsPalette[c]);
   m3ApiSuccess();
 }
 
@@ -118,7 +109,7 @@ m3ApiRawFunction(gl_rect) {
   m3ApiGetArg(uint8_t, h);
   m3ApiGetArg(uint8_t, c);
 
-  glBox(x, y, x + w - 2, y + h - 2, ndsPalette[c]);
+  glBox(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + w - 2, TOP_MARGIN + y + h - 2, ndsPalette[c]);
   m3ApiSuccess();
 }
 
@@ -129,7 +120,7 @@ m3ApiRawFunction(gl_rectFill) {
   m3ApiGetArg(uint8_t, h);
   m3ApiGetArg(uint8_t, c);
 
-  glBoxFilled(x, y, x + w - 1, y + h - 1, ndsPalette[c]);
+  glBoxFilled(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + w - 2, TOP_MARGIN + y + h - 2, ndsPalette[c]);
   m3ApiSuccess();
 }
 
@@ -138,7 +129,7 @@ m3ApiRawFunction(gl_sprite) {
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, sprite);
 
-  glSprite(x, y, GL_FLIP_NONE, &sprTiles[sprite]);
+  glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &sprTiles[sprite]);
   m3ApiSuccess();
 }
 

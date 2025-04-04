@@ -174,6 +174,11 @@ int main(void) {
       while (1) {}
     }
 
+    glBoxFilled(0, 0, NDS_SC_W - 1, TOP_MARGIN - 1, 0); // Top Margin
+    glBoxFilled(0, 0, LEFT_MARGIN - 1, NDS_SC_H - 1, 0); // Left Margin
+    glBoxFilled(0, NDS_SC_H - TOP_MARGIN, NDS_SC_W - 1, NDS_SC_H - 1, 0); // Bottom Margin
+    glBoxFilled(NDS_SC_W - LEFT_MARGIN, 0, NDS_SC_W - 1, NDS_SC_H - 1, 0); // Right Margin
+
     glEnd2D();
     glFlush(0);
   }
