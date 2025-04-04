@@ -7,7 +7,7 @@ const MAX_BUNNIES: usize = 400;
 
 // This program maps a coordinate space (16384, 12288) to the actual NDS screen
 // resolution (256, 192) in order to avoid (expensive) float operations.
-const MAPPED_SCREEN_DIMENSIONS: (i16, i16) = (16384, 12288);
+const MAPPED_SCREEN_DIMENSIONS: (i16, i16) = (SCREEN_WIDTH as i16 * 64, SCREEN_HEIGHT as i16 * 64);
 const MAPPED_SCREEN_CENTER: (i16, i16) = (MAPPED_SCREEN_DIMENSIONS.0/2, MAPPED_SCREEN_DIMENSIONS.1/2);
 
 // Data that must persist between frames

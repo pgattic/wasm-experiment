@@ -24,26 +24,58 @@ unsafe extern "C" {
 }
 
 /// Generate a random 32-bit integer.
+///
+/// Note that the randomness of the number may depend on engine-side implementation details. If you
+/// want the random numbers to follow a certain sequence every time the game is started or be based
+/// on a seed, you will have to create your own generator.
+///
+/// Example:
+/// ```rust
+/// let new_position: (u8, u8) = (
+///     (api::rand() % SCREEN_WIDTH as u32 ) as u8,
+///     (api::rand() % SCREEN_HEIGHT as u32 ) as u8
+/// );
+/// ```
 pub fn rand() -> u32 {
     unsafe { native_rand() }
 }
 
 /// Clear the screen to a given color.
+///
+/// Example:
+/// ```rust
+/// api::clear_screen(1);
+/// ```
 pub fn clear_screen(color: u8) {
     unsafe { native_clearScreen(color) }
 }
 
-/// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
+/// Draw a pixel with the specified x and y position and color index.
+///
+/// Example:
+/// ```rust
+/// api::p_set(12, 12, 3);
+/// ```
 pub fn p_set(x: u8, y: u8, color: u8) {
     unsafe { native_pSet(x, y, color) }
 }
 
-/// Draw an outlined Rectangle, with the specified x and y position, width, height, and color index.
+/// Draw an outlined rectangle with the specified x and y position, width, height, and color index.
+///
+/// Example:
+/// ```rust
+/// api::rect(12, 12, 24, 24, 3);
+/// ```
 pub fn rect(x: u8, y: u8, w: u8, h: u8, color: u8) {
     unsafe { native_rect(x, y, w, h, color) }
 }
 
-/// Draw a filled Rectangle, with the specified x and y position, width, height, and color index.
+/// Draw a filled rectangle with the specified x and y position, width, height, and color index.
+///
+/// Example:
+/// ```rust
+/// api::rect_fill(12, 12, 24, 24, 3);
+/// ```
 pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
     unsafe { native_rectFill(x, y, w, h, color) }
 }
@@ -56,7 +88,7 @@ pub fn sample_bg() {
 ///
 /// Example:
 /// ```rust
-/// sprite(player_x, player_y, 2);
+/// api::sprite(player_x, player_y, 2);
 /// ```
 pub fn sprite(x: u8, y: u8, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
@@ -66,10 +98,10 @@ pub fn sprite(x: u8, y: u8, sprite_id: u8) {
 ///
 /// Example:
 /// ```rust
-/// if btn(Button::Left) {
+/// if api::btn(Button::Left) {
 ///     player_x -= 1;
 /// }
-/// if btn(Button::Right) {
+/// if api::btn(Button::Right) {
 ///     player_y += 1;
 /// }
 /// ```
@@ -81,7 +113,7 @@ pub fn btn(button: crate::Button) -> bool {
 ///
 /// Example:
 /// ```rust
-/// if btn_p(Button::Start) {
+/// if api::btn_p(Button::Start) {
 ///     paused = !paused;
 /// }
 /// ```
@@ -95,7 +127,7 @@ pub fn btn_p(button: crate::Button) -> bool {
 /// ```
 /// // NOTE the "\0" at the end of the string
 /// let message = b"Hello, world!\0";
-/// println_dbg(message);
+/// api::println_dbg(message);
 /// ```
 pub fn println_dbg(msg: &[u8]) {
     unsafe { _printLnDbg(msg.as_ptr() as i32); }

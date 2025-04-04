@@ -6,11 +6,10 @@ mod circ_buf;
 
 use crate::circ_buf::CircBuf;
 
-const SCREEN_DIMENSIONS: (u16, u16) = (256, 192);
 const GRID_SIZE: u8 = 8;
 const GRID_DIMENSIONS: (u8, u8) = (
-    (SCREEN_DIMENSIONS.0 / GRID_SIZE as u16) as u8,
-    (SCREEN_DIMENSIONS.1 / GRID_SIZE as u16) as u8
+    (SCREEN_WIDTH as u16 / GRID_SIZE as u16) as u8,
+    (SCREEN_HEIGHT as u16 / GRID_SIZE as u16) as u8
 );
 
 #[derive(PartialEq)]

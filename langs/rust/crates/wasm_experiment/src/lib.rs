@@ -12,6 +12,20 @@ fn panic(_info: &PanicInfo) -> ! {
     loop { }
 }
 
+// I have also considered 160x144 (GBC screen res.)
+
+/// Width of the game screen.
+/// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
+pub const SCREEN_WIDTH: u8 = 240;
+
+/// Height of the game screen.
+/// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
+pub const SCREEN_HEIGHT: u8 = 160;
+
+/// The width and height of the screen, as a tuple (if that's easier to work with).
+/// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
+pub const SCREEN_DIMENSIONS: (u8, u8) = (SCREEN_WIDTH, SCREEN_HEIGHT);
+
 /// The various buttons supported by WASMCart.
 ///
 /// Used by functions like `btn()` and `btnp()`
