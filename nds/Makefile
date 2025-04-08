@@ -106,7 +106,7 @@ ifneq ($(AUDIODIRS),)
 endif
 
 SOURCES_S	:= $(shell find -L $(SOURCEDIRS) -name "*.s")
-SOURCES_C	:= $(shell find -L $(SOURCEDIRS) -name "*.c")
+SOURCES_C := $(shell find -L $(SOURCEDIRS) -name "*.c" ! -path "*/nds/platform_impl.c")
 SOURCES_CPP	:= $(shell find -L $(SOURCEDIRS) -name "*.cpp")
 
 # Compiler and linker flags
@@ -135,7 +135,8 @@ ASFLAGS		+= -x assembler-with-cpp $(INCLUDEFLAGS) $(DEFINES) \
 
 CFLAGS		+= -std=gnu17 $(WARNFLAGS) $(INCLUDEFLAGS) $(DEFINES) \
 		   $(ARCH) -O2 -ffunction-sections -fdata-sections \
-		   -specs=$(SPECS)
+		   -specs=$(SPECS) \
+			 -DTARGET_NDS
 
 CXXFLAGS	+= -std=gnu++17 $(WARNFLAGS) $(INCLUDEFLAGS) $(DEFINES) \
 		   $(ARCH) -O2 -ffunction-sections -fdata-sections \

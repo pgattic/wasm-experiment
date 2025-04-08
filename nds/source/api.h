@@ -4,13 +4,7 @@
 #include "cartridge.h"
 #include "m3_env.h"
 
-void LinkNDSFunctions(IM3Module module);
-void loadPalette(Cart * cart);
-int loadSpriteTiles(Cart * cart);
-void collectKeys();
-
-extern uint16_t nds_palette[16];
-extern glImage sprTiles[256];
+void link_api_functions(IM3Module module);
 
 #define NDS_SC_W 256
 #define NDS_SC_H 192
