@@ -1,5 +1,4 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
 
 #include <stdint.h>
 #include "cartridge.h"
@@ -20,6 +19,4 @@ extern uint16_t ndsPalette[16];
 
 void syncPalette(uint8_t palette[PALETTE_SIZE]);
 void loadMemory(Cart *cart);
-
-#endif
 

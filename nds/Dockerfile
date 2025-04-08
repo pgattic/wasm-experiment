@@ -18,7 +18,7 @@ ENV LC_ALL=C.UTF-8
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-        ca-certificates curl git make npm
+        ca-certificates curl git make
 
 RUN mkdir -p /opt/wonderful/
 ADD https://wonderful.asie.pl/bootstrap/wf-bootstrap-x86_64.tar.gz /opt/wonderful/
@@ -57,7 +57,7 @@ RUN set -e; \
     mkdir -p /tmp/release/include /tmp/release/lib; \
     cd /tmp/wasm3-0.5.0/source/; \
     echo "Compiling wasm3 sources"; \
-    /opt/wonderful/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-gcc -c *.c; \
+    /opt/wonderful/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-gcc -O3 -c *.c; \
     /opt/wonderful/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-ld -r -o libwasm3.a *.o; \
     find . -name '*.h' -exec cp --parents {} /tmp/release/include \;; \
     cp libwasm3.a /tmp/release/lib; \
@@ -70,9 +70,6 @@ RUN set -e; \
 WORKDIR /work/
 
 RUN wf-pacman -Sy --noconfirm blocksds-ulibrary
-
-# AssemblyScript compiler (Must be run after workdir is specified)
-RUN npm install -g assemblyscript
 
 # Development image
 # =================

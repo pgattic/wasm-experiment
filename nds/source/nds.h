@@ -1,5 +1,4 @@
-#ifndef NDS_H
-#define NDS_H
+#pragma once
 
 #include <stdint.h>
 #include "cartridge.h"
@@ -20,12 +19,6 @@ extern glImage sprTiles[256];
 #define GAME_SC_W 240
 #define GAME_SC_H 160
 
-// GBC size
-// #define GAME_SC_W 160
-// #define GAME_SC_H 144
-
 #define LEFT_MARGIN ((NDS_SC_W - GAME_SC_W) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - GAME_SC_H) / 2) // 16
-
-#endif
 

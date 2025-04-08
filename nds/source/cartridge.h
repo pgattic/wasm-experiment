@@ -1,5 +1,4 @@
-#ifndef CARTRIDGE_H
-#define CARTRIDGE_H
+#pragma once
 
 #include <stdint.h>
 #include <stddef.h>
@@ -24,6 +23,4 @@ typedef struct __attribute__((__packed__)) {
 
 // Declaration for file-loading function
 Cart *loadCartridge(const char *filepath, size_t *fileSize);
-
-#endif // CARTRIDGE_H
 
