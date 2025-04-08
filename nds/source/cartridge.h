@@ -21,6 +21,5 @@ typedef struct __attribute__((__packed__)) {
   uint8_t prg_code[PRG_CODE_SIZE];
 } Cart;
 
-// Declaration for file-loading function
-Cart *loadCartridge(const char *filepath, size_t *fileSize);
+Cart *load_cartridge(const char *filepath, size_t *fileSize);
 

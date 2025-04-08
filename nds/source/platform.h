@@ -4,9 +4,14 @@
 #include <stdbool.h>
 #include "cartridge.h"
 
-// All of the functions that a platform must implement
-// in order to become a supported target
+/* USEFUL CONSTANTS */
 
+#define GAME_SC_W 240
+#define GAME_SC_H 160
+
+
+// Below are all of the functions that a platform must implement in order to become
+// a supported target (see `nds/platform_impl.c` for an example)
 
 /* LOGIC CONTROL */
 
@@ -44,10 +49,10 @@ void platform_clear_screen(uint8_t color);
 void platform_set_pixel(uint8_t x, uint8_t y, uint8_t color);
 
 /// Render a rectangle outline.
-void platform_rect_outline(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
+void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
 
 /// Render a filled rectangle.
-void platform_rect_fill(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
+void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
 
 /// Render a sprite.
 void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite);

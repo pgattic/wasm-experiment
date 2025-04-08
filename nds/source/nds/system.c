@@ -1,8 +1,10 @@
 #include <nds.h>
 #include <stdint.h>
 
-bool nds_held_keys[12] = {0};
-bool nds_pressed_keys[12] = {0};
+#define NUM_KEYS 12
+
+bool nds_held_keys[NUM_KEYS] = {0};
+bool nds_pressed_keys[NUM_KEYS] = {0};
 
 void collect_keys() {
   scanKeys();
@@ -38,9 +40,9 @@ void collect_keys() {
 }
 
 bool key_held(uint8_t button) {
-  return button > 11 ? 0 : nds_held_keys[button];
+  return (button < NUM_KEYS) ? nds_held_keys[button] : 0;
 }
 
 bool key_pressed(uint8_t button) {
-  return button > 11 ? 0 : nds_pressed_keys[button];
+  return (button < NUM_KEYS) ? nds_pressed_keys[button] : 0;
 }

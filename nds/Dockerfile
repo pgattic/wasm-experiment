@@ -1,11 +1,5 @@
-# SPDX-License-Identifier: Zlib
-#
-# Copyright (c) 2023-2024 Antonio Niño Díaz
 
-# Base image with build tools and the ARM cross compiler
-# ======================================================
-
-FROM ubuntu:24.04 AS base-cross-compiler
+FROM ubuntu:24.04 AS wasmcarts-dev
 
 ARG BRANCH=master
 
@@ -19,6 +13,7 @@ ENV LC_ALL=C.UTF-8
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates curl git make
+
 
 RUN mkdir -p /opt/wonderful/
 ADD https://wonderful.asie.pl/bootstrap/wf-bootstrap-x86_64.tar.gz /opt/wonderful/
@@ -66,31 +61,8 @@ RUN set -e; \
     cp -r /tmp/release/include/* $BLOCKSDSEXT/wasm3/include/; \
     cp /tmp/release/lib/libwasm3.a $BLOCKSDSEXT/wasm3/lib/
 
-# Use /work/ as working directory of this container.
-WORKDIR /work/
-
 RUN wf-pacman -Sy --noconfirm blocksds-ulibrary
 
-# Development image
-# =================
-
-# This image contains all the packages provided by BlocksDS.
-
-FROM base-cross-compiler AS wasmds-dev
-
-# Install all additional BlocksDS packages
-RUN wf-pacman -S --noconfirm blocksds-default blocksds-extra
-
-# Install Teak toolchain only in the dev image
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        wf-pacman -S --noconfirm toolchain-llvm-teak-llvm ; \
-    fi
-
-# Slim image
-# ==========
-
-# This image only contains the base SDK without examples. This is useful for
-# pipelines that need to be as fast as possible.
-
-FROM base-cross-compiler AS wasmds-slim
+# Use /work/ as working directory of this container.
+WORKDIR /work/
 

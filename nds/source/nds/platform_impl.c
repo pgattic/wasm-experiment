@@ -1,14 +1,12 @@
 #include <nds.h>
 #include <stdint.h>
+#include <fat.h>
 #include "graphics.h"
 #include "system.h"
-#include <fat.h>
+#include "../platform.h"
 
 #define NDS_SC_W 256
 #define NDS_SC_H 192
-
-#define GAME_SC_W 240
-#define GAME_SC_H 160
 
 #define LEFT_MARGIN ((NDS_SC_W - GAME_SC_W) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - GAME_SC_H) / 2) // 16
@@ -65,12 +63,12 @@ void platform_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
   glPutPixel(LEFT_MARGIN + x, TOP_MARGIN + y, nds_palette[color]);
 }
 
-void platform_rect_outline(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color) {
-  glBox(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + w - 1, TOP_MARGIN + y + h - 1, nds_palette[color]);
+void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+  glBox(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + width - 1, TOP_MARGIN + y + height - 1, nds_palette[color]);
 }
 
-void platform_rect_fill(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color) {
-  glBoxFilled(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + w - 1, TOP_MARGIN + y + h - 1, nds_palette[color]);
+void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+  glBoxFilled(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + width - 1, TOP_MARGIN + y + height - 1, nds_palette[color]);
 }
 
 void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {

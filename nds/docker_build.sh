@@ -1,5 +1,5 @@
-TARGET="wasmds-slim"
-TAG_NAME="wasmds:slim"
+TARGET="wasmcarts-dev"
+TAG_NAME="wasmcarts:latest"
 BRANCH="master"
 PLATFORM="linux/amd64"
 

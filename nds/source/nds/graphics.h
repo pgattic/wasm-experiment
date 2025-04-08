@@ -11,7 +11,6 @@ extern int spr_texture_id;
 
 /// Synchronizes the palette from VRAM with the NDS-sized palette.
 /// Should be called whenever the palette's data in VRAM is modified.
-/// see `ndsPalette` from memory.h.
 void load_palette(uint8_t palette[PALETTE_SIZE]);
 
 /// Loads the sprite tiles in using the NDS GL2D library.

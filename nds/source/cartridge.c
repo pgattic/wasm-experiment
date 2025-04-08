@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-Cart *loadCartridge(const char *filepath, size_t *fileSize) {
+Cart *load_cartridge(const char *filepath, size_t *fileSize) {
   FILE *fp = fopen(filepath, "rb");
   if (!fp) {
     printf("Error opening file: %s\n", filepath);

@@ -3,7 +3,6 @@
 #include <m3_env.h>
 #include "api.h"
 #include "cartridge.h"
-#include "memory.h"
 #include "platform.h"
 
 void wasm_init(Cart * cart, size_t fileSize, IM3Function * setup, IM3Function * update) {
@@ -52,7 +51,7 @@ void wasm_init(Cart * cart, size_t fileSize, IM3Function * setup, IM3Function * 
   }
 }
 
-int main(void) {
+int main(int argc, char** argv) {
   platform_init();
 
   char targetFile[100] = {0};
@@ -62,7 +61,7 @@ int main(void) {
   }
 
   size_t fileSize;
-  Cart *cart = loadCartridge(targetFile, &fileSize);
+  Cart *cart = load_cartridge(targetFile, &fileSize);
 
   if (!cart) {
     printf("Failed to load file.\n");

@@ -1,9 +1,7 @@
 
 # Rust Programming Language Support
 
-Overall, Rust has been given the most attention out of the supported programming languages. Some accomodations had to be made in order for it to be a streamlined process for the user!
-
-A few approaches were tried, but ultimately I settled on using a trait (`wasm_experiment::game_state::Game`) that requires `setup() -> Self` and `update(&mut self)` methods on a struct, and a macro (`wasm_experiment::wasm_game`) that will instance a singleton global instance of its given struct and hook the global `setup` and `update` functions to it.
+Overall, Rust has been given the most attention out of the supported programming languages.
 
 ## Getting Started
 
@@ -19,7 +17,9 @@ target = "wasm32-unknown-unknown"
 ```
 
 - Add the wasm_experiment crate to Cargo (FIXME: currently there is no way to do this)
-- Here is a dead-simple code example that you could use as a starting point:
+- Add `use wasm_experiment::*` and `#![no_main]` to your lib.rs (and you'll probably want to add `#![no_std]` as well)
+- Create a struct that stores your game state and `impl game_state::Game` for it, then use the `wasm_game!` macro to hook it into global scope
+    - Here is a dead-simple `lib.rs` example that you could use as a starting point:
 
 ```rust
 #![no_std]
@@ -49,9 +49,8 @@ impl game_state::Game for GameState {
 wasm_game!(GameState)
 ```
 
-- Build your game with `cargo build --release`!
-
-Overall, it keeps your code pretty simple and friendly to the Rust pragma! :)
+- Build your game with `cargo build --release`
+- Prepend the other required game data (TODO: This will be a tedious task until a graphical editor is made)
 
 ## Rationale
 

@@ -1,11 +1,14 @@
 
 # WASM
 
+All I wanted was to make Nintendo DS games in Rust...
+
+This is a work-in-progress Fantasy Console that targets embedded systems and allows users to create games in any language that [compiles to WebAssembly](https://webassembly.org/getting-started/developers-guide/).
+
 ## Roadmap
 
 - [X] Learn some Docker
 - [X] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
-    - NOTE: Partially done (but satisfactory), It is confirmed to execute WASM code!
 - [X] Have it run a wasm file compiled from a different language than AssemblyScript
 - [X] Have it load a file from file storage instead of embedding it
     - [X] File picker (needs work)
@@ -14,22 +17,24 @@
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Printing text on the screen
 - [ ] Port to GBA?
-    - [ ] Will require learning a new graphics library for GBA
-- [ ] Define functions for game engine to expose
-- [ ] Good editor/terminal
-    - Goal: have it share a renderer with the main engine, hopefully make it equally/similarly portable
+    - Look into [Butano](https://github.com/GValiente/butano)
+- [X] Define functions for game engine to expose
+- [ ] Target multiple platforms with one codebase
+- [ ] Sprite/map editor
 
 ## Stretch Goals
 
-Mostly writing these down just for the heck of it.
-
-- Networking???
+- Networking
+- In-engine editor
 
 ## Engine Spec
 
-- Will read up on TIC-80 docs or PICO-8 docs for advice
-- ~~The host hardware specifies the resolution of the sreen, up to 256x256 (two bytes, 0x00 means 256)~~
-- Just spitballing here, I think the GBA resolution divided by two might be nice (120*80px)
+### Graphics
+
+- 256 sprite tiles (8x8 pixels)
+- 256 BG tiles (8x8 pixels)
+- 16 color global palette
+- Screen can be any dimensions up to 256x256
 
 ### ROM Layout
 
@@ -39,19 +44,8 @@ Mostly writing these down just for the heck of it.
 | Global Palette | 48 | `0x00010-0x0003F` |
 | Sprite Tiles | 8192 | `0x00040-0x0203F` |
 | BG Tiles | 8192 | `0x02040-0x0403F` |
-| Tile Map (256x256 tiles) | 65536 | `0x04040-0x1403F`
+| Tile Map (256x256 tiles) | 65536 | `0x04040-0x1403F` |
 | Program Code | 966592 | `0x14040-0xFFFFF` |
-
-TODO: Background Tilemaps
-
-### Graphics
-
-- 256 sprite tiles (8x8 pixels)
-    - 4bpp tiles * 64 pixels per tile * 256 tiles = 8192 bytes
-- 256 BG tiles (8x8 pixels)
-- 16 color global palette
-    - 16 colors * 3 channels * 1 byte = 48
-- Screen can be any dimensions up to 256x256
 
 ### Functions
 
@@ -78,10 +72,18 @@ TODO: Background Tilemaps
 | ✅ | `button(btn)` | Check if a given button ID is being held |
 | ✅ | `buttonPressed(btn)` | Check if a given button ID was just pressed |
 
-### Miscellaneous
+#### Miscellaneous
 
 | Done | Function/Usage | Description |
 | - | - | - |
 | ✅ | `debugPrint(text)` | Output a string to a debug console (stdout, log file, etc.) |
 | ✅ | `rand()` | Calculate a pseudo-random 32-bit integer |
+
+## Thanks
+
+A special thanks to:
+
+- Martin Moxon for his [WebAssembly On Your Nintendo DS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) blog post, which gave me just the right kind of inspiration I needed
+- [AntonioND](https://github.com/AntonioND) for his superhuman work put into the NDS and GBA development scene, particularly through [BlocksDS](https://blocksds.skylyrac.net/docs)
+- [vshymanskyy](https://github.com/vshymanskyy) for creating [wasm3](https://github.com/wasm3)
 

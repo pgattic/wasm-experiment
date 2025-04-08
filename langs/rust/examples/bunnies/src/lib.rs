@@ -3,7 +3,7 @@
 
 use wasm_experiment::*;
 
-const MAX_BUNNIES: usize = 400;
+const MAX_BUNNIES: usize = 800;
 
 // This program maps a coordinate space (16384, 12288) to the actual NDS screen
 // resolution (256, 192) in order to avoid (expensive) float operations.
