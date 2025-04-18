@@ -54,8 +54,11 @@ void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, 
 /// Render a filled rectangle.
 void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
 
-/// Render a sprite.
+/// Render a sprite using the sprite tileset.
 void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite);
+
+/// Draw a tilemap using the tilemap data and the bg tileset.
+void platform_tile_map(int16_t draw_x, int16_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h);
 
 /// Check if a button is held down.
 bool platform_button(uint8_t button);

@@ -13,14 +13,19 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 - [X] Have it load a file from file storage instead of embedding it
     - [X] File picker (needs work)
 - [X] Support sprites
+- [X] Define functions for game engine to expose
+- [ ] Port build system to CMake
+    - [ ] Create NDS implementation
+    - [ ] Create Desktop implementation (Raylib probably)
+    - [ ] Create Wii implementation
+- [ ] Sprite/map editor
 - [ ] Support background tiles
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Printing text on the screen
 - [ ] Port to GBA?
-    - Look into [Butano](https://github.com/GValiente/butano)
-- [X] Define functions for game engine to expose
-- [ ] Target multiple platforms with one codebase
-- [ ] Sprite/map editor
+    - Would require including the wasm as part of ROM data
+    - Some heavy source code customization would be in order
+    - Look into [Butano](https://github.com/GValiente/butano) for graphics
 
 ## Stretch Goals
 

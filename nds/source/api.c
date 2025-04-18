@@ -2,19 +2,19 @@
 #include <stdint.h>
 #include "platform.h"
 
-m3ApiRawFunction(nds_rand) {
+m3ApiRawFunction(api_rand) {
   m3ApiReturnType(uint32_t)
   m3ApiReturn(platform_rand());
 };
 
-m3ApiRawFunction(gl_clearScreen) {
+m3ApiRawFunction(api_clearScreen) {
   m3ApiGetArg(uint8_t, color);
 
   platform_clear_screen(color);
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_pSet) {
+m3ApiRawFunction(api_pSet) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, color);
@@ -23,7 +23,7 @@ m3ApiRawFunction(gl_pSet) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_rect) {
+m3ApiRawFunction(api_rect) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, width);
@@ -34,7 +34,7 @@ m3ApiRawFunction(gl_rect) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_rectFill) {
+m3ApiRawFunction(api_rectFill) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, width);
@@ -45,7 +45,7 @@ m3ApiRawFunction(gl_rectFill) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(gl_sprite) {
+m3ApiRawFunction(api_sprite) {
   m3ApiGetArg(uint8_t, x);
   m3ApiGetArg(uint8_t, y);
   m3ApiGetArg(uint8_t, sprite);
@@ -54,31 +54,31 @@ m3ApiRawFunction(gl_sprite) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(draw_sample_bg) {
-  // // TEST rendering a map
-  // for (int y = 0; y < (192/8); y++) {
-  //   for (int x = 0; x < (256/8); x++) {
-  //     uint8_t tileId = gameMemory.tilemap[y*32 + x];
-  //     glSprite(x*8, y*8, GL_FLIP_NONE, &sprTiles[tileId]);
-  //   }
-  // }
+m3ApiRawFunction(api_tileMap) {
+  m3ApiGetArg(int16_t, draw_x);
+  m3ApiGetArg(int16_t, draw_y);
+  m3ApiGetArg(uint8_t, map_x);
+  m3ApiGetArg(uint8_t, map_y);
+  m3ApiGetArg(uint8_t, map_w);
+  m3ApiGetArg(uint8_t, map_h);
 
+  platform_tile_map(draw_x, draw_y, map_x, map_y, map_w, map_h);
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(nds_btn) {
+m3ApiRawFunction(api_btn) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, button);
   m3ApiReturn(platform_button(button));
 }
 
-m3ApiRawFunction(nds_btnP) {
+m3ApiRawFunction(api_btnP) {
   m3ApiReturnType(bool);
   m3ApiGetArg(uint8_t, button);
   m3ApiReturn(platform_button_pressed(button));
 }
 
-m3ApiRawFunction(nds_printDbg) {
+m3ApiRawFunction(api_printDbg) {
     m3ApiGetArgMem(const char *, text);
     platform_print_line(text);
     m3ApiSuccess();
@@ -86,15 +86,15 @@ m3ApiRawFunction(nds_printDbg) {
 
 // Hook all the engine-relevant functions declared here into the WASM module
 void link_api_functions(IM3Module module) {
-  m3_LinkRawFunction(module, "env", "_rand", "i()", &nds_rand);
-  m3_LinkRawFunction(module, "env", "_clearScreen", "v(i)", &gl_clearScreen);
-  m3_LinkRawFunction(module, "env", "_pSet", "v(iii)", &gl_pSet);
-  m3_LinkRawFunction(module, "env", "_rect", "v(iiiii)", &gl_rect);
-  m3_LinkRawFunction(module, "env", "_rectFill", "v(iiiii)", &gl_rectFill);
-  m3_LinkRawFunction(module, "env", "_sprite", "v(iii)", &gl_sprite);
-  m3_LinkRawFunction(module, "env", "_sampleBg", "v()", &draw_sample_bg);
-  m3_LinkRawFunction(module, "env", "_btn", "i(i)", &nds_btn);
-  m3_LinkRawFunction(module, "env", "_btnP", "i(i)", &nds_btnP);
-  m3_LinkRawFunction(module, "env", "_printLnDbg", "v(i)", &nds_printDbg);
+  m3_LinkRawFunction(module, "env", "_rand", "i()", &api_rand);
+  m3_LinkRawFunction(module, "env", "_clearScreen", "v(i)", &api_clearScreen);
+  m3_LinkRawFunction(module, "env", "_pSet", "v(iii)", &api_pSet);
+  m3_LinkRawFunction(module, "env", "_rect", "v(iiiii)", &api_rect);
+  m3_LinkRawFunction(module, "env", "_rectFill", "v(iiiii)", &api_rectFill);
+  m3_LinkRawFunction(module, "env", "_sprite", "v(iii)", &api_sprite);
+  m3_LinkRawFunction(module, "env", "_tileMap", "v(iiiiii)", &api_tileMap);
+  m3_LinkRawFunction(module, "env", "_btn", "i(i)", &api_btn);
+  m3_LinkRawFunction(module, "env", "_btnP", "i(i)", &api_btnP);
+  m3_LinkRawFunction(module, "env", "_printLnDbg", "v(i)", &api_printDbg);
 }
 

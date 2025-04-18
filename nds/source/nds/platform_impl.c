@@ -75,6 +75,10 @@ void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {
   glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &spr_tiles[sprite]);
 }
 
+void platform_tile_map(int16_t draw_x, int16_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {
+  // TODO
+}
+
 bool platform_button(uint8_t button) {
   return key_held(button);
 }

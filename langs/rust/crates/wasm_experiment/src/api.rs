@@ -11,10 +11,10 @@ unsafe extern "C" {
     fn native_rect(x: u8, y: u8, w: u8, h: u8, c: u8);
     #[link_name = "_rectFill"]
     fn native_rectFill(x: u8, y: u8, w: u8, h: u8, c: u8);
-    #[link_name = "_sampleBg"]
-    fn native_sample_bg();
     #[link_name = "_sprite"]
     fn native_sprite(x: u8, y: u8, sprite_id: u8);
+    #[link_name = "_tileMap"]
+    fn native_tileMap(draw_x: i16, draw_y: i16, map_x: u8, map_y: u8, map_w: u8, map_h: u8);
     #[link_name = "_btn"]
     fn native_btn(btn: u8) -> bool;
     #[link_name = "_btnP"]
@@ -80,10 +80,6 @@ pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
     unsafe { native_rectFill(x, y, w, h, color) }
 }
 
-pub fn sample_bg() {
-    unsafe { native_sample_bg() }
-}
-
 /// Draw a sprite with the specified screen x and y position, and a given sprite id.
 ///
 /// Example:
@@ -92,6 +88,17 @@ pub fn sample_bg() {
 /// ```
 pub fn sprite(x: u8, y: u8, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
+}
+
+/// Draw a series of tiles according to the tilemap data of the game (unstable).
+///
+/// Example:
+/// ```rust
+/// // Draw the top-left corner of the tilemap on the screen
+/// api::tile_map(0, 0, 0, 0, SCREEN_WIDTH/8, SCREEN_HEIGHT/8);
+/// ```
+pub fn tile_map(draw_x: i16, draw_y: i16, map_x: u8, map_y: u8, map_w: u8, map_h: u8) {
+    unsafe { native_tileMap(draw_x, draw_y, map_x, map_y, map_w, map_h) }
 }
 
 /// Discover if the given button is being held down

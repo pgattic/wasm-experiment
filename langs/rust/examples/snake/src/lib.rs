@@ -6,11 +6,9 @@ mod circ_buf;
 
 use crate::circ_buf::CircBuf;
 
-const GRID_SIZE: u8 = 8;
-const GRID_DIMENSIONS: (u8, u8) = (
-    (SCREEN_WIDTH as u16 / GRID_SIZE as u16) as u8,
-    (SCREEN_HEIGHT as u16 / GRID_SIZE as u16) as u8
-);
+const CELL_SIZE: u8 = 8;
+const GRID_WIDTH: u8 = SCREEN_WIDTH / CELL_SIZE;
+const GRID_HEIGHT: u8 = SCREEN_HEIGHT / CELL_SIZE;
 
 #[derive(PartialEq)]
 enum Direction { Right, Left, Down, Up, }
@@ -40,7 +38,11 @@ fn new_food() -> (u8, u8, u8) {
         2 => 5,
         _ => unreachable!()
     };
-    ((api::rand() % GRID_DIMENSIONS.0 as u32) as u8, (api::rand() % GRID_DIMENSIONS.1 as u32) as u8, sprite_id)
+    (
+        (api::rand() % GRID_WIDTH as u32) as u8,
+        (api::rand() % GRID_HEIGHT as u32) as u8,
+        sprite_id
+    )
 }
 
 struct GameState {
@@ -96,7 +98,7 @@ impl game_state::Game for GameState {
                     break;
                 }
             }
-            if self.player.body.peek_head().0 >= GRID_DIMENSIONS.0 || self.player.body.peek_head().1 >= GRID_DIMENSIONS.1 {
+            if self.player.body.peek_head().0 >= GRID_WIDTH || self.player.body.peek_head().1 >= GRID_HEIGHT {
                 self.player = Player::new();
                 self.foods = [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()];
             }
@@ -104,12 +106,12 @@ impl game_state::Game for GameState {
 
         api::clear_screen(1);
 
-        for segment in &self.player.body {
-            api::rect_fill(segment.0 * GRID_SIZE, segment.1 * GRID_SIZE, GRID_SIZE, GRID_SIZE, 11);
+        for (x, y) in &self.player.body {
+            api::rect_fill(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, 11);
         }
 
-        for food in self.foods {
-            api::sprite(food.0 * GRID_SIZE, food.1 * GRID_SIZE, food.2);
+        for (x, y, spr) in self.foods {
+            api::sprite(x * CELL_SIZE, y * CELL_SIZE, spr);
         }
 
         self.frame_count += 1;
