@@ -1,5 +1,5 @@
 
-# Nintendo DS WASM Runtime + Game Framework
+# WASM Runtime + Game Framework
 
 Note that this is very much a work-in-progress
 
@@ -9,5 +9,8 @@ The installation scripts require [Docker](https://www.docker.com/) be installed 
 
 - `./docker_build.sh` (may require `sudo`)
 - `./dev_env.sh` (may require `sudo`)
-    - Within the dev environment: `make`
+    - Nintendo DS build:
+        - `mkdir -p build/NDS && cd build/NDS`
+        - `cmake ../.. -DCMAKE_TOOLCHAIN_FILE=$BLOCKSDS/cmake/BlocksDS.cmake`
+        - `make`
 

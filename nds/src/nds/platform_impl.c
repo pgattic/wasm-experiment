@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <fat.h>
 #include "graphics.h"
-#include "system.h"
+#include "keys.h"
 #include "../platform.h"
 
 #define NDS_SC_W 256

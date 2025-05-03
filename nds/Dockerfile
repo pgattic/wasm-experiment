@@ -16,7 +16,7 @@ ENV LC_ALL=C.UTF-8
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-        ca-certificates curl git make
+        ca-certificates curl git make cmake gcc
 
 
 # ===================
@@ -47,7 +47,7 @@ RUN wf-pacman -Syu --noconfirm && \
     wf-pacman -Syu --noconfirm && \
     wf-pacman -S --noconfirm blocksds-toolchain
 
-# Setup the environment variables for a wf-pacman installation
+# Set up the environment variables for a wf-pacman installation
 ENV BLOCKSDS=/opt/wonderful/thirdparty/blocksds/core
 ENV BLOCKSDSEXT=/opt/wonderful/thirdparty/blocksds/external
 ENV WONDERFUL_TOOLCHAIN=/opt/wonderful
@@ -62,7 +62,8 @@ RUN set -e; \
     $WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-gcc -O3 -c *.c; \
     $WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-ld -r -o libwasm3.a *.o; \
     echo "Installing wasm3 into $BLOCKSDSEXT/wasm3"; \
-    mkdir -p $BLOCKSDSEXT/wasm3/{lib,include}; \
+    mkdir -p $BLOCKSDSEXT/wasm3/lib; \
+    mkdir -p $BLOCKSDSEXT/wasm3/include; \
     find . -name '*.h' -exec cp --parents {} $BLOCKSDSEXT/wasm3/include \;; \
     mv libwasm3.a $BLOCKSDSEXT/wasm3/lib/
 

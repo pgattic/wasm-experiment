@@ -14,8 +14,8 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
     - [X] File picker (needs work)
 - [X] Support sprites
 - [X] Define functions for game engine to expose
-- [ ] Port build system to CMake
-    - [ ] Create NDS implementation
+- [X] Port build system to CMake
+    - [X] Create NDS implementation
     - [ ] Create Desktop implementation (Raylib probably)
     - [ ] Create Wii implementation
 - [ ] Sprite/map editor
