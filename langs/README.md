@@ -32,5 +32,3 @@ Legend
 
 Despite Rust having the most complete implementation, it probably shouldn't be used as an example for other languages. Ideally the implementation should be as small as possible. Rust just [needed extra work](rust/README.md).
 
-I don't know how useful this info is, but if you're pretty good at Lisp, you may be fine just writing `.wat` code directly and building with `wat2wasm`
-
