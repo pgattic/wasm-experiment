@@ -12,8 +12,9 @@ SDL_Palette sdl_palette = {
   .colors = sdl_colors,
 };
 
-SDL_Window *os_window; // Game window
+SDL_Window *os_window; // Game window (Full size of OS window)
 SDL_Renderer *renderer;
+SDL_Texture *game_window; // Where graphics are drawn
 SDL_Texture *spr_tileset;
 
 void load_palette(uint8_t palette[PALETTE_SIZE]) {
@@ -54,8 +55,5 @@ void load_sprite_tiles(uint8_t tile_data[SPR_TILES_SIZE]) {
   );
   SDL_UpdateTexture(spr_tileset, &texture_rect, pixels, 8 * sizeof(uint32_t));
   free(pixels);
-}
-
-void unload_graphics() {
 }
 
