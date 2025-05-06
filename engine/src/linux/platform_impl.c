@@ -21,9 +21,6 @@
 //   KEY_L,
 // };
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-
 int platform_init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -95,7 +92,7 @@ int platform_begin_frame() {
     if (event.type == SDL_EVENT_QUIT) {
       return 1;
     }
-    if (event.type == SDL_EVENT_KEY_DOWN) {
+    else if (event.type == SDL_EVENT_KEY_DOWN) {
       SDL_Scancode sc = event.key.scancode;
       if (sc == SDL_SCANCODE_LEFT) { sdl_held_keys[0] = true; sdl_pressed_keys[0] = true; }
       else if (sc == SDL_SCANCODE_RIGHT) {  sdl_held_keys[1] = true; sdl_pressed_keys[1] = true; }
@@ -107,9 +104,9 @@ int platform_begin_frame() {
       else if (sc == SDL_SCANCODE_Z) {      sdl_held_keys[7] = true; sdl_pressed_keys[7] = true; }
       else if (sc == SDL_SCANCODE_Q) {      sdl_held_keys[8] = true; sdl_pressed_keys[8] = true; }
       else if (sc == SDL_SCANCODE_W) {      sdl_held_keys[9] = true; sdl_pressed_keys[9] = true; }
-      else if (sc == SDL_SCANCODE_KP_ENTER){sdl_held_keys[10] = true; sdl_pressed_keys[10] = true; }
+      else if (sc == SDL_SCANCODE_RETURN){  sdl_held_keys[10] = true; sdl_pressed_keys[10] = true; }
     }
-    if (event.type == SDL_EVENT_KEY_UP) {
+    else if (event.type == SDL_EVENT_KEY_UP) {
       SDL_Scancode sc = event.key.scancode;
       if (sc == SDL_SCANCODE_LEFT) { sdl_held_keys[0] = false; }
       else if (sc == SDL_SCANCODE_RIGHT) {  sdl_held_keys[1] = false; }
@@ -121,7 +118,7 @@ int platform_begin_frame() {
       else if (sc == SDL_SCANCODE_Z) {      sdl_held_keys[7] = false; }
       else if (sc == SDL_SCANCODE_Q) {      sdl_held_keys[8] = false; }
       else if (sc == SDL_SCANCODE_W) {      sdl_held_keys[9] = false; }
-      else if (sc == SDL_SCANCODE_KP_ENTER){sdl_held_keys[10] = false; }
+      else if (sc == SDL_SCANCODE_RETURN){  sdl_held_keys[10] = false; }
     }
   }
 }
@@ -137,6 +134,7 @@ void platform_deinit() {
 
 void platform_prepare_cartridge(Cart *c) {
   load_palette(c->palette);
+  load_sprite_tiles(c->spr_tiles);
 }
 
 uint32_t platform_rand() {
@@ -183,17 +181,19 @@ void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uin
 }
 
 void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {
-  SDL_FRect rect = {
+  SDL_FRect src_rect = {
+    .x = (float)0,
+    .y = (float)sprite * 8,
+    .w = (float)8,
+    .h = (float)8
+  };
+  SDL_FRect dest_rect = {
     .x = (float)x,
     .y = (float)y,
     .w = (float)8,
     .h = (float)8
   };
-  Uint8 r = 255;
-  Uint8 g = 255;
-  Uint8 b = 255;
-  SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-  SDL_RenderFillRect(renderer, &rect);
+  SDL_RenderTexture(renderer, spr_tileset, &src_rect, &dest_rect);
 }
 
 void platform_tile_map(int16_t draw_x, int16_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {

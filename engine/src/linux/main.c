@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <time.h>
 #include <stdio.h>
 #include <wasm3.h>
 #include <m3_env.h>
@@ -60,6 +61,7 @@ int main(int argc, char** argv) {
 
   size_t fileSize;
   Cart *cart = load_cartridge(argv[1], &fileSize);
+  srand(time(NULL));
 
   platform_init();
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
 #include <stdint.h>
 #include "../cartridge.h"
 
@@ -11,6 +11,10 @@ extern SDL_Palette sdl_palette;
 /// Synchronizes the palette from VRAM with the NDS-sized palette.
 /// Should be called whenever the palette's data in VRAM is modified.
 void load_palette(uint8_t palette[PALETTE_SIZE]);
+
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern SDL_Texture *spr_tileset;
 
 /// Loads the sprite tiles in using the NDS GL2D library.
 /// The `load_palette` function must be called at least once before this one.
