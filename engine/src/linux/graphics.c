@@ -4,15 +4,17 @@
 #include "graphics.h"
 #include "../cartridge.h"
 
-// Color rl_palette[16]; // Keep this synched with the palette from memory
-
-SDL_Color sdl_colors[16];
+SDL_Color sdl_colors[16]; // SDL colors
 uint32_t rgb_colors[16];
 
 SDL_Palette sdl_palette = {
   .ncolors = 16,
   .colors = sdl_colors,
 };
+
+SDL_Window *os_window; // Game window
+SDL_Renderer *renderer;
+SDL_Texture *spr_tileset;
 
 void load_palette(uint8_t palette[PALETTE_SIZE]) {
   for (uint32_t i = 0; i < 16; i++) {
@@ -24,13 +26,9 @@ void load_palette(uint8_t palette[PALETTE_SIZE]) {
   rgb_colors[0] ^= 0xff; // First color is transparent
 }
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_Texture *spr_tileset;
-
 void load_sprite_tiles(uint8_t tile_data[SPR_TILES_SIZE]) {
   uint32_t *pixels = malloc(8 * 8 * 256 * sizeof(uint32_t));
-  // spr_tileset = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STATIC, 8, 8*256);
+
   for (uint32_t i = 0; i < SPR_TILES_SIZE; i++) {
     // 4bpp = 2 pixels/byte
     uint8_t p1 = tile_data[i]&0xF;

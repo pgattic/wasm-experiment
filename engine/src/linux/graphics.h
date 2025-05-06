@@ -8,13 +8,13 @@
 extern SDL_Color sdl_colors[16];
 extern SDL_Palette sdl_palette;
 
+extern SDL_Window *os_window;
+extern SDL_Renderer *renderer;
+extern SDL_Texture *spr_tileset;
+
 /// Synchronizes the palette from VRAM with the NDS-sized palette.
 /// Should be called whenever the palette's data in VRAM is modified.
 void load_palette(uint8_t palette[PALETTE_SIZE]);
-
-extern SDL_Window *window;
-extern SDL_Renderer *renderer;
-extern SDL_Texture *spr_tileset;
 
 /// Loads the sprite tiles in using the NDS GL2D library.
 /// The `load_palette` function must be called at least once before this one.
