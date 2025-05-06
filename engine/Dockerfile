@@ -1,23 +1,24 @@
 
-FROM ubuntu:24.04 AS wasmcarts-dev
-
-ARG BRANCH=master
+FROM archlinux:latest AS wasmcarts-dev
 
 # ===============
-# BASIC SETUP
+# GENERAL SETUP
 # ===============
-
-# Set TARGETARCH e.g. amd64, arm64, riscv64.
-ARG TARGETARCH
 
 # Set locale for iconv, used by ndstool
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates curl git make cmake gcc
+RUN pacman -Syu --noconfirm && \
+    pacman -Syu --noconfirm \
+        ca-certificates curl make cmake
 
+# Download WASM3 source code
+RUN set -e; \
+    cd /opt; \
+    curl -L -o wasm3.tar.gz https://github.com/wasm3/wasm3/archive/refs/tags/v0.5.0.tar.gz; \
+    tar -xzvf wasm3.tar.gz; \
+    rm wasm3.tar.gz
 
 # ===================
 # NINTENDO DS SETUP
@@ -26,8 +27,6 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN mkdir -p /opt/wonderful/
 ADD https://wonderful.asie.pl/bootstrap/wf-bootstrap-x86_64.tar.gz /opt/wonderful/
 ADD https://wonderful.asie.pl/bootstrap/wf-bootstrap-aarch64.tar.gz /opt/wonderful/
-# Note that the downloads are cached; no impact if it's a multi-platform build.
-# Needed because Docker's TARGETARCH doesn't match Linux's `uname -m` format.
 
 RUN cd /opt/wonderful/ && \
     tar xzvf wf-bootstrap-$(uname -m).tar.gz && \
@@ -35,8 +34,7 @@ RUN cd /opt/wonderful/ && \
 
 ENV PATH=/opt/wonderful/bin:$PATH
 
-# TODO: This is a workaround for pacman that generates the file /etc/mtab. Maybe
-# there is a better way to fix it.
+# This is a workaround for pacman that generates the file /etc/mtab. Maybe there is a better way to fix it.
 RUN cd etc && \
     ln -sf ../proc/self/mounts mtab
 
@@ -52,21 +50,32 @@ ENV BLOCKSDS=/opt/wonderful/thirdparty/blocksds/core
 ENV BLOCKSDSEXT=/opt/wonderful/thirdparty/blocksds/external
 ENV WONDERFUL_TOOLCHAIN=/opt/wonderful
 
-# Build and install wasm3 under BlocksDS toolchain using /tmp as workspace
+# Build WASM3 for NDS with Wonderful Toolchain
 RUN set -e; \
-    cd /tmp; \
-    curl -L -o v0.5.0.tar.gz https://github.com/wasm3/wasm3/archive/refs/tags/v0.5.0.tar.gz; \
-    tar -xzvf v0.5.0.tar.gz; \
-    cd /tmp/wasm3-0.5.0/source/; \
-    echo "Compiling wasm3 sources"; \
+    cd /opt/wasm3-0.5.0/source/; \
     $WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-gcc -O3 -c *.c; \
     $WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-ld -r -o libwasm3.a *.o; \
-    echo "Installing wasm3 into $BLOCKSDSEXT/wasm3"; \
     mkdir -p $BLOCKSDSEXT/wasm3/lib; \
     mkdir -p $BLOCKSDSEXT/wasm3/include; \
     find . -name '*.h' -exec cp --parents {} $BLOCKSDSEXT/wasm3/include \;; \
     mv libwasm3.a $BLOCKSDSEXT/wasm3/lib/
 
+# =============
+# LINUX SETUP
+# =============
+
+# Install required packages
+RUN pacman -Syu --noconfirm gcc sdl3
+
+# Build WASM3 for Linux
+RUN set -e; \
+    cd /opt/wasm3-0.5.0/source/; \
+    gcc -O3 -c *.c; \
+    ld -r -o libwasm3.a *.o; \
+    mkdir -p /usr/local/lib; \
+    mkdir -p /usr/local/include; \
+    find . -name '*.h' -exec cp --parents {} /usr/local/include \;; \
+    mv libwasm3.a /usr/local/lib/
 
 # =====================
 # NINTENDO WII SETUP
@@ -77,6 +86,5 @@ RUN set -e; \
 #     sh <(curl -sfL https://apt.devkitpro.org/install-devkitpro-pacman); \
 #     dkp-pacman -S wii-dev
 
-# Use /work/ as working directory of this container.
 WORKDIR /work/
 

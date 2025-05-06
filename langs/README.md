@@ -16,7 +16,7 @@ I will not put a language in this matrix unless it has full, portable WASM compi
 | Dart | ❌ | Need more info about its ability to run in embedded environments |
 | Golang | 🚧 | Just has a demo working |
 | Haskell | ❌ | Need to research more about how optimal the produced code is |
-| Rust | ✅ | Maximum support. Has a library with thorough documentation |
+| Rust | ✅ | Made a library with thorough documentation |
 | Swift | ❌ |  |
 | TypeScript (AssemblyScript) | 🚧 | Just has an example working |
 | Zig | 💭 |  |
