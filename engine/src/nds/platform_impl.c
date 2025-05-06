@@ -11,7 +11,7 @@
 #define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
-void platform_init() {
+int platform_init() {
   consoleDemoInit();
   videoSetMode(MODE_0_3D);
   glScreen2D();
@@ -19,14 +19,16 @@ void platform_init() {
   printf("\n");
   if (!fatInitDefault()) {
     printf("FAT initialization failed.\n");
-    while (1) {}
+    return 1;
   }
+  return 0;
 }
 
-void platform_begin_frame() {
+int platform_begin_frame() {
   oamUpdate(&oamMain);
   collect_keys();
   glBegin2D();
+  return 0;
 }
 
 void platform_end_frame() {

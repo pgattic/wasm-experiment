@@ -20,15 +20,16 @@
 
 /* LOGIC CONTROL */
 
-/// Initialize the system to a ready state.
-void platform_init(void);
+/// Initialize the system to a ready state. Non-zero return indicates failure.
+int platform_init(void);
 
 /// Choose a file to load (sets targetFile to the name of the chosen file).
 int platform_select_file(char *targetFile);
 
 /// Prepare the system graphics for rendering a frame.
 /// Commonly includes collecting key inputs.
-void platform_begin_frame(void);
+/// Returns 1 if the game is meant to stop.
+int platform_begin_frame(void);
 
 /// End the rendering state, await for next frame.
 /// May also include things like swapping/flushing graphics buffers if applicable.

@@ -1,11 +1,12 @@
 #pragma once
+#include <SDL3/SDL_pixels.h>
 #include <stdint.h>
 #include "../cartridge.h"
 
 // Code for managing graphical information such as tilemaps and sprites
 
-// extern Color rl_palette[16]; // Keep this synched with the palette from memory
-// extern Color rl_spr_tiles[256*8*8];
+extern SDL_Color sdl_colors[16];
+extern SDL_Palette sdl_palette;
 
 /// Synchronizes the palette from VRAM with the NDS-sized palette.
 /// Should be called whenever the palette's data in VRAM is modified.

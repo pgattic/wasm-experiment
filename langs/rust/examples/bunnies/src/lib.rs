@@ -32,7 +32,7 @@ impl game_state::Game for GameState {
             self.num_bunnies += 1;
         }
 
-        api::tile_map(0, 0, 0, 0, SCREEN_WIDTH/8, SCREEN_HEIGHT/8);
+        api::clear_screen(1);
 
         for i in 0..self.num_bunnies {
             self.bunnies[i].0 += self.bunnies[i].2;

@@ -61,6 +61,8 @@ int main(int argc, char** argv) {
   size_t fileSize;
   Cart *cart = load_cartridge(argv[1], &fileSize);
 
+  platform_init();
+
   IM3Function setup;
   IM3Function update;
   wasm_init(cart, fileSize, &setup, &update);
@@ -74,8 +76,7 @@ int main(int argc, char** argv) {
     while (1) {}
   }
 
-  while (1) {
-    platform_begin_frame();
+  while (!platform_begin_frame()) {
 
     result = m3_CallV(update, 10);
     if (result) {

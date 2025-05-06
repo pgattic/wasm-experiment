@@ -1,16 +1,24 @@
+#include <SDL3/SDL_pixels.h>
 #include <stdint.h>
+#include <SDL3/SDL.h>
 #include "graphics.h"
 #include "../cartridge.h"
 
 // Color rl_palette[16]; // Keep this synched with the palette from memory
 
+SDL_Color sdl_colors[16];
+
+SDL_Palette sdl_palette = {
+  .ncolors = 16,
+  .colors = sdl_colors,
+};
+
 void load_palette(uint8_t palette[PALETTE_SIZE]) {
-  // for (uint32_t i = 0; i < 16; i++) {
-  //   uint32_t color = palette[i*3] << 24 |
-  //                palette[i*3+1] << 16 |
-  //                palette[i*3+2] << 8;
-  //   rl_palette[i] = color;
-  // }
+  for (uint32_t i = 0; i < 16; i++) {
+    sdl_colors[i].r = palette[i*3];
+    sdl_colors[i].g = palette[i*3+1];
+    sdl_colors[i].b = palette[i*3+2];
+  }
 }
 
 // Color rl_spr_tiles[256*8*8];
