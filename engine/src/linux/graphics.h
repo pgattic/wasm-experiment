@@ -1,12 +1,11 @@
 #pragma once
 #include <stdint.h>
-#include <gl2d.h>
 #include "../cartridge.h"
 
 // Code for managing graphical information such as tilemaps and sprites
 
-extern Color rl_palette[16]; // Keep this synched with the palette from memory
-extern Color rl_spr_tiles[256*8*8];
+// extern Color rl_palette[16]; // Keep this synched with the palette from memory
+// extern Color rl_spr_tiles[256*8*8];
 
 /// Synchronizes the palette from VRAM with the NDS-sized palette.
 /// Should be called whenever the palette's data in VRAM is modified.

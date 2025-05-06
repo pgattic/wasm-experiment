@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <wasm3.h>
 #include <m3_env.h>
-#include "api.h"
-#include "cartridge.h"
-#include "platform.h"
+#include "../api.h"
+#include "../cartridge.h"
+#include "../platform.h"
 
 void wasm_init(Cart * cart, size_t fileSize, IM3Function * setup, IM3Function * update) {
   size_t wasmSize = fileSize - METAPROG_SIZE;

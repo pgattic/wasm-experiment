@@ -8,8 +8,8 @@
 #define NDS_SC_W 256
 #define NDS_SC_H 192
 
-#define LEFT_MARGIN ((NDS_SC_W - GAME_SC_W) / 2) // 8
-#define TOP_MARGIN ((NDS_SC_H - GAME_SC_H) / 2) // 16
+#define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
+#define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
 void platform_init() {
   consoleDemoInit();

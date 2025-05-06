@@ -1,13 +1,18 @@
 #pragma once
 
+/*
+ * PLATFORM.H
+ * Functions required for a given platform to work
+ */
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "cartridge.h"
 
 /* USEFUL CONSTANTS */
 
-#define GAME_SC_W 240
-#define GAME_SC_H 160
+#define WC_SCREEN_WIDTH 240
+#define WC_SCREEN_HEIGHT 160
 
 
 // Below are all of the functions that a platform must implement in order to become

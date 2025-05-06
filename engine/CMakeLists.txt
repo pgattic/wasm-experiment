@@ -4,14 +4,29 @@ cmake_minimum_required(VERSION 3.16)
 project(WASMCarts C)
 
 add_executable(WASMCarts
-  src/main.c
+  ""
 )
+
+# Parse platform selector
+if(NOT DEFINED TARGET)
+  message(FATAL_ERROR "You must specify -DTARGET=nds or -DTARGET=linux")
+endif()
+
+# Validate and set up per-target
+if("${TARGET}" STREQUAL "nds")
+  set(NINTENDO_DS TRUE)
+  target_compile_definitions(WASMCarts PRIVATE NINTENDO_DS)
+elseif("${TARGET}" STREQUAL "linux")
+  set(LINUX TRUE)
+  target_compile_definitions(WASMCarts PRIVATE LINUX)
+else()
+  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'. Use 'nds' or 'linux'.")
+endif()
 
 # General source files
 target_sources(WASMCarts PRIVATE
   src/cartridge.c
   src/api.c
-  src/platform.c
 )
 
 if(NINTENDO_DS)
@@ -36,11 +51,14 @@ if(NINTENDO_DS)
   target_include_directories(WASMCarts PRIVATE
     ${BLOCKSDSEXT}/wasm3/include
   )
-  target_link_libraries(WASMCarts PRIVATE
-    ${BLOCKSDSEXT}/wasm3/lib/libwasm3.a
+  target_link_directories(WASMCarts PRIVATE
+    ${BLOCKSDSEXT}/wasm3/lib
   )
+  target_link_libraries(WASMCarts PRIVATE wasm3)
+
   # NDS-specific source files
   target_sources(WASMCarts PRIVATE
+    src/nds/main.c
     src/nds/platform_impl.c
     src/nds/graphics.c
     src/nds/keys.c
@@ -55,16 +73,23 @@ if(NINTENDO_DS)
   )
 elseif(LINUX)
   target_sources(WASMCarts PRIVATE
+    src/linux/main.c
     src/linux/platform_impl.c
     src/linux/graphics.c
   )
 
-  # Include/Link WASM3 build
+  # Include/Link WASM3
   target_include_directories(WASMCarts PRIVATE
     /usr/local/include
   )
-  target_link_libraries(WASMCarts PRIVATE
-    /usr/local/lib/libwasm3.a
+  target_link_directories(WASMCarts PRIVATE
+    /usr/local/lib
   )
+  target_link_libraries(WASMCarts PRIVATE wasm3 m)
+
+  # SDL3
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
+  target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
 endif()
 

@@ -10,7 +10,11 @@ The installation scripts require [Docker](https://www.docker.com/) be installed 
 - `./docker_build.sh` (may require `sudo`)
 - `./dev_env.sh` (may require `sudo`)
     - Nintendo DS build:
-        - `mkdir -p build/NDS && cd build/NDS`
-        - `cmake ../.. -DCMAKE_TOOLCHAIN_FILE=$BLOCKSDS/cmake/BlocksDS.cmake`
+        - `mkdir -p build/nds && cd build/nds`
+        - `cmake ../.. -DTARGET=nds -DCMAKE_TOOLCHAIN_FILE=$BLOCKSDS/cmake/BlocksDS.cmake`
+        - `make`
+    - Linux build:
+        - `mkdir -p build/linux && cd build/linux`
+        - `cmake ../.. -DTARGET=linux`
         - `make`
 

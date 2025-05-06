@@ -65,7 +65,7 @@ RUN set -e; \
 # =============
 
 # Install required packages
-RUN pacman -Syu --noconfirm gcc sdl3
+RUN pacman -Syu --noconfirm gcc pkg-config sdl3
 
 # Build WASM3 for Linux
 RUN set -e; \

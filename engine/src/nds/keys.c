@@ -1,5 +1,6 @@
 #include <nds.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define NUM_KEYS 12
 
