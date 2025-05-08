@@ -86,9 +86,11 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 
 ## Thanks
 
-A special thanks to:
+This project stands on the backs of giants. During my work, I felt a need to give special thanks to:
 
-- Martin Moxon for his [WebAssembly On Your Nintendo DS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) blog post, which gave me just the right kind of inspiration I needed
+- Martin Moxon for his [WebAssembly On Your Nintendo DS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) blog post, which gave me just the right kind of inspiration I needed to start this thing!
 - [AntonioND](https://github.com/AntonioND) for his superhuman work put into the NDS and GBA development scene, particularly through [BlocksDS](https://blocksds.skylyrac.net/docs)
+- [Asie](https://github.com/asiekierka) for giving us [Wonderful Toolchain](https://wonderful.asie.pl/), which included very up-to-date compilers and other build tools for the Nintendo DS.
 - [vshymanskyy](https://github.com/vshymanskyy) for creating [wasm3](https://github.com/wasm3)
+- Anyone else who has contributed to WebAssembly, Nintendo DS Homebrew, and SDL3! You rock!
 

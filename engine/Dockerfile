@@ -5,13 +5,8 @@ FROM archlinux:latest AS wasmcarts-dev
 # GENERAL SETUP
 # ===============
 
-# Set locale for iconv, used by ndstool
-ENV LANG=C.UTF-8
-ENV LC_ALL=C.UTF-8
-
 RUN pacman -Syu --noconfirm && \
-    pacman -Syu --noconfirm \
-        ca-certificates curl make cmake
+    pacman -Syu --noconfirm ca-certificates curl make cmake
 
 # Download WASM3 source code
 RUN set -e; \
@@ -23,6 +18,10 @@ RUN set -e; \
 # ===================
 # NINTENDO DS SETUP
 # ===================
+
+# Set locale for iconv, used by ndstool
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 RUN mkdir -p /opt/wonderful/
 ADD https://wonderful.asie.pl/bootstrap/wf-bootstrap-x86_64.tar.gz /opt/wonderful/

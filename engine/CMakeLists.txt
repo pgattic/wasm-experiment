@@ -3,13 +3,11 @@ cmake_minimum_required(VERSION 3.16)
 
 project(WASMCarts C)
 
-add_executable(WASMCarts
-  ""
-)
+add_executable(WASMCarts "")
 
 # Parse platform selector
 if(NOT DEFINED TARGET)
-  message(FATAL_ERROR "You must specify -DTARGET=nds or -DTARGET=linux")
+  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux'.")
 endif()
 
 # Validate and set up per-target
@@ -20,7 +18,7 @@ elseif("${TARGET}" STREQUAL "linux")
   set(LINUX TRUE)
   target_compile_definitions(WASMCarts PRIVATE LINUX)
 else()
-  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'. Use 'nds' or 'linux'.")
+  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'nds', 'linux'.")
 endif()
 
 # General source files
