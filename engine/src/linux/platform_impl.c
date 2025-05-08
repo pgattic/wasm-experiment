@@ -16,7 +16,7 @@ int platform_init() {
   }
 
   // Create OS window
-  os_window = SDL_CreateWindow("SDL3 Port", WC_SCREEN_WIDTH, WC_SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+  os_window = SDL_CreateWindow("WASMCarts (SDL3)", WC_SCREEN_WIDTH, WC_SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
   if (os_window == NULL) {
     fprintf(stderr, "Window creation failed: %s\n", SDL_GetError());
     SDL_Quit();

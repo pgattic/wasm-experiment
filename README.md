@@ -16,7 +16,7 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 - [X] Define functions for game engine to expose
 - [X] Port build system to CMake
     - [X] Create NDS implementation
-    - [ ] Create Desktop implementation (Raylib probably)
+    - [X] Create Desktop implementation ~(Raylib probably)~ *went with SDL3*
     - [ ] Create Wii implementation
 - [ ] Sprite/map editor
 - [ ] Support background tiles
