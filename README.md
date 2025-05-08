@@ -18,19 +18,19 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
     - [X] Create NDS implementation
     - [X] Create Desktop implementation ~(Raylib probably)~ *went with SDL3*
     - [ ] Create Wii implementation
-- [ ] Sprite/map editor
+- [X] ~Sprite/map editor~ Build tool
 - [ ] Support background tiles
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Printing text on the screen
-- [ ] Port to GBA?
-    - Would require including the wasm as part of ROM data
-    - Some heavy source code customization would be in order
-    - Look into [Butano](https://github.com/GValiente/butano) for graphics
 
 ## Stretch Goals
 
 - Networking
 - In-engine editor
+- Port to GBA?
+    - Would require including the wasm as part of ROM data
+    - Some heavy source code customization would be in order
+    - Look into [Butano](https://github.com/GValiente/butano) for graphics
 
 ## Engine Spec
 

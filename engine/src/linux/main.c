@@ -8,7 +8,7 @@
 #include "../platform.h"
 
 void wasm_init(Cart * cart, size_t fileSize, IM3Function * setup, IM3Function * update) {
-  size_t wasmSize = fileSize - METAPROG_SIZE;
+  size_t wasmSize = fileSize - METAPROG_SIZE; // TODO handle negative or zero size wasm
   printf("File size: %d bytes\n", fileSize);
   printf("WASM size: %d bytes\n", wasmSize);
 

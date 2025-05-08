@@ -24,7 +24,7 @@ pub struct BuildConfig {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BuildCodeConfig {
     pub command: Vec<String>,
-    pub output_path: TomlPath,
+    pub output: TomlPath,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -71,14 +71,14 @@ impl Default for BuildCodeConfig {
                 "wat2wasm".to_string(),
                 "src/main.wat".to_string(),
                 "-o".to_string(),
-                "out.wasm".to_string(),
+                "src/main.wasm".to_string(),
                 // "cargo".to_string(),
                 // "build".to_string(),
                 // "--target".to_string(),
                 // "wasm32-unknown-unknown".to_string(),
                 // "--release".to_string()
             ],
-            output_path: TomlPath(PathBuf::from("out.wasm")),
+            output: TomlPath(PathBuf::from("src/main.wasm")),
         }
     }
 }
@@ -131,16 +131,20 @@ impl ToolConfig {
         for c in self.build.code.command[1..].iter() {
             cmd.arg(c);
         }
-        cmd.status().expect("Failed to build.");
+        let result = cmd.status().expect("Failed to build.");
+        if !result.success() {
+            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to build"));
+        }
+
         let assets = &self.build.assets;
         let assets_dir = PathBuf::from(&assets.dir);
-        let mut output: Vec<u8> = vec![0; 16];
         let pal_file = fs::read(assets_dir.join(&self.build.assets.palette))?;
         let spr_tiles = fs::read(assets_dir.join(&self.build.assets.sprite_tiles))?;
         let bg_tiles = fs::read(assets_dir.join(&self.build.assets.background_tiles))?;
         let bg_map = fs::read(assets_dir.join(&self.build.assets.background_map))?;
-        let prog = fs::read(&self.build.code.output_path.0)?;
+        let prog = fs::read(&self.build.code.output.0)?;
 
+        let mut output: Vec<u8> = vec![0; 16];
         output.extend_from_slice(&pal_file);
         output.extend_from_slice(&spr_tiles);
         output.extend_from_slice(&bg_tiles);

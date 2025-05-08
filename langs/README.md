@@ -14,7 +14,7 @@ I will not put a language in this matrix unless it has full, portable WASM compi
 | C/C++ | ❌ |  |
 | D | 💭 | [Should be simple](https://wiki.dlang.org/Generating_WebAssembly_with_LDC). |
 | Dart | ❌ | Need more info about its ability to run in embedded environments |
-| Golang | 🚧 | Just has a demo working |
+| Golang (TinyGo) | 🚧 | Just has a demo working |
 | Haskell | ❌ | Need to research more about how optimal the produced code is |
 | Rust | ✅ | Made a library with thorough documentation |
 | Swift | ❌ |  |
@@ -30,5 +30,5 @@ Legend
 | 🚧 | Support is WIP, may be suitable for you if you're pretty familiar with the language. |
 | ✅ | Full engine API support, along with reasonable documentation. suitable for full games. |
 
-Despite Rust having the most complete implementation, it probably shouldn't be used as an example for other languages. Ideally the implementation should be as small as possible. Rust just [needed extra work](rust/README.md).
+Despite Rust having the most complete implementation, it probably shouldn't be used as an example for implementing other languages. Ideally the implementation should be as small as possible. Rust just [needed extra work](rust/README.md).
 

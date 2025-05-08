@@ -41,6 +41,10 @@ int platform_init() {
     return 1;
   }
   SDL_SetTextureScaleMode(game_window, SDL_SCALEMODE_NEAREST);
+  SDL_SetRenderTarget(renderer, game_window);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+  SDL_SetRenderTarget(renderer, NULL);
 
   return 0;
 }

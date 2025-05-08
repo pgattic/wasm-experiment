@@ -1,0 +1,15 @@
+[package]
+name = "simple"
+author = "Your name here"
+version = "0.1.0"
+
+[build.code]
+command = ["wat2wasm", "src/main.wat", "-o", "src/main.wasm"]
+output = "src/main.wasm"
+
+[build.assets]
+dir = "assets"
+palette = "palette.pal"
+sprite_tiles = "spr.chr"
+background_tiles = "bg.chr"
+background_map = "bg.map"
