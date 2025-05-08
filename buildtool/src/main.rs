@@ -39,14 +39,30 @@ fn main() {
         Cli::Build => {
             match config_read {
                 Ok(config_file) => {
-                    let config: ToolConfig = toml::from_str(&config_file).unwrap();
-                    println!("Found config:");
-                    println!("{:?}", config);
+                    match toml::from_str::<ToolConfig>(&config_file) {
+                        Ok(config) => {
+                            // Build the program according to the config file
+                            let result = config.build_project();
+                            match result {
+                                Ok((name, size)) => {
+                                    println!("Built `{}` successfully ({} bytes).", name, size);
+                                }
+                                Err(error) => {
+                                    eprintln!("ERROR: {}", error);
+                                    std::process::exit(1);
+                                }
+                            }
+
+                        },
+                        Err(error) => {
+                            eprintln!("ERROR reading `{}`: {}", CONFIG_FILENAME, error);
+                        }
+                    }
                 },
                 Err(error) => {
                     match error.kind() {
                         std::io::ErrorKind::NotFound => eprintln!("ERROR: file `{}` not found. Did you run \"wasmcarts-buildtool init\"?", CONFIG_FILENAME),
-                        _ => eprintln!("Unexpected error occurred: {}", error.to_string()),
+                        _ => eprintln!("Unexpected error occurred: {}", error),
                     }
                     std::process::exit(1);
                 }

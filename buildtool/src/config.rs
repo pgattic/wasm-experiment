@@ -17,13 +17,19 @@ pub struct PackageConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BuildConfig {
-    pub compile_command: Vec<String>,
-    pub paths: PathsConfig,
+    pub code: BuildCodeConfig,
+    pub assets: BuildAssetsConfig,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct PathsConfig {
-    pub wasm_code: TomlPath,
+pub struct BuildCodeConfig {
+    pub command: Vec<String>,
+    pub output_path: TomlPath,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BuildAssetsConfig {
+    pub dir: String,
     pub palette: String,
     pub sprite_tiles: String,
     pub background_tiles: String,
@@ -42,8 +48,8 @@ impl Default for ToolConfig {
 impl Default for PackageConfig {
     fn default() -> Self {
         Self {
-            name: "My Game".to_string(),
-            author: "Me".to_string(),
+            name: "New game".to_string(),
+            author: "Your name here".to_string(),
             version: "0.1.0".to_string()
         }
     }
@@ -52,22 +58,35 @@ impl Default for PackageConfig {
 impl Default for BuildConfig {
     fn default() -> Self {
         Self {
-            compile_command: vec![
-                "cargo".to_string(),
-                "build".to_string(),
-                "--target".to_string(),
-                "wasm32-unknown-unknown".to_string(),
-                "--release".to_string()
-            ],
-            paths: PathsConfig::default()
+            code: BuildCodeConfig::default(),
+            assets: BuildAssetsConfig::default()
         }
     }
 }
 
-impl Default for PathsConfig {
+impl Default for BuildCodeConfig {
     fn default() -> Self {
         Self {
-            wasm_code: TomlPath(PathBuf::from("target/wasm32-unknown-unknown/release/output.wasm")),
+            command: vec![
+                "wat2wasm".to_string(),
+                "src/main.wat".to_string(),
+                "-o".to_string(),
+                "out.wasm".to_string(),
+                // "cargo".to_string(),
+                // "build".to_string(),
+                // "--target".to_string(),
+                // "wasm32-unknown-unknown".to_string(),
+                // "--release".to_string()
+            ],
+            output_path: TomlPath(PathBuf::from("out.wasm")),
+        }
+    }
+}
+
+impl Default for BuildAssetsConfig {
+    fn default() -> Self {
+        Self {
+            dir: "assets".to_string(),
             palette: "palette.pal".to_string(),
             sprite_tiles: "spr.chr".to_string(),
             background_tiles: "bg.chr".to_string(),
@@ -80,22 +99,57 @@ const DEFAULT_PALETTE: &[u8; 16*3] = include_bytes!("assets/palette.pal");
 const DEFAULT_SPR_TILES: &[u8; 8192] = include_bytes!("assets/spr.chr");
 const DEFAULT_BG_TILES: &[u8; 8192] = include_bytes!("assets/bg.chr");
 const DEFAULT_MAP_DATA: &[u8; 65536] = &[0; 65536];
+const DEFAULT_PROGRAM_CODE: &[u8] = include_bytes!("assets/main.wat");
 pub const CONFIG_FILENAME: &str = "WASMCarts.toml";
 
 impl ToolConfig {
     pub fn create_files(&self) -> std::io::Result<()> {
         use std::fs;
-        let paths = &self.build.paths;
+        let assets = &self.build.assets;
+        let assets_dir = PathBuf::from(&assets.dir);
+        let src_dir = PathBuf::from("src");
 
-        fs::write(&paths.palette, DEFAULT_PALETTE)?;
-        fs::write(&paths.sprite_tiles, DEFAULT_SPR_TILES)?;
-        fs::write(&paths.background_tiles, DEFAULT_BG_TILES)?;
-        fs::write(&paths.background_map, DEFAULT_MAP_DATA)?;
+        fs::create_dir(&assets_dir)?;
+        fs::create_dir(&src_dir)?;
+        fs::write(assets_dir.join(&assets.palette), DEFAULT_PALETTE)?;
+        fs::write(assets_dir.join(&assets.sprite_tiles), DEFAULT_SPR_TILES)?;
+        fs::write(assets_dir.join(&assets.background_tiles), DEFAULT_BG_TILES)?;
+        fs::write(assets_dir.join(&assets.background_map), DEFAULT_MAP_DATA)?;
+        fs::write(src_dir.join("main.wat"), DEFAULT_PROGRAM_CODE)?;
 
         let cfg_string = toml::to_string(&self).unwrap();
         fs::write(CONFIG_FILENAME, cfg_string)?;
 
         Ok(())
+    }
+
+    pub fn build_project(&self) -> std::io::Result<(String, usize)> {
+        use std::process::Command;
+        use std::fs;
+        use std::path::PathBuf;
+        let mut cmd = Command::new(&self.build.code.command[0]);
+        for c in self.build.code.command[1..].iter() {
+            cmd.arg(c);
+        }
+        cmd.status().expect("Failed to build.");
+        let assets = &self.build.assets;
+        let assets_dir = PathBuf::from(&assets.dir);
+        let mut output: Vec<u8> = vec![0; 16];
+        let pal_file = fs::read(assets_dir.join(&self.build.assets.palette))?;
+        let spr_tiles = fs::read(assets_dir.join(&self.build.assets.sprite_tiles))?;
+        let bg_tiles = fs::read(assets_dir.join(&self.build.assets.background_tiles))?;
+        let bg_map = fs::read(assets_dir.join(&self.build.assets.background_map))?;
+        let prog = fs::read(&self.build.code.output_path.0)?;
+
+        output.extend_from_slice(&pal_file);
+        output.extend_from_slice(&spr_tiles);
+        output.extend_from_slice(&bg_tiles);
+        output.extend_from_slice(&bg_map);
+        output.extend_from_slice(&prog);
+
+        fs::write("output.bin", &output).unwrap();
+
+        Ok(("output.bin".to_string(), output.len()))
     }
 }
 
