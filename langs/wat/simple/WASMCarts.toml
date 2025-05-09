@@ -10,6 +10,6 @@ output = "src/main.wasm"
 [build.assets]
 dir = "assets"
 palette = "palette.pal"
-sprite_tiles = "spr.chr"
-background_tiles = "bg.chr"
+sprite_tiles = "spr.4bpp"
+background_tiles = "bg.4bpp"
 background_map = "bg.map"

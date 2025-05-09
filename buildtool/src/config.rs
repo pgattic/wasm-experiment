@@ -88,16 +88,16 @@ impl Default for BuildAssetsConfig {
         Self {
             dir: "assets".to_string(),
             palette: "palette.pal".to_string(),
-            sprite_tiles: "spr.chr".to_string(),
-            background_tiles: "bg.chr".to_string(),
+            sprite_tiles: "spr.4bpp".to_string(),
+            background_tiles: "bg.4bpp".to_string(),
             background_map: "bg.map".to_string(),
         }
     }
 }
 
 const DEFAULT_PALETTE: &[u8; 16*3] = include_bytes!("assets/palette.pal");
-const DEFAULT_SPR_TILES: &[u8; 8192] = include_bytes!("assets/spr.chr");
-const DEFAULT_BG_TILES: &[u8; 8192] = include_bytes!("assets/bg.chr");
+const DEFAULT_SPR_TILES: &[u8; 8192] = include_bytes!("assets/spr.4bpp");
+const DEFAULT_BG_TILES: &[u8; 8192] = include_bytes!("assets/bg.4bpp");
 const DEFAULT_MAP_DATA: &[u8; 65536] = &[0; 65536];
 const DEFAULT_PROGRAM_CODE: &[u8] = include_bytes!("assets/main.wat");
 pub const CONFIG_FILENAME: &str = "WASMCarts.toml";
@@ -124,18 +124,16 @@ impl ToolConfig {
     }
 
     pub fn build_project(&self) -> std::io::Result<(String, usize)> {
-        use std::process::Command;
-        use std::fs;
-        use std::path::PathBuf;
-        let mut cmd = Command::new(&self.build.code.command[0]);
+        let mut cmd = std::process::Command::new(&self.build.code.command[0]);
         for c in self.build.code.command[1..].iter() {
             cmd.arg(c);
         }
-        let result = cmd.status().expect("Failed to build.");
+        let result = cmd.status().expect("Failed to build");
         if !result.success() {
             return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to build"));
         }
 
+        use std::fs;
         let assets = &self.build.assets;
         let assets_dir = PathBuf::from(&assets.dir);
         let pal_file = fs::read(assets_dir.join(&self.build.assets.palette))?;
@@ -151,7 +149,7 @@ impl ToolConfig {
         output.extend_from_slice(&bg_map);
         output.extend_from_slice(&prog);
 
-        fs::write("output.bin", &output).unwrap();
+        fs::write("output.bin", &output)?;
 
         Ok(("output.bin".to_string(), output.len()))
     }

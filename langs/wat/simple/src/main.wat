@@ -1,4 +1,4 @@
-;; Sample WASM Text file that renders a sprite.
+;; Simple WASM Text file that renders a sprite.
 ;; You DO NOT have to know how to write this code to use the engine, and are encouraged to use your favorite programming language instead :)
 ;; See https://github.com/pgattic/wasm-experiment/blob/master/langs/README.md
 
@@ -10,9 +10,7 @@
   (export "setup" (func $setup))
   (export "update" (func $update))
 
-  (func $setup
-    nop
-  )
+  (func $setup nop)
 
   (func $update
     ;; Place parameters on stack

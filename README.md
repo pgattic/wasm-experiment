@@ -50,7 +50,7 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 | Sprite Tiles | 8192 | `0x00040-0x0203F` |
 | BG Tiles | 8192 | `0x02040-0x0403F` |
 | Tile Map (256x256 tiles) | 65536 | `0x04040-0x1403F` |
-| Program Code | 966592 | `0x14040-0xFFFFF` |
+| Program Code | <=966592 | `0x14040-0xFFFFF` |
 
 ### Functions
 

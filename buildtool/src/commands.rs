@@ -7,5 +7,7 @@ pub enum Cli {
     Build,
     /// Initialize a WASMCarts project in the current working directory
     Init,
+    /// Ensure the project is built, and attempt to run it in the engine
+    Run,
 }
 

@@ -6,7 +6,7 @@ use crate::config::*;
 use crate::commands::*;
 use clap::Parser;
 
-fn main() {
+fn main() -> std::io::Result<()> {
     // We basically always need to (attempt to) read to the config file
     let config_read = std::fs::read_to_string(CONFIG_FILENAME);
     match Cli::parse() {
@@ -33,48 +33,48 @@ fn main() {
             };
 
             // Use it to create the required files (graphics, tilemap, source code)
-            match new_config.create_files() {
-                Ok(()) => {
-                    println!("New project \"{}\" initialized successfully.", proj_name);
-                    println!("You can modify project configuration in `{}`", CONFIG_FILENAME);
-                },
-                Err(error) => {
-                    eprintln!("ERROR creating files: {}", error.to_string());
-                    std::process::exit(1);
-                }
-            }
+            new_config.create_files()?;
+            println!("New project \"{}\" initialized successfully.", proj_name);
+            println!("You can modify project configuration in `{}`", CONFIG_FILENAME);
         },
         Cli::Build => { // Build existing project
-            match config_read {
-                Ok(config_file) => {
-                    match toml::from_str::<ToolConfig>(&config_file) {
-                        Ok(config) => {
-                            // Build the program according to the config file
-                            let result = config.build_project();
-                            match result {
-                                Ok((name, size)) => {
-                                    println!("Built `{}` successfully ({} bytes WASM, {} bytes total).", name, size - 81984, size);
-                                }
-                                Err(error) => {
-                                    eprintln!("ERROR: {}", error);
-                                    std::process::exit(1);
-                                }
-                            }
-                        },
-                        Err(error) => {
-                            eprintln!("ERROR reading `{}`: {}", CONFIG_FILENAME, error);
-                        }
-                    }
+            let (name, size) = build(config_read)?;
+            println!("Built `{}` successfully ({} bytes WASM, {} bytes total).", name, size - 81984, size);
+        },
+        Cli::Run => { // Build and run project
+            let (name, size) = build(config_read)?;
+            println!("Built `{}` successfully ({} bytes WASM, {} bytes total).", name, size - 81984, size);
+            println!("Running `WASMCarts {}`...", name);
+
+            let mut cmd = std::process::Command::new("WASMCarts");
+            cmd.arg(name);
+            let _ = cmd.status()?;
+        }
+    }
+    Ok(())
+}
+
+fn build(config_read: std::io::Result<String>) -> std::io::Result<(String, usize)> {
+    match config_read {
+        Ok(config_file) => {
+            match toml::from_str::<ToolConfig>(&config_file) {
+                Ok(config) => {
+                    // Build the program according to the config file
+                    return config.build_project();
                 },
                 Err(error) => {
-                    match error.kind() {
-                        std::io::ErrorKind::NotFound => eprintln!("ERROR: file `{}` not found. Did you run \"wasmcarts-buildtool init\"?", CONFIG_FILENAME),
-                        _ => eprintln!("Unexpected error occurred: {}", error),
-                    }
+                    eprintln!("ERROR reading `{}`: {}", CONFIG_FILENAME, error);
                     std::process::exit(1);
                 }
             }
         },
+        Err(error) => {
+            if error.kind() == std::io::ErrorKind::NotFound {
+                eprintln!("ERROR: file `{}` not found. Did you run \"wasmcarts-buildtool init\"?", CONFIG_FILENAME);
+                std::process::exit(1);
+            }
+            Err(error)
+        }
     }
 }
 
