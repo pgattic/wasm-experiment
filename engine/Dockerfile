@@ -76,14 +76,42 @@ RUN set -e; \
     find . -name '*.h' -exec cp --parents {} /usr/local/include \;; \
     mv libwasm3.a /usr/local/lib/
 
+# =================
+# DEVKITPRO SETUP
+# =================
+
+ENV DEVKITPRO=/opt/devkitpro
+ENV DEVKITARM=/opt/devkitpro/devkitARM
+ENV DEVKITPPC=/opt/devkitpro/devkitPPC
+
+# Set up DevKitPro repos on Pacman
+RUN pacman-key --init && \
+    pacman-key --recv BC26F752D25B92CE272E0F44F7FD5492264BB9D0 --keyserver keyserver.ubuntu.com && \
+    pacman-key --lsign BC26F752D25B92CE272E0F44F7FD5492264BB9D0 && \
+    pacman -U https://pkg.devkitpro.org/devkitpro-keyring.pkg.tar.zst --noconfirm && \
+    pacman-key --populate devkitpro
+
+# Add DevKitPro repositories to pacman
+RUN printf "[dkp-libs]\nServer = https://pkg.devkitpro.org/packages\n\n" >> /etc/pacman.conf && \
+    printf "[dkp-linux]\nServer = https://pkg.devkitpro.org/packages/linux/\$arch/\n\n" >> /etc/pacman.conf
+
 # =====================
 # NINTENDO WII SETUP
 # =====================
 
-# Install DevKitPro's Pacman
-# RUN set -e; \
-#     sh <(curl -sfL https://apt.devkitpro.org/install-devkitpro-pacman); \
-#     dkp-pacman -S wii-dev
+# Update repo lists; Install Wii development stuff
+RUN pacman -Syu --noconfirm && \
+    pacman -S wii-dev --noconfirm
+
+# Build WASM3 for PowerPC-EABI architecture
+RUN set -e; \
+    cd /opt/wasm3-0.5.0/source/; \
+    $DEVKITPPC/bin/powerpc-eabi-gcc -O3 -c *.c; \
+    $DEVKITPPC/bin/powerpc-eabi-ld -r -o libwasm3.a *.o; \
+    mkdir -p $DEVKITPPC/local/wasm3/lib; \
+    mkdir -p $DEVKITPPC/local/wasm3/include; \
+    find . -name '*.h' -exec cp --parents {} $DEVKITPPC/local/wasm3/include \;; \
+    mv libwasm3.a $DEVKITPPC/local/wasm3/lib/
 
 WORKDIR /work/
 

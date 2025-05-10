@@ -7,7 +7,7 @@ add_executable(WASMCarts "")
 
 # Parse platform selector
 if(NOT DEFINED TARGET)
-  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux'.")
+  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux', 'wii'.")
 endif()
 
 # Validate and set up per-target
@@ -17,8 +17,11 @@ if("${TARGET}" STREQUAL "nds")
 elseif("${TARGET}" STREQUAL "linux")
   set(LINUX TRUE)
   target_compile_definitions(WASMCarts PRIVATE LINUX)
+elseif("${TARGET}" STREQUAL "wii")
+  set(NINTENDO_WII TRUE)
+  target_compile_definitions(WASMCarts PRIVATE NINTENDO_WII)
 else()
-  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'nds', 'linux'.")
+  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'nds', 'linux', 'wii'.")
 endif()
 
 # General source files
@@ -46,12 +49,8 @@ if(NINTENDO_DS)
   endif()
 
   # Include/Link WASM3 build
-  target_include_directories(WASMCarts PRIVATE
-    ${BLOCKSDSEXT}/wasm3/include
-  )
-  target_link_directories(WASMCarts PRIVATE
-    ${BLOCKSDSEXT}/wasm3/lib
-  )
+  target_include_directories(WASMCarts PRIVATE ${BLOCKSDSEXT}/wasm3/include)
+  target_link_directories(WASMCarts PRIVATE ${BLOCKSDSEXT}/wasm3/lib)
   target_link_libraries(WASMCarts PRIVATE wasm3)
 
   # NDS-specific source files
@@ -77,17 +76,31 @@ elseif(LINUX)
   )
 
   # Include/Link WASM3
-  target_include_directories(WASMCarts PRIVATE
-    /usr/local/include
-  )
-  target_link_directories(WASMCarts PRIVATE
-    /usr/local/lib
-  )
+  target_include_directories(WASMCarts PRIVATE /usr/local/include)
+  target_link_directories(WASMCarts PRIVATE /usr/local/lib)
   target_link_libraries(WASMCarts PRIVATE wasm3 m)
 
   # SDL3
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
   target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
+elseif(NINTENDO_WII)
+  # Ensure environment variables are set
+  if(NOT DEFINED ENV{DEVKITPPC})
+    message(FATAL_ERROR "Ensure that environment variable DEVKITPPC is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
+  else()
+    set(DEVKITPPC $ENV{DEVKITPPC})
+  endif()
+
+  # Include/Link WASM3
+  target_include_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/include)
+  target_link_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/lib)
+  target_link_libraries(WASMCarts PRIVATE wasm3)
+
+  target_sources(WASMCarts PRIVATE
+    src/wii/main.c
+  )
+
+  ogc_create_dol("WASMCarts")
 endif()
 
