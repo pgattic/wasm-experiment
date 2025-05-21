@@ -30,7 +30,6 @@ pub struct BuildCodeConfig {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BuildAssetsConfig {
     pub dir: String,
-    pub palette: String,
     pub sprite_tiles: String,
     pub background_tiles: String,
     pub background_map: String,
@@ -87,7 +86,6 @@ impl Default for BuildAssetsConfig {
     fn default() -> Self {
         Self {
             dir: "assets".to_string(),
-            palette: "palette.pal".to_string(),
             sprite_tiles: "spr.4bpp".to_string(),
             background_tiles: "bg.4bpp".to_string(),
             background_map: "bg.map".to_string(),
@@ -95,7 +93,6 @@ impl Default for BuildAssetsConfig {
     }
 }
 
-const DEFAULT_PALETTE: &[u8; 16*3] = include_bytes!("assets/palette.pal");
 const DEFAULT_SPR_TILES: &[u8; 8192] = include_bytes!("assets/spr.4bpp");
 const DEFAULT_BG_TILES: &[u8; 8192] = include_bytes!("assets/bg.4bpp");
 const DEFAULT_MAP_DATA: &[u8; 65536] = &[0; 65536];
@@ -109,9 +106,8 @@ impl ToolConfig {
         let assets_dir = PathBuf::from(&assets.dir);
         let src_dir = PathBuf::from("src");
 
-        fs::create_dir(&assets_dir)?;
-        fs::create_dir(&src_dir)?;
-        fs::write(assets_dir.join(&assets.palette), DEFAULT_PALETTE)?;
+        let _ = fs::create_dir(&assets_dir);
+        let _ = fs::create_dir(&src_dir);
         fs::write(assets_dir.join(&assets.sprite_tiles), DEFAULT_SPR_TILES)?;
         fs::write(assets_dir.join(&assets.background_tiles), DEFAULT_BG_TILES)?;
         fs::write(assets_dir.join(&assets.background_map), DEFAULT_MAP_DATA)?;
@@ -136,14 +132,12 @@ impl ToolConfig {
         use std::fs;
         let assets = &self.build.assets;
         let assets_dir = PathBuf::from(&assets.dir);
-        let pal_file = fs::read(assets_dir.join(&self.build.assets.palette))?;
         let spr_tiles = fs::read(assets_dir.join(&self.build.assets.sprite_tiles))?;
         let bg_tiles = fs::read(assets_dir.join(&self.build.assets.background_tiles))?;
         let bg_map = fs::read(assets_dir.join(&self.build.assets.background_map))?;
         let prog = fs::read(&self.build.code.output.0)?;
 
-        let mut output: Vec<u8> = vec![0; 16];
-        output.extend_from_slice(&pal_file);
+        let mut output: Vec<u8> = vec![0; 0x40];
         output.extend_from_slice(&spr_tiles);
         output.extend_from_slice(&bg_tiles);
         output.extend_from_slice(&bg_map);

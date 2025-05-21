@@ -47,6 +47,7 @@ impl game_state::Game for GameState {
             }
             api::sprite((self.bunnies[i].0 >> 6) as i32, (self.bunnies[i].1 >> 6) as i32, 3);
         }
+        api::print(8, 8, b"HELLO WORLD");
     }
 }
 

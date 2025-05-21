@@ -54,6 +54,23 @@ m3ApiRawFunction(api_sprite) {
   m3ApiSuccess();
 }
 
+m3ApiRawFunction(api_showChar) {
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
+  m3ApiGetArg(uint8_t, ch);
+
+  platform_render_char(x, y, ch);
+  m3ApiSuccess();
+}
+
+m3ApiRawFunction(api_print) {
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
+  m3ApiGetArgMem(char *, text);
+  platform_print(x, y, text);
+  m3ApiSuccess();
+}
+
 m3ApiRawFunction(api_tileMap) {
   m3ApiGetArg(int32_t, draw_x);
   m3ApiGetArg(int32_t, draw_y);
@@ -79,9 +96,9 @@ m3ApiRawFunction(api_btnP) {
 }
 
 m3ApiRawFunction(api_printDbg) {
-    m3ApiGetArgMem(const char *, text);
-    platform_print_line(text);
-    m3ApiSuccess();
+  m3ApiGetArgMem(const char *, text);
+  platform_print_line(text);
+  m3ApiSuccess();
 }
 
 // Hook all the engine-relevant functions declared here into the WASM module
@@ -92,6 +109,8 @@ void link_api_functions(IM3Module module) {
   m3_LinkRawFunction(module, "env", "_rect", "v(iiiii)", &api_rect);
   m3_LinkRawFunction(module, "env", "_rectFill", "v(iiiii)", &api_rectFill);
   m3_LinkRawFunction(module, "env", "_sprite", "v(iii)", &api_sprite);
+  m3_LinkRawFunction(module, "env", "_showChar", "v(iii)", &api_showChar);
+  m3_LinkRawFunction(module, "env", "_print", "v(iii)", &api_print);
   m3_LinkRawFunction(module, "env", "_tileMap", "v(iiiiii)", &api_tileMap);
   m3_LinkRawFunction(module, "env", "_btn", "i(i)", &api_btn);
   m3_LinkRawFunction(module, "env", "_btnP", "i(i)", &api_btnP);

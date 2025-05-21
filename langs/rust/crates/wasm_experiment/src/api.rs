@@ -13,6 +13,10 @@ unsafe extern "C" {
     fn native_rectFill(x: i32, y: i32, w: u32, h: u32, c: u8);
     #[link_name = "_sprite"]
     fn native_sprite(x: i32, y: i32, sprite_id: u8);
+    #[link_name = "_showChar"]
+    fn native_showChar(x: i32, y: i32, char_code: u8);
+    // #[link_name = "_print"]
+    // fn native_print(x: i32, y: i32, ptr: i32);
     #[link_name = "_tileMap"]
     fn native_tileMap(draw_x: i32, draw_y: i32, map_x: u8, map_y: u8, map_w: u8, map_h: u8);
     #[link_name = "_btn"]
@@ -88,6 +92,30 @@ pub fn rect_fill(x: i32, y: i32, w: u32, h: u32, color: u8) {
 /// ```
 pub fn sprite(x: i32, y: i32, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
+}
+
+/// Draw the given character with the specified screen x and y position (top-left corner of char).
+///
+/// Example:
+/// ```rust
+/// api::show_char(12, 12, b'H');
+/// ```
+pub fn show_char(x: i32, y: i32, char_code: u8) {
+    unsafe { native_showChar(x, y, char_code) }
+}
+
+/// Prints a raw byte string (lacks unicode support) at a given (top-left corner) location.
+///
+/// Example:
+/// ```rust
+/// api::print(12, 12, b"Hello World!");
+/// ```
+pub fn print(x: i32, y: i32, text: &[u8]) {
+    for (i, ch) in text.iter().enumerate() {
+        let ch_x = x + (i as i32)*8;
+        if ch_x > crate::SCREEN_WIDTH { return; }
+        show_char(ch_x, y, *ch);
+    }
 }
 
 /// Draw a series of tiles according to the tilemap data of the game (unstable).

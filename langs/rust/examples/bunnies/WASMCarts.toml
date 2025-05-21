@@ -1,11 +1,11 @@
 [package]
-name = "simple"
+name = "bunnies"
 author = "pgattic"
 version = "0.1.0"
 
 [build.code]
-command = ["wat2wasm", "src/main.wat", "-o", "src/main.wasm"]
-output = "src/main.wasm"
+command = ["cargo", "build", "--release"]
+output = "target/wasm32-unknown-unknown/release/rust_wasm_bunnies.wasm"
 
 [build.assets]
 dir = "assets"

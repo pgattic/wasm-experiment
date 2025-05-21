@@ -115,8 +115,6 @@ int platform_begin_frame() {
 }
 
 void platform_end_frame() {
-  platform_render_char(20, 20, 'H');
-  platform_print(12, 12, "HELLO");
   SDL_SetRenderTarget(renderer, NULL); // back to the window
 
   // Compute integer scale to fit the window
