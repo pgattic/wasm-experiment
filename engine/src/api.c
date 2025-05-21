@@ -15,8 +15,8 @@ m3ApiRawFunction(api_clearScreen) {
 }
 
 m3ApiRawFunction(api_pSet) {
-  m3ApiGetArg(uint8_t, x);
-  m3ApiGetArg(uint8_t, y);
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
   m3ApiGetArg(uint8_t, color);
 
   platform_set_pixel(x, y, color);
@@ -24,10 +24,10 @@ m3ApiRawFunction(api_pSet) {
 }
 
 m3ApiRawFunction(api_rect) {
-  m3ApiGetArg(uint8_t, x);
-  m3ApiGetArg(uint8_t, y);
-  m3ApiGetArg(uint8_t, width);
-  m3ApiGetArg(uint8_t, height);
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
+  m3ApiGetArg(uint32_t, width);
+  m3ApiGetArg(uint32_t, height);
   m3ApiGetArg(uint8_t, color);
 
   platform_rect_outline(x, y, width, height, color);
@@ -35,10 +35,10 @@ m3ApiRawFunction(api_rect) {
 }
 
 m3ApiRawFunction(api_rectFill) {
-  m3ApiGetArg(uint8_t, x);
-  m3ApiGetArg(uint8_t, y);
-  m3ApiGetArg(uint8_t, width);
-  m3ApiGetArg(uint8_t, height);
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
+  m3ApiGetArg(uint32_t, width);
+  m3ApiGetArg(uint32_t, height);
   m3ApiGetArg(uint8_t, color);
 
   platform_rect_fill(x, y, width, height, color);
@@ -46,8 +46,8 @@ m3ApiRawFunction(api_rectFill) {
 }
 
 m3ApiRawFunction(api_sprite) {
-  m3ApiGetArg(uint8_t, x);
-  m3ApiGetArg(uint8_t, y);
+  m3ApiGetArg(int32_t, x);
+  m3ApiGetArg(int32_t, y);
   m3ApiGetArg(uint8_t, sprite);
 
   platform_sprite(x, y, sprite);
@@ -55,8 +55,8 @@ m3ApiRawFunction(api_sprite) {
 }
 
 m3ApiRawFunction(api_tileMap) {
-  m3ApiGetArg(int16_t, draw_x);
-  m3ApiGetArg(int16_t, draw_y);
+  m3ApiGetArg(int32_t, draw_x);
+  m3ApiGetArg(int32_t, draw_y);
   m3ApiGetArg(uint8_t, map_x);
   m3ApiGetArg(uint8_t, map_y);
   m3ApiGetArg(uint8_t, map_w);

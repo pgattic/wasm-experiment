@@ -6,9 +6,9 @@ mod circ_buf;
 
 use crate::circ_buf::CircBuf;
 
-const CELL_SIZE: u8 = 8;
-const GRID_WIDTH: u8 = SCREEN_WIDTH / CELL_SIZE;
-const GRID_HEIGHT: u8 = SCREEN_HEIGHT / CELL_SIZE;
+const CELL_SIZE: i32 = 8;
+const GRID_WIDTH: i32 = SCREEN_WIDTH / CELL_SIZE;
+const GRID_HEIGHT: i32 = SCREEN_HEIGHT / CELL_SIZE;
 
 #[derive(PartialEq)]
 enum Direction { Right, Left, Down, Up, }
@@ -98,7 +98,7 @@ impl game_state::Game for GameState {
                     break;
                 }
             }
-            if self.player.body.peek_head().0 >= GRID_WIDTH || self.player.body.peek_head().1 >= GRID_HEIGHT {
+            if self.player.body.peek_head().0 >= GRID_WIDTH as u8 || self.player.body.peek_head().1 >= GRID_HEIGHT as u8 {
                 self.player = Player::new();
                 self.foods = [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()];
             }
@@ -107,11 +107,11 @@ impl game_state::Game for GameState {
         api::clear_screen(1);
 
         for (x, y) in &self.player.body {
-            api::rect_fill(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, 11);
+            api::rect_fill(x as i32 * CELL_SIZE, y as i32 * CELL_SIZE, CELL_SIZE as u32, CELL_SIZE as u32, 11);
         }
 
         for (x, y, spr) in self.foods {
-            api::sprite(x * CELL_SIZE, y * CELL_SIZE, spr);
+            api::sprite(x as i32 * CELL_SIZE, y as i32 * CELL_SIZE, spr);
         }
 
         self.frame_count += 1;

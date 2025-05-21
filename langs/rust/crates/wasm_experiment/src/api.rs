@@ -6,15 +6,15 @@ unsafe extern "C" {
     #[link_name = "_clearScreen"]
     fn native_clearScreen(c: u8);
     #[link_name = "_pSet"]
-    fn native_pSet(x: u8, y: u8, c: u8);
+    fn native_pSet(x: i32, y: i32, c: u8);
     #[link_name = "_rect"]
-    fn native_rect(x: u8, y: u8, w: u8, h: u8, c: u8);
+    fn native_rect(x: i32, y: i32, w: u32, h: u32, c: u8);
     #[link_name = "_rectFill"]
-    fn native_rectFill(x: u8, y: u8, w: u8, h: u8, c: u8);
+    fn native_rectFill(x: i32, y: i32, w: u32, h: u32, c: u8);
     #[link_name = "_sprite"]
-    fn native_sprite(x: u8, y: u8, sprite_id: u8);
+    fn native_sprite(x: i32, y: i32, sprite_id: u8);
     #[link_name = "_tileMap"]
-    fn native_tileMap(draw_x: i16, draw_y: i16, map_x: u8, map_y: u8, map_w: u8, map_h: u8);
+    fn native_tileMap(draw_x: i32, draw_y: i32, map_x: u8, map_y: u8, map_w: u8, map_h: u8);
     #[link_name = "_btn"]
     fn native_btn(btn: u8) -> bool;
     #[link_name = "_btnP"]
@@ -56,7 +56,7 @@ pub fn clear_screen(color: u8) {
 /// ```rust
 /// api::p_set(12, 12, 3);
 /// ```
-pub fn p_set(x: u8, y: u8, color: u8) {
+pub fn p_set(x: i32, y: i32, color: u8) {
     unsafe { native_pSet(x, y, color) }
 }
 
@@ -66,7 +66,7 @@ pub fn p_set(x: u8, y: u8, color: u8) {
 /// ```rust
 /// api::rect(12, 12, 24, 24, 3);
 /// ```
-pub fn rect(x: u8, y: u8, w: u8, h: u8, color: u8) {
+pub fn rect(x: i32, y: i32, w: u32, h: u32, color: u8) {
     unsafe { native_rect(x, y, w, h, color) }
 }
 
@@ -76,7 +76,7 @@ pub fn rect(x: u8, y: u8, w: u8, h: u8, color: u8) {
 /// ```rust
 /// api::rect_fill(12, 12, 24, 24, 3);
 /// ```
-pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
+pub fn rect_fill(x: i32, y: i32, w: u32, h: u32, color: u8) {
     unsafe { native_rectFill(x, y, w, h, color) }
 }
 
@@ -86,7 +86,7 @@ pub fn rect_fill(x: u8, y: u8, w: u8, h: u8, color: u8) {
 /// ```rust
 /// api::sprite(player_x, player_y, 2);
 /// ```
-pub fn sprite(x: u8, y: u8, sprite_id: u8) {
+pub fn sprite(x: i32, y: i32, sprite_id: u8) {
     unsafe { native_sprite(x, y, sprite_id) }
 }
 
@@ -97,7 +97,7 @@ pub fn sprite(x: u8, y: u8, sprite_id: u8) {
 /// // Draw the top-left corner of the tilemap on the screen
 /// api::tile_map(0, 0, 0, 0, SCREEN_WIDTH/8, SCREEN_HEIGHT/8);
 /// ```
-pub fn tile_map(draw_x: i16, draw_y: i16, map_x: u8, map_y: u8, map_w: u8, map_h: u8) {
+pub fn tile_map(draw_x: i32, draw_y: i32, map_x: u8, map_y: u8, map_w: u8, map_h: u8) {
     unsafe { native_tileMap(draw_x, draw_y, map_x, map_y, map_w, map_h) }
 }
 

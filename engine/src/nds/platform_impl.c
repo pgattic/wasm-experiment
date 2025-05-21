@@ -16,12 +16,22 @@ int platform_init() {
   videoSetMode(MODE_0_3D);
   glScreen2D();
 
+  vramSetBankA(VRAM_A_TEXTURE);
+  vramSetBankE(VRAM_E_TEX_PALETTE);
+
+  load_palette();
+  load_font_tiles();
+
   printf("\n");
   if (!fatInitDefault()) {
     printf("FAT initialization failed.\n");
     return 1;
   }
   return 0;
+}
+
+void platform_prepare_cartridge(Cart *c) {
+  load_sprite_tiles(c->spr_tiles);
 }
 
 int platform_begin_frame() {
@@ -45,14 +55,6 @@ void platform_deinit() {
   unload_graphics();
 }
 
-void platform_prepare_cartridge(Cart *c) {
-  vramSetBankA(VRAM_A_TEXTURE);
-  vramSetBankE(VRAM_E_TEX_PALETTE);
-
-  load_palette(c->palette);
-  load_sprite_tiles(c->spr_tiles);
-}
-
 uint32_t platform_rand() {
   return rand();
 }
@@ -61,23 +63,34 @@ void platform_clear_screen(uint8_t color) {
   glBoxFilled(0, 0, 255, 191, nds_palette[color]);
 }
 
-void platform_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
+void platform_set_pixel(int32_t x, int32_t y, uint8_t color) {
   glPutPixel(LEFT_MARGIN + x, TOP_MARGIN + y, nds_palette[color]);
 }
 
-void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void platform_rect_outline(int32_t x, int32_t y, uint32_t width, uint32_t height, uint8_t color) {
   glBox(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + width - 1, TOP_MARGIN + y + height - 1, nds_palette[color]);
 }
 
-void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void platform_rect_fill(int32_t x, int32_t y, uint32_t width, uint32_t height, uint8_t color) {
   glBoxFilled(LEFT_MARGIN + x, TOP_MARGIN + y, LEFT_MARGIN + x + width - 1, TOP_MARGIN + y + height - 1, nds_palette[color]);
 }
 
-void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {
+void platform_sprite(int32_t x, int32_t y, uint8_t sprite) {
   glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &spr_tiles[sprite]);
 }
 
-void platform_tile_map(int16_t draw_x, int16_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {
+void platform_render_char(int32_t x, int32_t y, char ch) {
+  glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &font_tiles[ch]);
+}
+
+void platform_print(int32_t x, int32_t y, char* string) {
+  for (int curr = 0; string[curr] != 0; curr++) {
+    if ((x + curr*8) > WC_SCREEN_WIDTH) { break; } // Early finish
+    platform_render_char(x + curr*8, y, string[curr]);
+  }
+}
+
+void platform_tile_map(int32_t draw_x, int32_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {
   // TODO
 }
 

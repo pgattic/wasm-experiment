@@ -16,15 +16,15 @@ fn panic(_info: &PanicInfo) -> ! {
 
 /// Width of the game screen.
 /// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
-pub const SCREEN_WIDTH: u8 = 240;
+pub const SCREEN_WIDTH: i32 = 240;
 
 /// Height of the game screen.
 /// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
-pub const SCREEN_HEIGHT: u8 = 160;
+pub const SCREEN_HEIGHT: i32 = 160;
 
 /// The width and height of the screen, as a tuple (if that's easier to work with).
 /// (Fun fact: screen dimensions are the same as the Game Boy Advance!)
-pub const SCREEN_DIMENSIONS: (u8, u8) = (SCREEN_WIDTH, SCREEN_HEIGHT);
+pub const SCREEN_DIMENSIONS: (i32, i32) = (SCREEN_WIDTH, SCREEN_HEIGHT);
 
 /// The various buttons supported by WASMCart.
 ///

@@ -46,7 +46,13 @@ int platform_init() {
   SDL_RenderClear(renderer);
   SDL_SetRenderTarget(renderer, NULL);
 
+  load_palette();
+  load_font_tiles();
   return 0;
+}
+
+void platform_prepare_cartridge(Cart *c) {
+  load_sprite_tiles(c->spr_tiles);
 }
 
 #define NUM_KEYS 12
@@ -109,6 +115,8 @@ int platform_begin_frame() {
 }
 
 void platform_end_frame() {
+  platform_render_char(20, 20, 'H');
+  platform_print(12, 12, "HELLO");
   SDL_SetRenderTarget(renderer, NULL); // back to the window
 
   // Compute integer scale to fit the window
@@ -139,11 +147,6 @@ void platform_deinit() {
   SDL_Quit();
 }
 
-void platform_prepare_cartridge(Cart *c) {
-  load_palette(c->palette);
-  load_sprite_tiles(c->spr_tiles);
-}
-
 uint32_t platform_rand() {
   return rand();
 }
@@ -156,7 +159,7 @@ void platform_clear_screen(uint8_t color) {
   SDL_RenderClear(renderer);
 }
 
-void platform_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
+void platform_set_pixel(int32_t x, int32_t y, uint8_t color) {
   uint8_t r = sdl_colors[color].r;
   uint8_t g = sdl_colors[color].g;
   uint8_t b = sdl_colors[color].b;
@@ -164,7 +167,7 @@ void platform_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
   SDL_RenderPoint(renderer, x, y);
 }
 
-void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void platform_rect_outline(int32_t x, int32_t y, uint32_t width, uint32_t height, uint8_t color) {
   SDL_FRect rect = {
     .x = (float)x,
     .y = (float)y,
@@ -178,7 +181,7 @@ void platform_rect_outline(uint8_t x, uint8_t y, uint8_t width, uint8_t height, 
   SDL_RenderRect(renderer, &rect);
 }
 
-void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void platform_rect_fill(int32_t x, int32_t y, uint32_t width, uint32_t height, uint8_t color) {
   SDL_FRect rect = {
     .x = (float)x,
     .y = (float)y,
@@ -192,7 +195,7 @@ void platform_rect_fill(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uin
   SDL_RenderFillRect(renderer, &rect);
 }
 
-void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {
+void platform_sprite(int32_t x, int32_t y, uint8_t sprite) {
   SDL_FRect src_rect = {
     .x = (float)0,
     .y = (float)sprite * 8,
@@ -208,7 +211,30 @@ void platform_sprite(uint8_t x, uint8_t y, uint8_t sprite) {
   SDL_RenderTexture(renderer, spr_tileset, &src_rect, &dest_rect);
 }
 
-void platform_tile_map(int16_t draw_x, int16_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {
+void platform_render_char(int32_t x, int32_t y, char ch) {
+  SDL_FRect src_rect = {
+    .x = (float)0,
+    .y = (float)ch * 8,
+    .w = (float)8,
+    .h = (float)8
+  };
+  SDL_FRect dest_rect = {
+    .x = (float)x,
+    .y = (float)y,
+    .w = (float)8,
+    .h = (float)8
+  };
+  SDL_RenderTexture(renderer, font_tileset, &src_rect, &dest_rect);
+}
+
+void platform_print(int32_t x, int32_t y, char* string) {
+  for (int curr = 0; string[curr] != 0; curr++) {
+    if ((x + curr*8) > WC_SCREEN_WIDTH) { break; } // Early finish
+    platform_render_char(x + curr*8, y, string[curr]);
+  }
+}
+
+void platform_tile_map(int32_t draw_x, int32_t draw_y, uint8_t map_x, uint8_t map_y, uint8_t map_w, uint8_t map_h) {
   // TODO
 }
 

@@ -3,14 +3,39 @@
 #include "graphics.h"
 #include "../cartridge.h"
 
-uint16_t nds_palette[16]; // Keep this synched with the palette from memory
+// Embedded files
+static const uint8_t palette_file[] = {
+  #embed "../../assets/palette.pal"
+};
+static const uint8_t font_file[] = {
+  #embed "../../assets/font.4bpp"
+};
 
-void load_palette(uint8_t palette[PALETTE_SIZE]) {
+uint16_t nds_palette[16]; // Keep this synched with the palette from memory
+void load_palette() {
   for (uint8_t i = 0; i < 16; i++) {
-    nds_palette[i] = RGB15(((palette)[i*3]) >> 3,
-                           ((palette)[i*3+1]) >> 3,
-                           ((palette)[i*3+2]) >> 3);
+    nds_palette[i] = RGB15(((palette_file)[i*3]) >> 3,
+                           ((palette_file)[i*3+1]) >> 3,
+                           ((palette_file)[i*3+2]) >> 3);
   }
+}
+
+glImage font_tiles[128];
+int font_texture_id;
+
+/// Please make sure `load_palette` was called prior to this
+void load_font_tiles() {
+  font_texture_id = glLoadTileSet(
+    font_tiles,
+    8, 8,
+    8, 8*128,
+    GL_RGB16,
+    8, 8*128,
+    TEXGEN_TEXCOORD | GL_TEXTURE_COLOR0_TRANSPARENT,
+    16,
+    &nds_palette,
+    &font_file
+  );
 }
 
 glImage spr_tiles[256];
