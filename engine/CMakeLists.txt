@@ -1,14 +1,31 @@
-
 cmake_minimum_required(VERSION 3.16)
 
-project(WASMCarts C)
-
-add_executable(WASMCarts "")
-
-# Parse platform selector
+# Automatically select toolchain file if not already set
 if(NOT DEFINED TARGET)
   message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux', 'wii'.")
 endif()
+
+# Automatically configure toolchain file based on TARGET
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  if("${TARGET}" STREQUAL "nds")
+    if(DEFINED ENV{BLOCKSDS})
+      set(CMAKE_TOOLCHAIN_FILE "$ENV{BLOCKSDS}/cmake/BlocksDS.cmake" CACHE STRING "Toolchain for NDS" FORCE)
+    else()
+      message(FATAL_ERROR "BLOCKSDS environment variable not set")
+    endif()
+  elseif("${TARGET}" STREQUAL "wii")
+    if(DEFINED ENV{DEVKITPRO})
+      set(CMAKE_TOOLCHAIN_FILE "$ENV{DEVKITPRO}/cmake/Wii.cmake" CACHE STRING "Toolchain for Wii" FORCE)
+    else()
+      message(FATAL_ERROR "DEVKITPRO environment variable not set")
+    endif()
+  endif()
+endif()
+
+# Actual project declaration
+project(WASMCarts C)
+
+add_executable(WASMCarts "")
 
 # Validate and set up per-target
 if("${TARGET}" STREQUAL "nds")
@@ -31,7 +48,6 @@ target_sources(WASMCarts PRIVATE
 )
 
 if(NINTENDO_DS)
-  # Ensure environment variables are set
   if(NOT DEFINED ENV{BLOCKSDS})
     message(FATAL_ERROR "Ensure that environment variable BLOCKSDS is set.\n(see https://blocksds.skylyrac.net/docs/setup/options/linux/)")
   else()
@@ -42,18 +58,14 @@ if(NINTENDO_DS)
   else()
     set(BLOCKSDSEXT $ENV{BLOCKSDSEXT})
   endif()
-
-  # Ensure WASM3 installed correctly
   if(NOT EXISTS ${BLOCKSDSEXT}/wasm3/include OR NOT EXISTS ${BLOCKSDSEXT}/wasm3/lib/libwasm3.a)
     message(FATAL_ERROR "WASM3 not compiled and installed to the correct location.\n(see Dockerfile, search for \"Build WASM3 for NDS\")")
   endif()
 
-  # Include/Link WASM3 build
   target_include_directories(WASMCarts PRIVATE ${BLOCKSDSEXT}/wasm3/include)
   target_link_directories(WASMCarts PRIVATE ${BLOCKSDSEXT}/wasm3/lib)
   target_link_libraries(WASMCarts PRIVATE wasm3)
 
-  # NDS-specific source files
   target_sources(WASMCarts PRIVATE
     src/nds/main.c
     src/nds/platform_impl.c
@@ -61,7 +73,6 @@ if(NINTENDO_DS)
     src/nds/keys.c
   )
 
-  # Build NDS rom (function provided in blocksds's `BlocksDS.cmake` file)
   nds_create_rom(WASMCarts
     NAME "WASMCarts"
     SUBTITLE "Lightweight Fantasy Console"
@@ -75,24 +86,20 @@ elseif(LINUX)
     src/linux/graphics.c
   )
 
-  # Include/Link WASM3
   target_include_directories(WASMCarts PRIVATE /usr/local/include)
   target_link_directories(WASMCarts PRIVATE /usr/local/lib)
   target_link_libraries(WASMCarts PRIVATE wasm3 m)
 
-  # SDL3
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
   target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
 elseif(NINTENDO_WII)
-  # Ensure environment variables are set
   if(NOT DEFINED ENV{DEVKITPPC})
     message(FATAL_ERROR "Ensure that environment variable DEVKITPPC is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
   else()
     set(DEVKITPPC $ENV{DEVKITPPC})
   endif()
 
-  # Include/Link WASM3
   target_include_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/include)
   target_link_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/lib)
   target_link_libraries(WASMCarts PRIVATE wasm3)

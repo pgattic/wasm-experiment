@@ -5,13 +5,14 @@ Note that this is very much a work-in-progress
 
 ## Setup
 
-The installation scripts require [Docker](https://www.docker.com/) be installed on your system. I understand how it can sometimes feel unnecessary, but I did not want all these build dependencies installed on my system. Besides, I saw this project as an excellent opportunity to learn Docker.
+I recommend using [Docker](https://www.docker.com/) for building this project. If you'd rather avoid that, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
 
-- `./docker_build.sh` (may require `sudo`)
-- `./dev_env.sh` (may require `sudo`), then within the container, do one of the following:
+- `docker build --tag wasmcarts:latest .` (may require `sudo`)
+- `docker run --rm -v .:/work -it wasmcarts:latest` (may require `sudo`)
+- Then, within the container, do one of the following:
     - Nintendo DS build:
         - `mkdir -p build/nds && cd build/nds`
-        - `cmake ../.. -DTARGET=nds -DCMAKE_TOOLCHAIN_FILE=$BLOCKSDS/cmake/BlocksDS.cmake`
+        - `cmake ../.. -DTARGET=nds`
         - `make`
     - Linux build:
         - `mkdir -p build/linux && cd build/linux`
@@ -19,6 +20,6 @@ The installation scripts require [Docker](https://www.docker.com/) be installed 
         - `make`
     - Nintendo Wii build:
         - `mkdir -p build/wii && cd build/wii`
-        - `cmake ../.. -DTARGET=wii -DCMAKE_TOOLCHAIN_FILE=$DEVKITPRO/cmake/Wii.cmake`
+        - `cmake ../.. -DTARGET=wii`
         - `make`
 
