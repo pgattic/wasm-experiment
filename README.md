@@ -5,6 +5,8 @@ All I wanted was to make Nintendo DS games in Rust...
 
 This is a work-in-progress Fantasy Console that targets embedded systems and allows users to create games in any language that [compiles to WebAssembly](https://webassembly.org/getting-started/developers-guide/).
 
+![WASMCarts Game Engine](multi-platform.jpg)
+
 ## Roadmap
 
 - [X] Learn some Docker
@@ -18,7 +20,8 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
     - [X] Create NDS implementation
     - [X] Create Desktop implementation ~(Raylib probably)~ *went with SDL3*
     - [ ] Create Wii implementation
-- [X] ~Sprite/map editor~ Build tool
+- [X] Build tool
+- [ ] Sprite/map editing solution
 - [ ] Support background tiles
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [ ] Printing text on the screen
