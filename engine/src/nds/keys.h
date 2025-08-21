@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <gl2d.h>
 
+extern bool nds_pressed_menu;
+
 /// Updates the internal state machine about button information. Should be called once per frame
 void collect_keys();
 

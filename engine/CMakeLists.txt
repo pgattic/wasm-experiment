@@ -43,8 +43,10 @@ endif()
 
 # General source files
 target_sources(WASMCarts PRIVATE
-  src/cartridge.c
   src/api.c
+  src/f_sel.c
+  src/game.c
+  src/main.c
 )
 
 if(NINTENDO_DS)
@@ -67,7 +69,6 @@ if(NINTENDO_DS)
   target_link_libraries(WASMCarts PRIVATE wasm3)
 
   target_sources(WASMCarts PRIVATE
-    src/nds/main.c
     src/nds/platform_impl.c
     src/nds/graphics.c
     src/nds/keys.c
@@ -81,7 +82,6 @@ if(NINTENDO_DS)
   )
 elseif(LINUX)
   target_sources(WASMCarts PRIVATE
-    src/linux/main.c
     src/linux/platform_impl.c
     src/linux/graphics.c
   )

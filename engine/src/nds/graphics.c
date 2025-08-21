@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <nds.h>
 #include "graphics.h"
-#include "../cartridge.h"
+#include "../game.h"
 
 // Embedded files
 static const uint8_t palette_file[] = {

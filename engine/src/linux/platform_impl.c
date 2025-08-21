@@ -6,13 +6,16 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 #include "graphics.h"
+#include "../f_sel.h"
 #include "../platform.h"
 
-int platform_init() {
+const char FALLBACK_FILE_DIR[256] = "/home";
+
+char* platform_init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     fprintf(stderr, "SDL initialization failed: %s\n", SDL_GetError());
-    return 1;
+    return "SDL initialization failed";
   }
 
   // Create OS window
@@ -20,7 +23,7 @@ int platform_init() {
   if (os_window == NULL) {
     fprintf(stderr, "Window creation failed: %s\n", SDL_GetError());
     SDL_Quit();
-    return 1;
+    return "Window creation failed";
   }
 
   renderer = SDL_CreateRenderer(os_window, NULL);
@@ -28,7 +31,7 @@ int platform_init() {
     SDL_Log("SDL_CreateRenderer failed: %s", SDL_GetError());
     SDL_DestroyWindow(os_window);
     SDL_Quit();
-    return 1;
+    return "Renderer creation failed";
   }
   SDL_SetRenderVSync(renderer, 1); // Stick the engine to screen framerate (TODO make the game run explicitly at 60fps)
 
@@ -38,7 +41,7 @@ int platform_init() {
   if (game_window == NULL) {
     fprintf(stderr, "Game Window creation failed: %s\n", SDL_GetError());
     SDL_Quit();
-    return 1;
+    return "Window creation failed";
   }
   SDL_SetTextureScaleMode(game_window, SDL_SCALEMODE_NEAREST);
   SDL_SetRenderTarget(renderer, game_window);
@@ -51,20 +54,22 @@ int platform_init() {
   return 0;
 }
 
-void platform_prepare_cartridge(Cart *c) {
-  load_sprite_tiles(c->spr_tiles);
+void platform_prepare_cartridge() {
+  load_sprite_tiles(loaded_cartridge.spr_tiles);
 }
 
 #define NUM_KEYS 12
 
 bool sdl_held_keys[NUM_KEYS] = {0};
 bool sdl_pressed_keys[NUM_KEYS] = {0};
+bool sdl_pressed_menu = 0;
 
 int platform_begin_frame() {
   // Clear just-pressed keys
   for (int i = 0; i < NUM_KEYS; i++) {
     sdl_pressed_keys[i] = false;
   }
+  sdl_pressed_menu = false;
 
   // Go through events
   SDL_Event event;
@@ -85,6 +90,8 @@ int platform_begin_frame() {
       else if (sc == SDL_SCANCODE_Q) {      sdl_held_keys[8] = true; sdl_pressed_keys[8] = true; }
       else if (sc == SDL_SCANCODE_W) {      sdl_held_keys[9] = true; sdl_pressed_keys[9] = true; }
       else if (sc == SDL_SCANCODE_RETURN){  sdl_held_keys[10] = true; sdl_pressed_keys[10] = true; }
+      else if (sc == SDL_SCANCODE_BACKSPACE){ sdl_held_keys[11] = true; sdl_pressed_keys[11] = true; }
+      else if (sc == SDL_SCANCODE_ESCAPE){ sdl_pressed_menu = true; }
     }
     else if (event.type == SDL_EVENT_KEY_UP) {
       SDL_Scancode sc = event.key.scancode;
@@ -99,6 +106,7 @@ int platform_begin_frame() {
       else if (sc == SDL_SCANCODE_Q) {      sdl_held_keys[8] = false; }
       else if (sc == SDL_SCANCODE_W) {      sdl_held_keys[9] = false; }
       else if (sc == SDL_SCANCODE_RETURN){  sdl_held_keys[10] = false; }
+      else if (sc == SDL_SCANCODE_BACKSPACE){ sdl_held_keys[11] = false; }
     }
   }
 
@@ -244,10 +252,44 @@ bool platform_button_pressed(uint8_t button) {
   return button < 12 ? sdl_pressed_keys[button] : false;
 }
 
+bool platform_menu_pressed() {
+  return sdl_pressed_menu;
+}
+
 void platform_print_line(const char *text) {
   printf("%s\n", text);
 }
 
-int platform_select_file(char *targetFile) {
+#include <dirent.h>
+
+char* platform_init_fsel_data() {
+  fsel_curr_files_c = 0;
+  DIR *dirp = opendir(fsel_path);
+  if (dirp == NULL) {
+    return "Failed to open directory";
+  }
+  readdir(dirp); // Skip first entry (".")
+
+  for (int i=0; i < 256; i++) {
+    struct dirent *cur = readdir(dirp);
+    if (cur == NULL)
+      break;
+
+    if (strlen(cur->d_name) == 0)
+      break;
+
+    strcpy(fsel_curr_files[i], cur->d_name);
+    if (cur->d_type == DT_DIR) {
+      is_dir[i] = true;
+      int slen = strlen(fsel_curr_files[i]);
+      fsel_curr_files[i][slen] = '/';
+      fsel_curr_files[i][slen+1] = '\0';
+    } else {
+      is_dir[i] = false;
+    };
+    fsel_curr_files_c++;
+  }
+  closedir(dirp);
+  return 0;
 }
 

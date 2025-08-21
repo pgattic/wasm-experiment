@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "m3_env.h"
+// #include "wasm3.h"
 
 #define FILE_SIZE         0x100000 // Maximum file size is 1 MiB
 #define HEADER_SIZE       0x40
@@ -19,5 +21,16 @@ typedef struct __attribute__((__packed__)) {
   uint8_t prg_code[PRG_CODE_SIZE];
 } Cart;
 
-Cart *load_cartridge(const char *filepath, size_t *fileSize);
+extern Cart loaded_cartridge;
+extern size_t cart_size;
+extern IM3Environment cart_env;
+extern IM3Runtime cart_runtime;
+extern IM3Module cart_module;
+extern IM3Function cart_setup;
+extern IM3Function cart_update;
+
+char* wasm_init();
+void wasm_deinit();
+char* load_cartridge(char *filepath);
+char* update_game();
 

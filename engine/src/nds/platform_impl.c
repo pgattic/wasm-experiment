@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "keys.h"
 #include "../platform.h"
+#include "../f_sel.h"
 
 #define NDS_SC_W 256
 #define NDS_SC_H 192
@@ -11,7 +12,9 @@
 #define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
-int platform_init() {
+const char FALLBACK_FILE_DIR[256] = "fat:"; // Should never have to be used
+
+char* platform_init() {
   consoleDemoInit();
   videoSetMode(MODE_0_3D);
   glScreen2D();
@@ -24,14 +27,14 @@ int platform_init() {
 
   printf("\n");
   if (!fatInitDefault()) {
-    printf("FAT initialization failed.\n");
-    return 1;
+    return "FAT initialization failed";
   }
+  strcpy(fsel_path, getcwd(NULL, 0));
   return 0;
 }
 
-void platform_prepare_cartridge(Cart *c) {
-  load_sprite_tiles(c->spr_tiles);
+void platform_prepare_cartridge() {
+  load_sprite_tiles(loaded_cartridge.spr_tiles);
 }
 
 int platform_begin_frame() {
@@ -102,27 +105,25 @@ bool platform_button_pressed(uint8_t button) {
   return key_pressed(button);
 }
 
+bool platform_menu_pressed() {
+  return nds_pressed_menu;
+}
+
 void platform_print_line(const char *text) {
   printf("%s\n", text);
 }
 
-#include <sys/stat.h>
 #include <dirent.h>
 
-int platform_select_file(char *targetFile) {
-  // Relative path is safer (would expect "fat:" on NDS, "SD:" on DSi I think, etc.)
-  char cwd[100] = "./wasmcarts/";
-  DIR *dirp = opendir(cwd);
+char* platform_init_fsel_data() {
+  fsel_curr_files_c = 0;
+  DIR *dirp = opendir(fsel_path);
   if (dirp == NULL) {
-    perror("Error");
-    return 1;
+    return "Failed to open directory";
   }
+  readdir(dirp); // Skip first entry (".")
 
-  char entries[10][20] = {0};
-  bool is_dir[10] = {0};
-  int num_dirs = 0;
-
-  for (int i=0; i < 10; i++) {
+  for (int i=0; i < 256; i++) {
     struct dirent *cur = readdir(dirp);
     if (cur == NULL)
       break;
@@ -130,43 +131,18 @@ int platform_select_file(char *targetFile) {
     if (strlen(cur->d_name) == 0)
       break;
 
-    strcpy(entries[i], cur->d_name);
-    if (cur->d_type == DT_DIR) is_dir[i] = 1;
-    num_dirs++;
+    strcpy(fsel_curr_files[i], cur->d_name);
+    if (cur->d_type == DT_DIR) {
+      is_dir[i] = true;
+      int slen = strlen(fsel_curr_files[i]);
+      fsel_curr_files[i][slen] = '/';
+      fsel_curr_files[i][slen+1] = '\0';
+    } else {
+      is_dir[i] = false;
+    };
+    fsel_curr_files_c++;
   }
   closedir(dirp);
-
-  int curr = 2;
-  bool changed = true;
-
-  while (1) {
-    swiWaitForVBlank();
-
-    scanKeys();
-
-    uint32_t keys_down = keysDown();
-    if (keys_down & KEY_UP && curr > 2) {
-      curr--;
-      changed = true;
-    }
-    if (keys_down & KEY_DOWN && curr < num_dirs-1) {
-      curr++;
-      changed = true;
-    }
-    if (keys_down & KEY_A) {
-      strcpy(targetFile, cwd);
-      strcat(targetFile, entries[curr]);
-      return 0;
-    }
-
-    if (changed) {
-      consoleClear();
-      printf("%s\n", cwd);
-      for (int i = 2; i < 10; i++) {
-        printf("%s %s%s\n", (i==curr ? ">":" "), entries[i], (is_dir[i] ? "/" : " "));
-      }
-      changed = false;
-    }
-  }
+  return 0;
 }
 

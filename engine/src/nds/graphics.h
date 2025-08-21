@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <gl2d.h>
-#include "../cartridge.h"
+#include "../game.h"
 
 // Code for managing graphical information such as tilemaps and sprites
 

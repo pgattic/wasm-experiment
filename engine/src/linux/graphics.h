@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL_render.h>
 #include <stdint.h>
-#include "../cartridge.h"
+#include "../game.h"
 
 // Code for managing graphical information such as tilemaps and sprites
 

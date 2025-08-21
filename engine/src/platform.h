@@ -7,7 +7,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "cartridge.h"
+
+// Important: each implementation must define a FALLBACK_FILE_DIR to start file browsing from
+extern const char FALLBACK_FILE_DIR[256];
 
 /* USEFUL CONSTANTS */
 
@@ -20,15 +22,15 @@
 
 /* LOGIC CONTROL */
 
-/// Initialize the system to a ready state. Non-zero return indicates failure.
-int platform_init(void);
+/// Load directory information for file browsing
+char* platform_init_fsel_data();
 
-/// Choose a file to load (sets targetFile to the name of the chosen file).
-int platform_select_file(char *targetFile);
+/// Initialize the system to a ready state. Return a string to represent an error, null for no error.
+char* platform_init(void);
 
 /// Perform platform-specific data loading and prep with cartridge data.
 /// This may include converting and pre-palletizing the graphics, pre-loading the tile-map, etc.
-void platform_prepare_cartridge(Cart *c);
+void platform_prepare_cartridge();
 
 /// Prepare the system graphics for rendering a frame.
 /// Commonly includes collecting key inputs.
@@ -77,6 +79,9 @@ bool platform_button(uint8_t button);
 
 /// Check if a button was pressed this frame.
 bool platform_button_pressed(uint8_t button);
+
+/// Check if menu button was pressed this frame.
+bool platform_menu_pressed();
 
 /// Print a line of text.
 void platform_print_line(const char *text);

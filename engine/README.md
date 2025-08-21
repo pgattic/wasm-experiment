@@ -7,6 +7,11 @@ Note that this is very much a work-in-progress
 
 I recommend using [Docker](https://www.docker.com/) for building this project. If you'd rather avoid that, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
 
+First, make sure Docker is running (commands may require `sudo`):
+
+- `systemctl start containerd`
+- `systemctl start docker`
+
 - `docker build --tag wasmcarts:latest .` (may require `sudo`)
 - `docker run --rm -v .:/work -it wasmcarts:latest` (may require `sudo`)
 - Then, within the container, do one of the following:

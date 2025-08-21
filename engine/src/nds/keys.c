@@ -4,8 +4,9 @@
 
 #define NUM_KEYS 12
 
-bool nds_held_keys[NUM_KEYS] = {0};
-bool nds_pressed_keys[NUM_KEYS] = {0};
+bool nds_held_keys[NUM_KEYS] = { false };
+bool nds_pressed_keys[NUM_KEYS] = { false };
+bool nds_pressed_menu = false;
 
 void collect_keys() {
   scanKeys();
@@ -38,6 +39,7 @@ void collect_keys() {
   nds_pressed_keys[9] = (pressed & KEY_R) != 0;
   nds_pressed_keys[10] = (pressed & KEY_START) != 0;
   nds_pressed_keys[11] = (pressed & KEY_SELECT) != 0;
+  nds_pressed_menu = (pressed & KEY_TOUCH) != 0;
 }
 
 bool key_held(uint8_t button) {
