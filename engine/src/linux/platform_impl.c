@@ -8,6 +8,7 @@
 #include "graphics.h"
 #include "../f_sel.h"
 #include "../platform.h"
+#include "../main.h"
 
 const char FALLBACK_FILE_DIR[256] = "/home";
 
@@ -64,7 +65,7 @@ bool sdl_held_keys[NUM_KEYS] = {0};
 bool sdl_pressed_keys[NUM_KEYS] = {0};
 bool sdl_pressed_menu = 0;
 
-int platform_begin_frame() {
+void platform_begin_frame() {
   // Clear just-pressed keys
   for (int i = 0; i < NUM_KEYS; i++) {
     sdl_pressed_keys[i] = false;
@@ -75,7 +76,7 @@ int platform_begin_frame() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     if (event.type == SDL_EVENT_QUIT) {
-      return 1;
+      running = false;
     }
     else if (event.type == SDL_EVENT_KEY_DOWN) {
       SDL_Scancode sc = event.key.scancode;
@@ -119,7 +120,6 @@ int platform_begin_frame() {
 
   // Switch rendering to game_window texture
   SDL_SetRenderTarget(renderer, game_window);
-  return 0;
 }
 
 void platform_end_frame() {

@@ -34,8 +34,7 @@ void platform_prepare_cartridge();
 
 /// Prepare the system graphics for rendering a frame.
 /// Commonly includes collecting key inputs.
-/// Returns 1 if the game is meant to stop.
-int platform_begin_frame(void);
+void platform_begin_frame(void);
 
 /// End the rendering state, await for next frame.
 /// May also include things like swapping/flushing graphics buffers if applicable.

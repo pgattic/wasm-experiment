@@ -3,6 +3,7 @@
 #include "platform.h"
 #include "string.h"
 #include "f_sel.h"
+#include "game_menu.h"
 
 // Global Data
 enum Screen current_screen = FILE_SELECT;
@@ -11,9 +12,6 @@ bool running = true; // Set to false to quit the engine
 
 // Game Menu Data
 int gm_cursor_location = 0;
-
-void update_game_menu() {
-}
 
 int main(int argc, char* argv[]) {
   strcpy(fsel_path, FALLBACK_FILE_DIR);
@@ -52,8 +50,7 @@ int main(int argc, char* argv[]) {
           current_screen = FILE_SELECT;
         }
         if (platform_menu_pressed()) {
-          wasm_deinit();
-          current_screen = FILE_SELECT;
+          current_screen = GAME_MENU;
         }
         break;
       case GAME_MENU:

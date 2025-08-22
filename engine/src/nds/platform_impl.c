@@ -37,11 +37,10 @@ void platform_prepare_cartridge() {
   load_sprite_tiles(loaded_cartridge.spr_tiles);
 }
 
-int platform_begin_frame() {
+void platform_begin_frame() {
   oamUpdate(&oamMain);
   collect_keys();
   glBegin2D();
-  return 0;
 }
 
 void platform_end_frame() {

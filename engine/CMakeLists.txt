@@ -46,6 +46,7 @@ target_sources(WASMCarts PRIVATE
   src/api.c
   src/f_sel.c
   src/game.c
+  src/game_menu.c
   src/main.c
 )
 
