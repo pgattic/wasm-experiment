@@ -95,19 +95,54 @@ elseif(LINUX)
   pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
   target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
 elseif(NINTENDO_WII)
+  if(NOT DEFINED ENV{DEVKITPRO})
+    message(FATAL_ERROR "Ensure that environment variable DEVKITPRO is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
+  else()
+    set(DEVKITPRO $ENV{DEVKITPRO})
+  endif()
   if(NOT DEFINED ENV{DEVKITPPC})
     message(FATAL_ERROR "Ensure that environment variable DEVKITPPC is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
   else()
     set(DEVKITPPC $ENV{DEVKITPPC})
   endif()
 
-  target_include_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/include)
-  target_link_directories(WASMCarts PRIVATE ${DEVKITPPC}/local/wasm3/lib)
-  target_link_libraries(WASMCarts PRIVATE wasm3)
+  # Includes
+  target_include_directories(WASMCarts PRIVATE
+    ${DEVKITPPC}/local/wasm3/include
+    ${DEVKITPRO}/libogc/include
+    ${DEVKITPRO}/portlibs/ppc/include     # GRRLIB + deps (common)
+    ${DEVKITPRO}/portlibs/wii/include     # some setups place headers here
+  )
+  # Libraries (search paths)
+  target_link_directories(WASMCarts PRIVATE
+    ${DEVKITPPC}/local/wasm3/lib
+    ${DEVKITPRO}/libogc/lib
+    ${DEVKITPRO}/portlibs/ppc/lib         # GRRLIB + deps (common)
+    ${DEVKITPRO}/portlibs/wii/lib         # some setups place libs here
+  )
+
+  # Link order: keep grrlib before its deps
+  target_link_libraries(WASMCarts PRIVATE
+    wasm3
+    grrlib
+    freetype
+    png
+    jpeg
+    z
+    m
+    wiiuse
+    fat
+    ogc
+  )
 
   target_sources(WASMCarts PRIVATE
-    src/wii/main.c
+    src/wii/graphics.c
+    src/wii/keys.c
+    src/wii/platform_impl.c
   )
+
+  target_compile_features(WASMCarts PRIVATE c_std_11)
+  target_compile_definitions(WASMCarts PRIVATE __WII__)
 
   ogc_create_dol("WASMCarts")
 endif()

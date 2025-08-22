@@ -103,6 +103,18 @@ RUN printf "[dkp-libs]\nServer = https://pkg.devkitpro.org/packages\n\n" >> /etc
 RUN pacman -Syu --noconfirm && \
     pacman -S wii-dev --noconfirm
 
+# GRRLIB requirements
+RUN pacman --sync --needed --noconfirm libfat-ogc ppc-libpng ppc-freetype ppc-libjpeg-turbo
+
+# Download and build GRRLIB
+RUN set -e; \
+    cd /opt; \
+    curl -L -o GRRLIB.tar.gz https://github.com/GRRLIB/GRRLIB/archive/refs/tags/v4.6.1.tar.gz; \
+    tar -xzvf GRRLIB.tar.gz; \
+    rm GRRLIB.tar.gz; \
+    cd GRRLIB-4.6.1; \
+    make -C GRRLIB clean all install
+
 # Build WASM3 for PowerPC-EABI architecture
 RUN set -e; \
     cd /opt/wasm3-0.5.0/source/; \
