@@ -17,10 +17,10 @@ void update_game_menu() {
   // Render file select
   char progress[10];
   platform_print(8, 8, "Game Menu");
-  platform_print(16, 24, "Resume Game");
-  platform_print(16, 40, "Restart Game");
-  platform_print(16, 56, "Quit Game");
-  platform_render_char(0, 24 + menu_cursor_location * 16, '>');
+  platform_print(24, 24, "Resume Game");
+  platform_print(24, 40, "Restart Game");
+  platform_print(24, 56, "Quit Game");
+  platform_render_char(8, 24 + menu_cursor_location * 16, '>');
 
   // Handle inputs
   if (platform_button_pressed(4)) { // "A" button
@@ -38,9 +38,11 @@ void update_game_menu() {
         current_screen = FILE_SELECT;
         break;
     }
+    menu_cursor_location = 0;
   }
-  if (platform_button_pressed(5)) { // "B" button
+  if (platform_button_pressed(5) || platform_menu_pressed()) { // "B" button or Menu button
     current_screen = PLAYING;
+    menu_cursor_location = 0;
   }
   if (platform_button_pressed(2)) { // Up button
     if (menu_cursor_location == 0) {
