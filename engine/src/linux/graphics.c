@@ -39,7 +39,7 @@ void load_palette() {
 #define FONT_TILE_COUNT 128
 #define FONT_TILES_SIZE 0x1000
 void load_font_tiles() {
-  uint32_t *pixels = malloc(8 * 8 * FONT_TILE_COUNT * sizeof(uint32_t));
+  uint32_t pixels[8 * 8 * FONT_TILE_COUNT] = {0};
 
   for (uint32_t i = 0; i < FONT_TILES_SIZE; i++) {
     // 4bpp = 2 pixels/byte
@@ -64,12 +64,11 @@ void load_font_tiles() {
     SDL_TEXTUREACCESS_STATIC,
     8, 8 * FONT_TILE_COUNT
   );
-  SDL_UpdateTexture(font_tileset, &texture_rect, pixels, 8 * sizeof(uint32_t));
-  free(pixels);
+  SDL_UpdateTexture(font_tileset, &texture_rect, &pixels, 8 * sizeof(uint32_t));
 }
 
 void load_sprite_tiles(uint8_t tile_data[SPR_TILES_SIZE]) {
-  uint32_t *pixels = malloc(8 * 8 * 256 * sizeof(uint32_t));
+  uint32_t pixels[8 * 8 * 256] = {0};
 
   for (uint32_t i = 0; i < SPR_TILES_SIZE; i++) {
     // 4bpp = 2 pixels/byte
@@ -94,7 +93,6 @@ void load_sprite_tiles(uint8_t tile_data[SPR_TILES_SIZE]) {
     SDL_TEXTUREACCESS_STATIC,
     8, 8 * 256
   );
-  SDL_UpdateTexture(spr_tileset, &texture_rect, pixels, 8 * sizeof(uint32_t));
-  free(pixels);
+  SDL_UpdateTexture(spr_tileset, &texture_rect, &pixels, 8 * sizeof(uint32_t));
 }
 

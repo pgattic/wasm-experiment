@@ -1,0 +1,15 @@
+[package]
+name = "snake"
+author = "pgattic"
+version = "0.1.0"
+
+[build.code]
+command = ["cargo", "build", "--release"]
+output = "target/wasm32-unknown-unknown/release/rust_wasm_snake.wasm"
+
+[build.assets]
+dir = "assets"
+sprite_tiles = "spr.4bpp"
+background_tiles = "bg.4bpp"
+background_map = "bg.map"
+

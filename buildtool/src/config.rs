@@ -143,9 +143,10 @@ impl ToolConfig {
         output.extend_from_slice(&bg_map);
         output.extend_from_slice(&prog);
 
-        fs::write("output.bin", &output)?;
+        let art_name = format!("{}.bin", &self.package.name);
+        fs::write(&art_name, &output)?;
 
-        Ok(("output.bin".to_string(), output.len()))
+        Ok((art_name, output.len()))
     }
 }
 

@@ -42,7 +42,10 @@ int main(int argc, char* argv[]) {
     platform_begin_frame();
     switch (current_screen) {
       case FILE_SELECT:
-        update_file_select();
+        char* result = update_file_select();
+        if (result) {
+          err_msg = result;
+        }
         break;
       case PLAYING:
         err_msg = update_game();

@@ -76,14 +76,20 @@ char* load_cartridge(char *filepath) {
     printf("Error reading file stats\n");
     return "Failed to read file info";
   }
-  cart_size = file_stats.st_size;
+  if (file_stats.st_size > FILE_SIZE) {
+    fclose(fp);
+    return "File too large";
+  }
 
-  size_t bytesRead = fread(&loaded_cartridge, 1, cart_size, fp);
-  if (bytesRead != cart_size) {
-    printf("Error reading file. Expected %zu bytes but got %zu.\n", cart_size, bytesRead);
+  size_t bytes_read = fread(&loaded_cartridge, 1, file_stats.st_size, fp);
+  if (bytes_read != file_stats.st_size) {
+    printf("Error reading file. Expected %zu bytes but got %zu.\n", file_stats.st_size, bytes_read);
     fclose(fp);
     return "Unexpected end of file";
   }
+
+  cart_size = file_stats.st_size;
+
   fclose(fp);
   return 0;
 }

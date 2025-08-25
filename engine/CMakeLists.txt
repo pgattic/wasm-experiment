@@ -82,6 +82,8 @@ if(NINTENDO_DS)
     ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon.bmp"
   )
 elseif(LINUX)
+  set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts)
+
   target_sources(WASMCarts PRIVATE
     src/linux/platform_impl.c
     src/linux/graphics.c
