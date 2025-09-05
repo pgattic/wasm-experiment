@@ -15,8 +15,8 @@ unsafe extern "C" {
     fn native_sprite(x: i32, y: i32, sprite_id: u8);
     #[link_name = "_showChar"]
     fn native_showChar(x: i32, y: i32, char_code: u8);
-    // #[link_name = "_print"]
-    // fn native_print(x: i32, y: i32, ptr: i32);
+    #[link_name = "_print"]
+    fn native_print(x: i32, y: i32, ptr: i32);
     #[link_name = "_tileMap"]
     fn native_tileMap(draw_x: i32, draw_y: i32, map_x: u8, map_y: u8, map_w: u8, map_h: u8);
     #[link_name = "_btn"]
@@ -106,16 +106,21 @@ pub fn show_char(x: i32, y: i32, char_code: u8) {
 
 /// Prints a raw byte string (lacks unicode support) at a given (top-left corner) location.
 ///
+/// Currently, the string must be null-terminated. The `wc_format!` macro handles this, but raw
+/// byte buffers are allowed, if used with caution.
+///
+/// See also the `wc_print!` macro.
+///
 /// Example:
 /// ```rust
-/// api::print(12, 12, b"Hello World!");
+/// // Formatted string
+/// api::print(12, 20, wc_format!("Your score is {} points", 23).as_c_str());
+///
+/// // Constant string
+/// api::print(12, 12, c"Hello World!".to_bytes()); // Use a C-string, please
 /// ```
 pub fn print(x: i32, y: i32, text: &[u8]) {
-    for (i, ch) in text.iter().enumerate() {
-        let ch_x = x + (i as i32)*8;
-        if ch_x > crate::SCREEN_WIDTH { return; }
-        show_char(ch_x, y, *ch);
-    }
+    unsafe { native_print(x, y, text.as_ptr() as i32); }
 }
 
 /// Draw a series of tiles according to the tilemap data of the game (unstable).

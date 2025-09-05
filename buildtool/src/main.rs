@@ -44,9 +44,9 @@ fn main() -> std::io::Result<()> {
         Cli::Run => { // Build and run project
             let (name, size) = build(config_read)?;
             println!("Built `{}` successfully ({} bytes WASM, {} bytes total).", name, size - 81984, size);
-            println!("Running `WASMCarts {}`...", name);
+            println!("Running `wasmcarts {}`...", name);
 
-            let mut cmd = std::process::Command::new("WASMCarts");
+            let mut cmd = std::process::Command::new("wasmcarts");
             cmd.arg(name);
             let _ = cmd.status()?;
         }

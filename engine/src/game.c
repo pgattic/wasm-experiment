@@ -15,7 +15,7 @@ IM3Function cart_update;
 
 char* wasm_init() {
   cart_env = m3_NewEnvironment();
-  cart_runtime = m3_NewRuntime(cart_env, 1024, NULL);
+  cart_runtime = m3_NewRuntime(cart_env, 65536, NULL);
   cart_module;
   M3Result result;
 

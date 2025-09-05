@@ -54,7 +54,6 @@ struct GameState {
 
 impl game_state::Game for GameState {
     fn setup() -> Self {
-        api::println_dbg(b"Hello from Rust!\0");
         Self {
             player: Player::new(),
             foods: [new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food(), new_food()],
@@ -113,6 +112,7 @@ impl game_state::Game for GameState {
         for (x, y, spr) in self.foods {
             api::sprite(x as i32 * CELL_SIZE, y as i32 * CELL_SIZE, spr);
         }
+        wc_print!(0, SCREEN_HEIGHT - 8, "Score: {}", self.player.score);
 
         self.frame_count += 1;
     }
