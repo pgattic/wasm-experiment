@@ -14,7 +14,7 @@ const char FALLBACK_FILE_DIR[256] = "/home";
 
 char* platform_init() {
   // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+  if (SDL_Init(SDL_INIT_VIDEO) == false) {
     fprintf(stderr, "SDL initialization failed: %s\n", SDL_GetError());
     return "SDL initialization failed";
   }

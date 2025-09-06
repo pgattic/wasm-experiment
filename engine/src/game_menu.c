@@ -11,11 +11,9 @@ size_t menu_cursor_location = 0;
 // - Quit
 
 void update_game_menu() {
-  char* result = 0;
-
   platform_clear_screen(1);
+
   // Render file select
-  char progress[10];
   platform_print(8, 8, "Game Menu");
   platform_print(24, 24, "Resume Game");
   platform_print(24, 40, "Restart Game");

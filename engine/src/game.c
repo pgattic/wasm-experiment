@@ -16,7 +16,6 @@ IM3Function cart_update;
 char* wasm_init() {
   cart_env = m3_NewEnvironment();
   cart_runtime = m3_NewRuntime(cart_env, 65536, NULL);
-  cart_module;
   M3Result result;
 
   size_t wasm_size = cart_size - METAPROG_SIZE;
@@ -83,7 +82,7 @@ char* load_cartridge(char *filepath) {
 
   size_t bytes_read = fread(&loaded_cartridge, 1, file_stats.st_size, fp);
   if (bytes_read != file_stats.st_size) {
-    printf("Error reading file. Expected %zu bytes but got %zu.\n", file_stats.st_size, bytes_read);
+    printf("Error reading file. Expected %zu bytes but got %zu.\n", (size_t)file_stats.st_size, bytes_read);
     fclose(fp);
     return "Unexpected end of file";
   }
@@ -100,5 +99,6 @@ char* update_game() {
     printf("Error calling function: %s\n", result);
     return "Error calling `update` function";
   }
+  return 0;
 }
 

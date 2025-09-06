@@ -27,6 +27,8 @@ project(WASMCarts C)
 
 add_executable(WASMCarts "")
 
+target_compile_options(WASMCarts PRIVATE -Wall)
+
 # Validate and set up per-target
 if("${TARGET}" STREQUAL "nds")
   set(NINTENDO_DS TRUE)
@@ -51,6 +53,11 @@ target_sources(WASMCarts PRIVATE
 )
 
 if(NINTENDO_DS)
+
+  # NINTENDO DS VERSION #
+
+  # Based on the BlocksDS CMake example: https://github.com/blocksds/sdk/tree/master/examples/cmake/portable_demo
+
   if(NOT DEFINED ENV{BLOCKSDS})
     message(FATAL_ERROR "Ensure that environment variable BLOCKSDS is set.\n(see https://blocksds.skylyrac.net/docs/setup/options/linux/)")
   else()
@@ -81,8 +88,12 @@ if(NINTENDO_DS)
     AUTHOR "By pgattic"
     ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon.bmp"
   )
+
 elseif(LINUX)
-  set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts)
+
+  # LINUX VERSION #
+
+  set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts) # Program name should be lowercased
 
   target_sources(WASMCarts PRIVATE
     src/linux/platform_impl.c
@@ -96,7 +107,16 @@ elseif(LINUX)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
   target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
+
 elseif(NINTENDO_WII)
+
+  # NINTENDO WII VERSION #
+
+  # Based on the following examples:
+  # Wii CMake example: https://github.com/devkitPro/wii-examples/tree/master/templates/cmake/application
+  # GameCube example (includes CMake option): https://github.com/devkitPro/gamecube-examples/tree/master/templates/application
+  # Note: could be improved with inspiration from https://github.com/GRRLIB/GRRLIB/tree/master/examples/cmake
+
   if(NOT DEFINED ENV{DEVKITPRO})
     message(FATAL_ERROR "Ensure that environment variable DEVKITPRO is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
   else()
@@ -108,22 +128,19 @@ elseif(NINTENDO_WII)
     set(DEVKITPPC $ENV{DEVKITPPC})
   endif()
 
-  # Includes
   target_include_directories(WASMCarts PRIVATE
     ${DEVKITPPC}/local/wasm3/include
     ${DEVKITPRO}/libogc/include
-    ${DEVKITPRO}/portlibs/ppc/include     # GRRLIB + deps (common)
-    ${DEVKITPRO}/portlibs/wii/include     # some setups place headers here
+    ${DEVKITPRO}/portlibs/ppc/include
+    ${DEVKITPRO}/portlibs/wii/include
   )
-  # Libraries (search paths)
   target_link_directories(WASMCarts PRIVATE
     ${DEVKITPPC}/local/wasm3/lib
     ${DEVKITPRO}/libogc/lib
-    ${DEVKITPRO}/portlibs/ppc/lib         # GRRLIB + deps (common)
-    ${DEVKITPRO}/portlibs/wii/lib         # some setups place libs here
+    ${DEVKITPRO}/portlibs/ppc/lib
+    ${DEVKITPRO}/portlibs/wii/lib
   )
 
-  # Link order: keep grrlib before its deps
   target_link_libraries(WASMCarts PRIVATE
     wasm3
     grrlib
@@ -143,8 +160,6 @@ elseif(NINTENDO_WII)
     src/wii/platform_impl.c
   )
 
-  target_compile_features(WASMCarts PRIVATE c_std_11)
-  target_compile_definitions(WASMCarts PRIVATE __WII__)
 
   ogc_create_dol("WASMCarts")
 endif()

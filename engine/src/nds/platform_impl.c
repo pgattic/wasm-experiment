@@ -82,7 +82,7 @@ void platform_sprite(int32_t x, int32_t y, uint8_t sprite) {
 }
 
 void platform_render_char(int32_t x, int32_t y, char ch) {
-  glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &font_tiles[ch]);
+  glSprite(LEFT_MARGIN + x, TOP_MARGIN + y, GL_FLIP_NONE, &font_tiles[(uint8_t)ch]);
 }
 
 void platform_print(int32_t x, int32_t y, char* string) {

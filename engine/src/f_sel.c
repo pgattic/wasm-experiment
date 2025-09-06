@@ -34,7 +34,7 @@ char* update_file_select() {
   platform_clear_screen(1);
   // Render file select
   char progress[10];
-  sprintf(progress, "[%d/%d]", fsel_cursor_location+1, fsel_curr_files_c);
+  sprintf(progress, "[%zu/%zu]", fsel_cursor_location+1, fsel_curr_files_c);
   int fsel_p_len = strlen(fsel_path);
   if (fsel_p_len > (WC_SCREEN_WIDTH / 8)) {
     platform_print(0, 0, "...");
