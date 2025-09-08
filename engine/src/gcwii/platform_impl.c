@@ -1,5 +1,4 @@
 #include <grrlib.h>
-#include <wiiuse/wpad.h>
 #include <gccore.h>
 #include <fat.h>
 #include <dirent.h>
@@ -24,9 +23,8 @@ const char FALLBACK_FILE_DIR[256] = "sd:";
 static GRRLIB_texImg *render_target = NULL;
 
 char* platform_init() {
-  if (GRRLIB_Init() != 0) return "GRRLIB init failed";
-  WPAD_Init();
-  PAD_Init();
+  GRRLIB_Init();
+  init_keys();
 
   GRRLIB_SetBackgroundColour(0,0,0,0xFF);
 
@@ -35,7 +33,11 @@ char* platform_init() {
   GX_SetCopyFilter(GX_FALSE, rmode->sample_pattern, GX_FALSE, rmode->vfilter);
   GX_SetDither(GX_FALSE);
 
+#ifdef PLATFORM_WII
   if (!fatInitDefault()) return "FAT initialization failed";
+#else
+  // TODO
+#endif
 
   // Upload palette & font tiles
   load_palette();
@@ -140,7 +142,7 @@ void platform_tile_map(int32_t draw_x, int32_t draw_y, uint8_t map_x, uint8_t ma
 
 bool platform_button(uint8_t b)          { return key_held(b); }
 bool platform_button_pressed(uint8_t b)  { return key_pressed(b); }
-bool platform_menu_pressed()             { return wii_pressed_menu; }
+bool platform_menu_pressed()             { return gcwii_pressed_menu; }
 
 void platform_print_line(const char *text) { printf("%s\n", text); }
 

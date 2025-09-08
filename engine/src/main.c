@@ -11,9 +11,6 @@ enum Screen current_screen = FILE_SELECT;
 char* err_msg = 0; // Set to NULL if no error to display
 bool running = true; // Set to false to quit the engine
 
-// Game Menu Data
-int gm_cursor_location = 0;
-
 int main(int argc, char* argv[]) {
   strcpy(fsel_path, FALLBACK_FILE_DIR);
   if (argc > 0) {

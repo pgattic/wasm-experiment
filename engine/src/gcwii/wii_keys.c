@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <wiiuse/wpad.h>
 #include <ogc/pad.h>
+#include "keys.h"
+
+// Implements `keys.h`
 
 // So far only player 1 supported
 
@@ -9,7 +12,12 @@
 
 static bool held[NUM_KEYS]    = {0};
 static bool pressed[NUM_KEYS] = {0};
-bool wii_pressed_menu = false;
+bool gcwii_pressed_menu = false;
+
+void init_keys() {
+  WPAD_Init();
+  PAD_Init();
+}
 
 static inline void set_btn(int idx, bool h, bool d) {
   if (idx < 0 || idx >= NUM_KEYS) return;
@@ -21,7 +29,7 @@ static inline void set_btn(int idx, bool h, bool d) {
 
 void collect_keys(void) {
   // for (int i=0;i<NUM_KEYS;i++) pressed[i] = false;
-  wii_pressed_menu = false;
+  gcwii_pressed_menu = false;
 
   // Scan Wiimote (+ Classic) and GameCube pads
   WPAD_ScanPads();
@@ -67,7 +75,7 @@ void collect_keys(void) {
               (wd & (WPAD_BUTTON_MINUS| WPAD_CLASSIC_BUTTON_MINUS ))|| 0);
 
   // Menu: HOME on Wiimote/Classic, or GC START+Z as a convenience
-  wii_pressed_menu = (wd & (WPAD_BUTTON_HOME|WPAD_CLASSIC_BUTTON_HOME)) ||
+  gcwii_pressed_menu = (wd & (WPAD_BUTTON_HOME|WPAD_CLASSIC_BUTTON_HOME)) ||
                      ((gd & PAD_BUTTON_START) && (gh & PAD_TRIGGER_Z));
 }
 

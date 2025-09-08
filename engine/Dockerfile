@@ -80,6 +80,8 @@ RUN set -e; \
 # DEVKITPRO SETUP
 # =================
 
+# Following https://devkitpro.org/wiki/devkitPro_pacman#Customising_Existing_Pacman_Install
+
 ENV DEVKITPRO=/opt/devkitpro
 ENV DEVKITARM=/opt/devkitpro/devkitARM
 ENV DEVKITPPC=/opt/devkitpro/devkitPPC
@@ -95,13 +97,13 @@ RUN pacman-key --init && \
 RUN printf "[dkp-libs]\nServer = https://pkg.devkitpro.org/packages\n\n" >> /etc/pacman.conf && \
     printf "[dkp-linux]\nServer = https://pkg.devkitpro.org/packages/linux/\$arch/\n\n" >> /etc/pacman.conf
 
-# =====================
-# NINTENDO WII SETUP
-# =====================
+# =============================
+# NINTENDO WII/GAMECUBE SETUP
+# =============================
 
-# Update repo lists; Install Wii development stuff
+# Update repo lists; Install Wii/GameCube development stuff
 RUN pacman -Syu --noconfirm && \
-    pacman -S wii-dev --noconfirm
+    pacman -S wii-dev gamecube-dev --noconfirm
 
 # GRRLIB requirements
 RUN pacman --sync --needed --noconfirm libfat-ogc ppc-libpng ppc-freetype ppc-libjpeg-turbo
@@ -113,7 +115,12 @@ RUN set -e; \
     tar -xzvf GRRLIB.tar.gz; \
     rm GRRLIB.tar.gz; \
     cd GRRLIB-4.6.1; \
-    make -C GRRLIB clean all install
+    # Places the headers in $DEVKITPRO/portlibs/wii/include/
+    # Places the binaries in $DEVKITPRO/portlibs/wii/lib/
+    make -C GRRLIB clean all install; \
+    # Places the headers in $DEVKITPRO/portlibs/gamecube/include/
+    # Places the binaries in $DEVKITPRO/portlibs/gamecube/lib/
+    make PLATFORM=cube -C GRRLIB clean all install
 
 # Build WASM3 for PowerPC-EABI architecture
 RUN set -e; \

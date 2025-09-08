@@ -27,4 +27,8 @@ First, make sure Docker is running (commands may require `sudo`):
         - `mkdir -p build/wii && cd build/wii`
         - `cmake ../.. -DTARGET=wii`
         - `make`
+    - Nintendo GameCube build:
+        - `mkdir -p build/gamecube && cd build/gamecube`
+        - `cmake ../.. -DTARGET=gamecube`
+        - `make`
 

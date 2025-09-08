@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Automatically select toolchain file if not already set
 if(NOT DEFINED TARGET)
-  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux', 'wii'.")
+  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'nds', 'linux', 'wii', 'gamecube'.")
 endif()
 
 # Automatically configure toolchain file based on TARGET
@@ -19,6 +19,12 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
     else()
       message(FATAL_ERROR "DEVKITPRO environment variable not set")
     endif()
+  elseif("${TARGET}" STREQUAL "gamecube")
+    if(DEFINED ENV{DEVKITPRO})
+set(CMAKE_TOOLCHAIN_FILE "$ENV{DEVKITPRO}/cmake/GameCube.cmake" CACHE STRING "Toolchain for GameCube" FORCE)
+    else()
+      message(FATAL_ERROR "DEVKITPRO environment variable not set")
+    endif()
   endif()
 endif()
 
@@ -29,18 +35,23 @@ add_executable(WASMCarts "")
 
 target_compile_options(WASMCarts PRIVATE -Wall)
 
-# Validate and set up per-target
+# Set CMake variables, and preprocessor macros for the C code to use
 if("${TARGET}" STREQUAL "nds")
   set(NINTENDO_DS TRUE)
-  target_compile_definitions(WASMCarts PRIVATE NINTENDO_DS)
+  target_compile_definitions(WASMCarts PRIVATE PLATFORM_DS)
 elseif("${TARGET}" STREQUAL "linux")
   set(LINUX TRUE)
-  target_compile_definitions(WASMCarts PRIVATE LINUX)
+  target_compile_definitions(WASMCarts PRIVATE PLATFORM_LINUX)
 elseif("${TARGET}" STREQUAL "wii")
-  set(NINTENDO_WII TRUE)
-  target_compile_definitions(WASMCarts PRIVATE NINTENDO_WII)
+  set(NINTENDO_OGC TRUE)
+  set(OGC_PLATFORM "wii")
+  target_compile_definitions(WASMCarts PRIVATE PLATFORM_WII)
+elseif("${TARGET}" STREQUAL "gamecube")
+  set(NINTENDO_OGC TRUE)
+  set(OGC_PLATFORM "gamecube")
+  target_compile_definitions(WASMCarts PRIVATE PLATFORM_GAMECUBE)
 else()
-  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'nds', 'linux', 'wii'.")
+  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'nds', 'linux', 'wii', 'gamecube'.")
 endif()
 
 # General source files
@@ -108,9 +119,9 @@ elseif(LINUX)
   pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
   target_link_libraries(WASMCarts PRIVATE PkgConfig::SDL3)
 
-elseif(NINTENDO_WII)
+elseif(NINTENDO_OGC)
 
-  # NINTENDO WII VERSION #
+  # NINTENDO WII/GAMECUBE VERSION #
 
   # Based on the following examples:
   # Wii CMake example: https://github.com/devkitPro/wii-examples/tree/master/templates/cmake/application
@@ -132,34 +143,48 @@ elseif(NINTENDO_WII)
     ${DEVKITPPC}/local/wasm3/include
     ${DEVKITPRO}/libogc/include
     ${DEVKITPRO}/portlibs/ppc/include
-    ${DEVKITPRO}/portlibs/wii/include
+    ${DEVKITPRO}/portlibs/${OGC_PLATFORM}/include
   )
   target_link_directories(WASMCarts PRIVATE
     ${DEVKITPPC}/local/wasm3/lib
     ${DEVKITPRO}/libogc/lib
     ${DEVKITPRO}/portlibs/ppc/lib
-    ${DEVKITPRO}/portlibs/wii/lib
+    ${DEVKITPRO}/portlibs/${OGC_PLATFORM}/lib
   )
 
-  target_link_libraries(WASMCarts PRIVATE
-    wasm3
-    grrlib
-    freetype
-    png
-    jpeg
-    z
-    m
-    wiiuse
-    fat
-    ogc
-  )
+  if (OGC_PLATFORM STREQUAL "wii")
+    target_link_libraries(WASMCarts PRIVATE
+      wasm3
+      grrlib
+      freetype
+      png
+      jpeg
+      z
+      m
+      wiiuse
+      fat
+      ogc
+    )
+  else()
+    target_link_libraries(WASMCarts PRIVATE
+      wasm3
+      grrlib
+      freetype
+      png
+      jpeg
+      z
+      m
+      fat
+      ogc
+    )
+  endif()
+
 
   target_sources(WASMCarts PRIVATE
-    src/wii/graphics.c
-    src/wii/keys.c
-    src/wii/platform_impl.c
+    src/gcwii/graphics.c
+    src/gcwii/${OGC_PLATFORM}_keys.c
+    src/gcwii/platform_impl.c
   )
-
 
   ogc_create_dol("WASMCarts")
 endif()
