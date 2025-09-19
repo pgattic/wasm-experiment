@@ -5,7 +5,7 @@ All I wanted was to make Nintendo DS games in Rust...
 
 This is a work-in-progress Fantasy Console that targets embedded systems and allows users to create games in any language that [compiles to WebAssembly](https://webassembly.org/getting-started/developers-guide/).
 
-![WASMCarts Game Engine](multi-platform.jpg)
+![WASMCarts Game Engine](nds-linux-wii.jpg)
 
 ## Roadmap
 
@@ -13,18 +13,19 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 - [X] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
 - [X] Have it run a wasm file compiled from a different language than AssemblyScript
 - [X] Have it load a file from file storage instead of embedding it
-    - [X] File picker (needs work)
+    - [X] File picker
 - [X] Support sprites
 - [X] Define functions for game engine to expose
 - [X] Port build system to CMake
     - [X] Create NDS implementation
     - [X] Create Desktop implementation ~(Raylib probably)~ *went with SDL3*
-    - [ ] Create Wii implementation
+    - [X] Create Wii implementation
 - [X] Build tool
+- [X] Ingame menu
 - [ ] Sprite/map editing solution
 - [ ] Support background tiles
 - [ ] Memory mapping for tilemap/sprite manipulation
-- [ ] Printing text on the screen
+- [X] Printing text on the screen
 
 ## Stretch Goals
 
@@ -66,7 +67,7 @@ This is a work-in-progress Fantasy Console that targets embedded systems and all
 | ✅ | `clearScreen(color)` | Clear the screen to the specified color |
 | ❌ | `ellipse(x, y, xRad, yRad)` | Render an ellipse |
 | ❌ | `ellipseFill(x, y, xRad, yRad)` | Render a filled ellipse |
-| ❌ | `print(x, y, text)` | Print a string of text to the display |
+| ✅ | `print(x, y, text)` | Print a string of text to the display |
 | ✅ | `pixel(x, y, color)` | Draw a single pixel at the specified location |
 | ✅ | `rect(x, y, w, h, color)` | Draw an outlined rectangle at the specified position and size |
 | ✅ | `rectFill(x, y, w, h, color)` | Draw a filled rectangle at the specified position and size |
@@ -94,6 +95,6 @@ This project stands on the backs of giants. During my work, I felt a need to giv
 - Martin Moxon for his [WebAssembly On Your Nintendo DS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) blog post, which gave me just the right kind of inspiration I needed to start this thing!
 - [AntonioND](https://github.com/AntonioND) for his superhuman work put into the NDS and GBA development scene, particularly through [BlocksDS](https://blocksds.skylyrac.net/docs)
 - [Asie](https://github.com/asiekierka) for giving us [Wonderful Toolchain](https://wonderful.asie.pl/), which included very up-to-date compilers and other build tools for the Nintendo DS.
-- [vshymanskyy](https://github.com/vshymanskyy) for creating [wasm3](https://github.com/wasm3)
+- [vshymanskyy](https://github.com/vshymanskyy) for creating [wasm3](https://github.com/wasm3/wasm3)
 - Anyone else who has contributed to WebAssembly, Nintendo DS Homebrew, and SDL3! You rock!
 
