@@ -1,27 +1,33 @@
 
-# WASM Runtime + Game Framework
+# WASMCarts Engine
 
 Note that this is very much a work-in-progress
 
 ## Setup
 
-I recommend using [Docker](https://www.docker.com/) for building this project. If you'd rather avoid that, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
+[Nix](https://nixos.org/) is available as a build option for the Linux target. [Docker](https://www.docker.com/) is used for building all other targets, and can also build for Linux. If you'd rather use some other setup, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
 
-First, make sure Docker is running (commands may require `sudo`):
+### Nix (Targeting Linux)
 
-- `systemctl start containerd`
-- `systemctl start docker`
+- `nix develop`
+- `mkdir -p build/linux && cd build/linux`
+- `cmake ../.. -DTARGET=linux`
+- `make`
 
-- `docker build --tag wasmcarts:latest .` (may require `sudo`)
-- `docker run --rm -v .:/work -it wasmcarts:latest` (may require `sudo`)
+### Docker (Targeting All Supported Systems)
+
+First, make sure the Docker service is running (`sudo systemctl start docker`)
+
+- (`sudo`) `docker build --tag wasmcarts:latest .` (may require `--network=host`)
+- (`sudo`) `docker run --rm -v .:/work -it wasmcarts:latest` (may require `--network=host`)
 - Then, within the container, do one of the following:
-    - Nintendo DS build:
-        - `mkdir -p build/nds && cd build/nds`
-        - `cmake ../.. -DTARGET=nds`
-        - `make`
     - Linux build:
         - `mkdir -p build/linux && cd build/linux`
         - `cmake ../.. -DTARGET=linux`
+        - `make`
+    - Nintendo DS build:
+        - `mkdir -p build/nds && cd build/nds`
+        - `cmake ../.. -DTARGET=nds`
         - `make`
     - Nintendo Wii build:
         - `mkdir -p build/wii && cd build/wii`

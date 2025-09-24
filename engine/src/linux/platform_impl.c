@@ -265,28 +265,26 @@ void platform_print_line(const char *text) {
 char* platform_init_fsel_data() {
   fsel_curr_files_c = 0;
   DIR *dirp = opendir(fsel_path);
-  if (dirp == NULL) {
-    return "Failed to open directory";
-  }
-  readdir(dirp); // Skip first entry (".")
+  if (dirp == NULL) return "Failed to open directory";
 
-  for (int i=0; i < 256; i++) {
+  readdir(dirp); // Skip first entry ("."), might have to be more sure this is correct...
+
+  for (int i = 0; i < MAX_DIR_ENTRIES; i++) {
     struct dirent *cur = readdir(dirp);
-    if (cur == NULL)
-      break;
+    if (cur == NULL) break;
+    if (strlen(cur->d_name) == 0) break;
 
-    if (strlen(cur->d_name) == 0)
-      break;
-
+    int slen = strlen(cur->d_name);
+    if (slen >= MAX_FILE_LENGTH) continue; // For now, we skip long file names
     strcpy(fsel_curr_files[i], cur->d_name);
+
     if (cur->d_type == DT_DIR) {
       is_dir[i] = true;
-      int slen = strlen(fsel_curr_files[i]);
       fsel_curr_files[i][slen] = '/';
       fsel_curr_files[i][slen+1] = '\0';
     } else {
       is_dir[i] = false;
-    };
+    }
     fsel_curr_files_c++;
   }
   closedir(dirp);

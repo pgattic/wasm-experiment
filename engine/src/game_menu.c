@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "main.h"
 #include "platform.h"
 #include "game.h"

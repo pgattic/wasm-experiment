@@ -1,16 +1,18 @@
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "main.h"
 #include "platform.h"
 #include "game.h"
 #include "f_sel.h"
 
-char fsel_path[256];
+// I might want to figure out how to make this more dynamic
+char fsel_path[MAX_FILE_PATH];
 size_t fsel_cursor_location = 0;
-char fsel_curr_files[256][256]; // I might want to figure out how to shrink this
+char fsel_curr_files[MAX_DIR_ENTRIES][MAX_FILE_LENGTH];
 size_t fsel_curr_files_c = 0;
-bool is_dir[256];
+bool is_dir[MAX_DIR_ENTRIES];
 
 char* set_fsel_path(const char* path) {
   if (!path) return "No path given";
@@ -19,7 +21,7 @@ char* set_fsel_path(const char* path) {
   if (!last_slash) return "Invalid path given";
 
   size_t dir_len = last_slash - path + 1;
-  if (dir_len >= 256) dir_len = 255;
+  if (dir_len >= MAX_FILE_PATH) dir_len = MAX_FILE_PATH - 1;
 
   strncpy(fsel_path, path, dir_len);
   fsel_path[dir_len] = '\0';

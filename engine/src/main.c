@@ -1,10 +1,11 @@
+#include <stdio.h>
+#include <stdbool.h>
 #include "main.h"
 #include "game.h"
 #include "platform.h"
 #include "string.h"
 #include "f_sel.h"
 #include "game_menu.h"
-#include <stdio.h>
 
 // Global Data
 enum Screen current_screen = FILE_SELECT;
