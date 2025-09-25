@@ -36,18 +36,20 @@ int main(int argc, char* argv[]) {
       current_screen = PLAYING;
     }
   }
+  char* result;
   while (running) {
     platform_begin_frame();
     switch (current_screen) {
       case FILE_SELECT:
-        char* result = update_file_select();
+        result = update_file_select();
         if (result) {
           err_msg = result;
         }
         break;
       case PLAYING:
-        err_msg = update_game();
-        if (err_msg) { // Quit the game
+        result = update_game();
+        if (result) { // Quit the game
+          err_msg = result;
           wasm_deinit();
           current_screen = FILE_SELECT;
         }

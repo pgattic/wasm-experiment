@@ -75,6 +75,7 @@ endfunction()
 
 add_executable(WASMCarts "")
 target_compile_options(WASMCarts PRIVATE -Wall)
+target_compile_definitions(WASMCarts PRIVATE "$<$<CONFIG:Debug>:DEBUG>") # Define DEBUG macro for CMake Debug config
 
 # Set CMake variables, and preprocessor macros for the C code to use
 if("${TARGET}" STREQUAL "linux")

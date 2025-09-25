@@ -12,20 +12,28 @@
 #define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
-const char FALLBACK_FILE_DIR[256] = "fat:"; // Should never have to be used
+const char FALLBACK_FILE_DIR[256] = "fat:";
 
 char* platform_init() {
+#ifdef DEBUG
   consoleDemoInit();
+#else
+  lcdMainOnTop();
+#endif
+
   videoSetMode(MODE_0_3D);
   glScreen2D();
 
   vramSetBankA(VRAM_A_TEXTURE);
   vramSetBankE(VRAM_E_TEX_PALETTE);
 
+#ifndef DEBUG
+  powerOff(PM_BACKLIGHT_BOTTOM);
+#endif
+
   load_palette();
   load_font_tiles();
 
-  printf("\n");
   if (!fatInitDefault()) {
     return "FAT initialization failed";
   }
@@ -43,11 +51,13 @@ void platform_begin_frame() {
   glBegin2D();
 }
 
+#define BORDER_COLOR RGB15(1, 2, 5)
+
 void platform_end_frame() {
-  glBoxFilled(0, 0, NDS_SC_W - 1, TOP_MARGIN - 1, 0); // Top Margin
-  glBoxFilled(0, 0, LEFT_MARGIN - 1, NDS_SC_H - 1, 0); // Left Margin
-  glBoxFilled(0, NDS_SC_H - TOP_MARGIN, NDS_SC_W - 1, NDS_SC_H - 1, 0); // Bottom Margin
-  glBoxFilled(NDS_SC_W - LEFT_MARGIN, 0, NDS_SC_W - 1, NDS_SC_H - 1, 0); // Right Margin
+  glBoxFilled(0, 0, NDS_SC_W - 1, TOP_MARGIN - 1, BORDER_COLOR); // Top Margin
+  glBoxFilled(0, 0, LEFT_MARGIN - 1, NDS_SC_H - 1, BORDER_COLOR); // Left Margin
+  glBoxFilled(0, NDS_SC_H - TOP_MARGIN, NDS_SC_W - 1, NDS_SC_H - 1, BORDER_COLOR); // Bottom Margin
+  glBoxFilled(NDS_SC_W - LEFT_MARGIN, 0, NDS_SC_W - 1, NDS_SC_H - 1, BORDER_COLOR); // Right Margin
 
   glEnd2D();
   glFlush(0);

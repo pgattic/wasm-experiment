@@ -38,3 +38,5 @@ First, make sure the Docker service is running (`sudo systemctl start docker`)
         - `cmake ../.. -DTARGET=gamecube`
         - `make`
 
+Add `-DCMAKE_BUILD_TYPE=Debug` to the `cmake` invocation to produce a debug build environment (disables LTO and other compiler optimizations, uses bottom screen as console on NDS, etc.)
+

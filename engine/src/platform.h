@@ -2,7 +2,7 @@
 
 /*
  * PLATFORM.H
- * Functions required for a given platform to work
+ * Functions that are required for a given platform to work
  */
 
 #include <stdint.h>
@@ -22,11 +22,13 @@ extern const char FALLBACK_FILE_DIR[256];
 
 /* LOGIC CONTROL */
 
-/// Load directory information for file browsing
-char* platform_init_fsel_data();
-
-/// Initialize the system to a ready state. Return a string to represent an error, null for no error.
+/// Initialize the system to a ready state.
+/// Return a string to represent an error, null for no error.
 char* platform_init(void);
+
+/// Load directory information for file browsing.
+/// Return a string to represent an error, null for no error.
+char* platform_init_fsel_data();
 
 /// Perform platform-specific data loading and prep with cartridge data.
 /// This may include converting and pre-palletizing the graphics, pre-loading the tile-map, etc.
