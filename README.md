@@ -14,7 +14,7 @@ In short, WASMCarts is a [Fantasy Console](https://en.wikipedia.org/wiki/Fantasy
 
 As a result, this fantasy console is lean and embeddable, and it automatically supports languages like TypeScript, Rust, C, Golang, Zig, and Swift.
 
-WebAssembly is so efficient, that I was able to make it run on my Nintendo DS!
+WebAssembly is so efficient, that I was able to make it run on a [handheld game system from 2004](https://en.wikipedia.org/wiki/Nintendo_DS), and with modern programming language support!
 
 What the engine does is take the [wasm3](https://github.com/wasm3/wasm3) runtime and expose some additional [system-dependent functions](#functions) such as rendering things on the screen and obtaining user input. Then, when it is running the WASM-compiled code that you write, it can now correctly respond when you tell it to `rectFill(x, y, width, height, color)`. This means that you have an extremely simple API to work with, and there is minimal friction between your code and the native C code being executed.
 
