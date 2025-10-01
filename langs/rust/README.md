@@ -16,7 +16,7 @@ Overall, Rust has been given the most attention out of the supported programming
 target = "wasm32-unknown-unknown"
 ```
 
-- Add the wasm_experiment crate to Cargo (FIXME: currently there is no way to do this)
+- Add the wasm_experiment crate to Cargo (TODO: define clearly how to do that)
 - Add `use wasm_experiment::*` and `#![no_main]` to your lib.rs (and you'll probably want to add `#![no_std]` as well)
 - Create a struct that stores your game state and `impl game_state::Game` for it, then use the `wasm_game!` macro to hook it into global scope
     - Here is a dead-simple `lib.rs` example that you could use as a starting point:
@@ -50,7 +50,7 @@ wasm_game!(GameState)
 ```
 
 - Build your game with `cargo build --release`
-- Prepend the other required game data (TODO: This will be a tedious task until a graphical editor is made)
+- Prepend the other required game data using the buildtool
 
 ## Rationale
 

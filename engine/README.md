@@ -5,7 +5,7 @@ Note that this is very much a work-in-progress
 
 ## Setup
 
-[Nix](https://nixos.org/) is available as a build option for the Linux target. [Docker](https://www.docker.com/) is used for building all other targets, and can also build for Linux. If you'd rather use some other setup, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
+[CMake](https://cmake.org/) is the build system used for compiling this software. [Nix](https://nixos.org/) is available as a build environment for the Linux target, and [Docker](https://www.docker.com/) is available for building all targets, including Linux. If you'd rather use some other setup, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
 
 ### Nix (Targeting Linux)
 
