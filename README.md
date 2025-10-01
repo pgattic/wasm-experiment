@@ -1,11 +1,52 @@
 
 # WASM Experiment - WASMCarts
 
-All I wanted was to make Nintendo DS games in Rust...
-
 This is a work-in-progress Fantasy Console that targets embedded systems and allows users to create games in any language that [compiles to WebAssembly](https://webassembly.org/getting-started/developers-guide/).
 
 ![WASMCarts Game Engine](nds-linux-wii.jpg)
+
+## What is it?
+
+In short, WASMCarts is a [Fantasy Console](https://en.wikipedia.org/wiki/Fantasy_video_game_console) whose "CPU" is just a [WebAssembly](https://webassembly.org/) runtime. This project takes advantage of two unique properties of WebAssembly:
+
+1. It is etremely efficient to virtualize and highly embeddable (see [wasm3](https://github.com/wasm3/wasm3))
+2. It is supported as a compile target by [many popular programming languages](https://webassembly.org/getting-started/developers-guide/).
+
+As a result, this fantasy console is lean and embeddable, and it automatically supports languages like TypeScript, Rust, C, Golang, Zig, and Swift.
+
+WebAssembly is so efficient, that I was able to make it run on my Nintendo DS!
+
+What the engine does is take the [wasm3](https://github.com/wasm3/wasm3) runtime and expose some additional [system-dependent functions](#functions) such as rendering things on the screen and obtaining user input. Then, when it is running the WASM-compiled code that you write, it can now correctly respond when you tell it to `rectFill(x, y, width, height, color)`. This means that you have an extremely simple API to work with, and there is minimal friction between your code and the native C code being executed.
+
+Here's an example of a simple game written in TypeScript, which would run in WASMCarts:
+
+```typescript
+import * as env from "./env";
+
+// Global data
+let playerX: i32;
+let playerY: i32;
+
+export function setup(): void {
+    playerX = 12; // Starting X position
+    playerY = 12; // Starting Y position
+}
+
+export function update(): void {
+    // Move the player
+    if (env.btn(env.Button.Left))  { playerX -= 4; }
+    if (env.btn(env.Button.Right)) { playerX += 4; }
+    if (env.btn(env.Button.Up))    { playerY -= 4; }
+    if (env.btn(env.Button.Down))  { playerY += 4; }
+
+    env.clearScreen(env.Colors.Black);
+
+    // Draw the player at new position
+    env.rectFill(playerX, playerY, 8, 8, env.Colors.Red);
+}
+```
+
+Please note that this project is in early stages of development, and the process for properly compiling code and preparing it to run in the console is not well-documented yet. However, this code has been demonstrated to compile and run in WASMCarts.
 
 ## Roadmap
 
