@@ -12,8 +12,6 @@
 #define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
-const char FALLBACK_FILE_DIR[256] = "fat:/";
-
 char* platform_init() {
 #ifdef DEBUG
   consoleDemoInit();
@@ -39,6 +37,17 @@ char* platform_init() {
   }
   strcpy(fsel_path, getcwd(NULL, 0));
   return 0;
+}
+
+char* platform_set_start_dir(char* path, size_t path_size) {
+  char* cwd = fatGetDefaultCwd();
+  if (cwd == NULL) {
+    free(cwd);
+    return "Failed to get current directory";
+  }
+  strcpy(path, cwd);
+  free(cwd);
+  return NULL;
 }
 
 void platform_prepare_cartridge() {

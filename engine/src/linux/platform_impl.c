@@ -9,8 +9,6 @@
 #include "../platform.h"
 #include "../main.h"
 
-const char FALLBACK_FILE_DIR[256] = "/home/";
-
 char* platform_init() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) == false) {
@@ -52,6 +50,12 @@ char* platform_init() {
   load_palette();
   load_font_tiles();
   return 0;
+}
+
+#include <unistd.h>
+char* platform_set_start_dir(char* path, size_t path_size) {
+  if (getcwd(path, path_size) == NULL) return "Failed to get current directory";
+  return NULL;
 }
 
 void platform_prepare_cartridge() {

@@ -24,6 +24,11 @@
 /// Return a string to represent an error, null for no error.
 char* platform_init(void);
 
+/// Store into `path` the working directory the engine should open to at first.
+/// `path_size` is the number of bytes allocated for `path`, usually 1024.
+/// Return a string to represent an error, null for no error.
+char* platform_set_start_dir(char* path, size_t path_size);
+
 /// Load directory information for file browsing.
 /// Return a string to represent an error, null for no error.
 char* platform_init_fsel_data(const char* path, file_list* file_list);

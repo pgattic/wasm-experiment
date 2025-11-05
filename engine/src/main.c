@@ -12,21 +12,23 @@ enum Screen current_screen = FILE_SELECT;
 char* err_msg = 0; // Set to NULL if no error to display
 bool running = true; // Set to false to quit the engine
 
+char* startup() {
+  char* result;
+  result = platform_set_start_dir(fsel_path, MAX_FILE_PATH);
+  if (result) return result;
+  result = platform_init();
+  if (result) return result;
+  result = platform_init_fsel_data(fsel_path, &fsel_list);
+  if (result) return result;
+  return NULL;
+}
+
 int main(int argc, char* argv[]) {
-  strcpy(fsel_path, FALLBACK_FILE_DIR);
-  if (argc > 0) {
-    // if (argc > 1) {
-    //   set_fsel_path(argv[1]); // Take file select path from cart path
-    // } else {
-      // set_fsel_path(argv[0]); // Else take it from binary location
-    // }
-  }
-  err_msg = platform_init();
+  err_msg = startup();
   if (err_msg) {
     printf("Fatal error. Failed to initalize system: %s\n", err_msg);
     return 1;
   }
-  platform_init_fsel_data(fsel_path, &fsel_list);
   if (argc > 1) {
     printf("Loading file: %s\n", argv[1]);
     err_msg = load_cartridge(argv[1]);

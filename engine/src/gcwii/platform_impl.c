@@ -16,8 +16,6 @@
 #define WII_SC_W 640
 #define WII_SC_H 480
 
-const char FALLBACK_FILE_DIR[256] = "sd:/";
-
 // Offscreen target that matches engine resolution
 static GRRLIB_texImg *render_target = NULL;
 
@@ -46,6 +44,11 @@ char* platform_init() {
   if (!render_target) return "Failed to create render_target texture";
 
   return 0;
+}
+
+char* platform_set_start_dir(char* path, size_t path_size) {
+  strcpy(path, "sd:/"); // TODO determine best path
+  return NULL;
 }
 
 void platform_prepare_cartridge() {

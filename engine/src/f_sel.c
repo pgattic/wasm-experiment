@@ -11,21 +11,6 @@ char fsel_path[MAX_FILE_PATH];
 size_t fsel_cursor_location = 0;
 file_list fsel_list = {0, NULL, NULL};
 
-// Note: this function is currently used only once, consider refactoring or removing
-// char* set_fsel_path(const char* path) {
-//   if (!path) return "No path given";
-//
-//   const char *last_slash = strrchr(path, '/');
-//   if (!last_slash) return "Invalid path given";
-//
-//   size_t dir_len = last_slash - path + 1;
-//   if (dir_len >= MAX_FILE_PATH) dir_len = MAX_FILE_PATH - 1;
-//
-//   strncpy(fsel_path, path, dir_len);
-//   fsel_path[dir_len] = '\0';
-//   return 0;
-// }
-
 size_t str_char_count(char* str, char ch) {
   size_t count = 0;
   for (int i = 0; str[i] != 0; i++) {
