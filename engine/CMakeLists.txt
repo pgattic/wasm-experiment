@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 4.1)
 
 # Automatically select toolchain file if not already set
 if(NOT DEFINED TARGET)
@@ -100,6 +100,7 @@ endif()
 target_sources(WASMCarts PRIVATE
   src/api.c
   src/f_sel.c
+  src/file_list.c
   src/game.c
   src/game_menu.c
   src/main.c

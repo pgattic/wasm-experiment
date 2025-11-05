@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     // if (argc > 1) {
     //   set_fsel_path(argv[1]); // Take file select path from cart path
     // } else {
-      set_fsel_path(argv[0]); // Else take it from binary location
+      // set_fsel_path(argv[0]); // Else take it from binary location
     // }
   }
   err_msg = platform_init();
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     printf("Fatal error. Failed to initalize system: %s\n", err_msg);
     return 1;
   }
-  platform_init_fsel_data();
+  platform_init_fsel_data(fsel_path, &fsel_list);
   if (argc > 1) {
     printf("Loading file: %s\n", argv[1]);
     err_msg = load_cartridge(argv[1]);

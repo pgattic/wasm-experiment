@@ -7,9 +7,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-// Important: each implementation must define a FALLBACK_FILE_DIR to start file browsing from
-extern const char FALLBACK_FILE_DIR[256];
+#include "file_list.h"
 
 /* USEFUL CONSTANTS */
 
@@ -28,7 +26,7 @@ char* platform_init(void);
 
 /// Load directory information for file browsing.
 /// Return a string to represent an error, null for no error.
-char* platform_init_fsel_data();
+char* platform_init_fsel_data(const char* path, file_list* file_list);
 
 /// Perform platform-specific data loading and prep with cartridge data.
 /// This may include converting and pre-palletizing the graphics, pre-loading the tile-map, etc.

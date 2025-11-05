@@ -12,7 +12,7 @@
 #define LEFT_MARGIN ((NDS_SC_W - WC_SCREEN_WIDTH) / 2) // 8
 #define TOP_MARGIN ((NDS_SC_H - WC_SCREEN_HEIGHT) / 2) // 16
 
-const char FALLBACK_FILE_DIR[256] = "fat:";
+const char FALLBACK_FILE_DIR[256] = "fat:/";
 
 char* platform_init() {
 #ifdef DEBUG
@@ -123,31 +123,18 @@ void platform_print_line(const char *text) {
 }
 
 #include <dirent.h>
+#include "../file_list.h"
 
-char* platform_init_fsel_data() {
-  fsel_curr_files_c = 0;
-  DIR *dirp = opendir(fsel_path);
+char* platform_init_fsel_data(const char* path, file_list* fsel_list) {
+  DIR* dirp = opendir(path);
+  struct dirent* cur;
   if (dirp == NULL) return "Failed to open directory";
+  char * error;
 
-  readdir(dirp); // Skip first entry ("."), might have to be more sure this is correct...
-
-  for (int i = 0; i < MAX_DIR_ENTRIES; i++) {
-    struct dirent *cur = readdir(dirp);
-    if (cur == NULL) break;
-    if (strlen(cur->d_name) == 0) break;
-
-    int slen = strlen(cur->d_name);
-    if (slen >= MAX_FILE_LENGTH) continue; // For now, we skip long file names
-    strcpy(fsel_curr_files[i], cur->d_name);
-
-    if (cur->d_type == DT_DIR) {
-      is_dir[i] = true;
-      fsel_curr_files[i][slen] = '/';
-      fsel_curr_files[i][slen+1] = '\0';
-    } else {
-      is_dir[i] = false;
-    }
-    fsel_curr_files_c++;
+  while ((cur = readdir(dirp)) != NULL) {
+    if (strlen(cur->d_name) == 0) continue;
+    error = insert_file(fsel_list, cur->d_name, cur->d_type == DT_DIR);
+    if (error) return error;
   }
   closedir(dirp);
   return 0;
