@@ -16,7 +16,7 @@
 
 
 // Below are all of the functions that a platform must implement in order to become
-// a supported target (see `nds/platform_impl.c` for an example)
+// a supported target (see `linux/platform.c` for an example)
 
 /* LOGIC CONTROL */
 

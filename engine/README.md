@@ -40,3 +40,11 @@ First, make sure the Docker service is running (`sudo systemctl start docker`)
 
 Add `-DCMAKE_BUILD_TYPE=Debug` to the `cmake` invocation to produce a debug build environment (disables LTO and other compiler optimizations, uses bottom screen as console on NDS, etc.)
 
+## File Structure
+
+`assets/` contains the static palette and font file used by all target systems. It also has an icon file, used by only the Nintendo DS build so far. `src/` has the engine source code.
+
+Since this engine is meant to be cross-platform, the codebase is as reusable as possible. Each platform's code is supposed to implement `src/platform.h`, which contains the names of all hardware-related functions that the engine requires. The Linux implementation of `src/platform.h` for example, is found in `src/linux/platform.c`.
+
+`src/api.c` defines the public API that WASMCarts games can access. It exposes certain platform-side functions to the WASM runtime.
+

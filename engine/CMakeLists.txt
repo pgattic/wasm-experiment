@@ -113,7 +113,7 @@ if(LINUX)
   set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts) # Program name should be lowercased
 
   target_sources(WASMCarts PRIVATE
-    src/linux/platform_impl.c
+    src/linux/platform.c
     src/linux/graphics.c
   )
 
@@ -135,7 +135,7 @@ elseif(NINTENDO_DS)
 
   # BlocksDS toolchain is already set above; just add your DS sources
   target_sources(WASMCarts PRIVATE
-    src/nds/platform_impl.c
+    src/nds/platform.c
     src/nds/graphics.c
     src/nds/keys.c
   )
@@ -151,7 +151,7 @@ elseif(NINTENDO_DS)
     NAME "WASMCarts"
     SUBTITLE "Lightweight Fantasy Console"
     AUTHOR "By pgattic"
-    ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon.bmp"
+    ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.bmp"
   )
 
 elseif(NINTENDO_OGC)
@@ -217,7 +217,7 @@ elseif(NINTENDO_OGC)
   target_sources(WASMCarts PRIVATE
     src/gcwii/graphics.c
     src/gcwii/keys_${OGC_PLATFORM}.c
-    src/gcwii/platform_impl.c
+    src/gcwii/platform.c
   )
 
   ogc_create_dol("WASMCarts")
