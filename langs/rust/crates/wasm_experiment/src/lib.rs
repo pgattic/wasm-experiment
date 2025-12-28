@@ -1,6 +1,5 @@
 #![no_std]
 
-pub(crate) mod lazy_mut;
 pub mod game_state;
 pub mod api;
 pub mod text;

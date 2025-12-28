@@ -1,4 +1,3 @@
-use crate::lazy_mut::LazyMut;
 
 // Developer's note: I didn't want to impose this much control over the users with regard to
 // maintaining game state. However, Rust's self-imposed safety measures led me to it. All things
@@ -50,28 +49,6 @@ pub trait Game {
     fn update(&mut self);
 }
 
-pub struct GameWrapper<T: Game> {
-    pub state: LazyMut<T>,
-}
-
-impl<T: Game> GameWrapper<T> {
-    pub const fn new() -> Self {
-        Self {
-            state: LazyMut::new(),
-        }
-    }
-
-    pub fn init(&self) {
-        self.state.set(T::setup());
-    }
-
-    pub fn update(&self) {
-        if let Some(game) = self.state.get_mut() {
-            game.update();
-        }
-    }
-}
-
 /// Takes a struct that implements `game_state::Game`, creates a global instance of it, and hooks
 /// the member methods of the struct the game into the engine's expected `setup` and `update`
 /// functions.
@@ -99,16 +76,22 @@ impl<T: Game> GameWrapper<T> {
 #[macro_export]
 macro_rules! wasm_game {
     ($ty:ty) => {
-        static GAME: $crate::game_state::GameWrapper<$ty> = $crate::game_state::GameWrapper::new();
+        static mut GAME_STATE: Option<$ty> = None;
 
         #[unsafe(no_mangle)]
         pub extern "C" fn setup() {
-            GAME.init();
+            unsafe {
+                GAME_STATE = Some(<$ty>::setup());
+            }
         }
 
         #[unsafe(no_mangle)]
         pub extern "C" fn update() {
-            GAME.update();
+            unsafe {
+                if let Some(state) = GAME_STATE.as_mut() {
+                    state.update();
+                }
+            }
         }
     };
 }

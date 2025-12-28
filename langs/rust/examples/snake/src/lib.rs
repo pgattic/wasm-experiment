@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment::*;
+use wasm_experiment::{*, game_state::Game};
 mod circ_buf;
 
 use crate::circ_buf::CircBuf;
@@ -52,7 +52,7 @@ struct GameState {
     frame_count: u8,
 }
 
-impl game_state::Game for GameState {
+impl Game for GameState {
     fn setup() -> Self {
         Self {
             player: Player::new(),

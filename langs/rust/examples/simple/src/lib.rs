@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment::*;
+use wasm_experiment::{*, game_state::Game};
 
 // Data that must persist between frames
 struct GameState {
@@ -11,7 +11,7 @@ struct GameState {
 
 const SPEED: i32 = 4;
 
-impl game_state::Game for GameState {
+impl Game for GameState {
     fn setup() -> Self {
         Self { player_x: 15, player_y: 15, }
     }

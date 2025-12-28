@@ -1,51 +1,54 @@
 #![no_std]
 #![no_main]
 
-use wasm_experiment::*;
+use wasm_experiment::{*, game_state::Game};
 
-const MAX_BUNNIES: usize = 1000;
+// This program maps a coordinate space 64 times as wide and tall to the Fantasy Console screen
+// resolution, in order to avoid (expensive) float operations.
+// That is what all the `<< 6` and `>> 6` are for
 
-// This program maps a coordinate space (16384, 12288) to the actual Fantasy Console screen
-// resolution in order to avoid (expensive) float operations.
-const MAPPED_SCREEN_DIMENSIONS: (i16, i16) = (SCREEN_WIDTH as i16 * 64, SCREEN_HEIGHT as i16 * 64);
-const MAPPED_SCREEN_CENTER: (i16, i16) = (MAPPED_SCREEN_DIMENSIONS.0/2, MAPPED_SCREEN_DIMENSIONS.1/2);
+const MAX_BUNNIES: usize = 4000;
+
+#[derive(Clone, Copy, Default)]
+struct Bunny { x: i32, y: i32, dx: i32, dy: i32 }
 
 // Data that must persist between frames
 struct GameState {
     num_bunnies: usize,
-    bunnies: [(i16, i16, i16 ,i16); MAX_BUNNIES] // x, y, dx, dy
+    bunnies: [Bunny; MAX_BUNNIES]
 }
 
 impl game_state::Game for GameState {
     fn setup() -> Self {
-        Self { num_bunnies: 0, bunnies: [(0, 0, 0, 0); MAX_BUNNIES] }
+        Self { num_bunnies: 0, bunnies: [Bunny::default(); MAX_BUNNIES] }
     }
 
     fn update(&mut self) {
         if api::btn(Button::A) && self.num_bunnies < MAX_BUNNIES {
-            self.bunnies[self.num_bunnies] = (
-                MAPPED_SCREEN_CENTER.0,
-                MAPPED_SCREEN_CENTER.1,
-                ((api::rand() % 65535) - 32768) as i16 % 192, // At the aforementioned coord space,
-                ((api::rand() % 65535) - 32768) as i16 % 192  // 128 maps to the number 2.0
-            );
+            let rand = api::rand();
+            self.bunnies[self.num_bunnies] = Bunny {
+                x: (SCREEN_WIDTH/2 - 4) << 6,
+                y: (SCREEN_HEIGHT/2 - 4) << 6,
+                dx: (((rand & 0xFFFF) % 385) - 192) as i32, // -192..192 maps to -3.0..3.0
+                dy: (((rand >> 16) % 385) - 192) as i32
+            };
             self.num_bunnies += 1;
         }
 
         api::clear_screen(1);
 
-        for i in 0..self.num_bunnies {
-            self.bunnies[i].0 += self.bunnies[i].2;
-            self.bunnies[i].1 += self.bunnies[i].3;
-            if self.bunnies[i].0 < 0 || self.bunnies[i].0 > (MAPPED_SCREEN_DIMENSIONS.0 - 8 * 64) {
-                self.bunnies[i].2 *= -1;
-                self.bunnies[i].0 += self.bunnies[i].2;
+        for bunny in &mut self.bunnies[..self.num_bunnies].iter_mut() {
+            bunny.x += bunny.dx;
+            bunny.y += bunny.dy;
+            if bunny.x < 0 || bunny.x > (SCREEN_WIDTH - 8) << 6 {
+                bunny.dx = -bunny.dx;
+                bunny.x += bunny.dx;
             }
-            if self.bunnies[i].1 < 0 || self.bunnies[i].1 > (MAPPED_SCREEN_DIMENSIONS.1 - 8 * 64) {
-                self.bunnies[i].3 *= -1;
-                self.bunnies[i].1 += self.bunnies[i].3;
+            if bunny.y < 0 || bunny.y > (SCREEN_HEIGHT - 8) << 6 {
+                bunny.dy = -bunny.dy;
+                bunny.y += bunny.dy;
             }
-            api::sprite((self.bunnies[i].0 >> 6) as i32, (self.bunnies[i].1 >> 6) as i32, 3);
+            api::sprite(bunny.x >> 6, bunny.y >> 6, 3);
         }
         let rect_width = match self.num_bunnies {
             0..10 => 1,
