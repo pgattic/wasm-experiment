@@ -9,7 +9,7 @@
 
 // Global Data
 enum Screen current_screen = FILE_SELECT;
-char* err_msg = 0; // Set to NULL if no error to display
+char* err_msg = NULL; // Set to NULL if no error to display
 bool running = true; // Set to false to quit the engine
 
 char* startup() {
@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
   err_msg = startup();
   if (err_msg) {
     printf("Fatal error. Failed to initalize system: %s\n", err_msg);
+    platform_deinit();
     return 1;
   }
   if (argc > 1) {
@@ -44,9 +45,7 @@ int main(int argc, char* argv[]) {
     switch (current_screen) {
       case FILE_SELECT:
         result = update_file_select();
-        if (result) {
-          err_msg = result;
-        }
+        if (result) err_msg = result;
         break;
       case PLAYING:
         result = update_game();

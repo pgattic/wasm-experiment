@@ -52,7 +52,7 @@ char* wasm_init() {
   }
 
   printf("Initialized WASM runtime\n");
-  return 0;
+  return NULL;
 }
 
 void wasm_deinit() {
@@ -90,7 +90,7 @@ char* load_cartridge(char *filepath) {
   cart_size = file_stats.st_size;
 
   fclose(fp);
-  return 0;
+  return NULL;
 }
 
 char* update_game() {
@@ -99,6 +99,6 @@ char* update_game() {
     printf("Error calling function: %s\n", result);
     return "Error calling `update` function";
   }
-  return 0;
+  return NULL;
 }
 

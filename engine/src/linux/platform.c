@@ -49,12 +49,18 @@ char* platform_init() {
 
   load_palette();
   load_font_tiles();
-  return 0;
+  return NULL;
 }
 
 #include <unistd.h>
 char* platform_set_start_dir(char* path, size_t path_size) {
   if (getcwd(path, path_size) == NULL) return "Failed to get current directory";
+
+  size_t pathlen = strlen(path);
+  if (pathlen + 1 >= path_size) return "Path too long";
+  path[pathlen + 1] = 0;
+  path[pathlen] = '/';
+
   return NULL;
 }
 
@@ -270,14 +276,17 @@ char* platform_init_fsel_data(const char* path, file_list* fsel_list) {
   DIR* dirp = opendir(path);
   struct dirent* cur;
   if (dirp == NULL) return "Failed to open directory";
-  char * error;
+  char* error;
 
   while ((cur = readdir(dirp)) != NULL) {
     if (strlen(cur->d_name) == 0) continue;
     error = insert_file(fsel_list, cur->d_name, cur->d_type == DT_DIR);
-    if (error) return error;
+    if (error) {
+      closedir(dirp);
+      return error;
+    }
   }
   closedir(dirp);
-  return 0;
+  return NULL;
 }
 

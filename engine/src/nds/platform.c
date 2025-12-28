@@ -36,7 +36,7 @@ char* platform_init() {
     return "FAT initialization failed";
   }
   strcpy(fsel_path, getcwd(NULL, 0));
-  return 0;
+  return NULL;
 }
 
 char* platform_set_start_dir(char* path, size_t path_size) {
@@ -81,7 +81,7 @@ uint32_t platform_rand() {
 }
 
 void platform_clear_screen(uint8_t color) {
-  glBoxFilled(0, 0, 255, 191, nds_palette[color]);
+  glBoxFilled(0, 0, NDS_SC_W - 1, NDS_SC_H - 1, nds_palette[color]);
 }
 
 void platform_set_pixel(int32_t x, int32_t y, uint8_t color) {
@@ -138,14 +138,17 @@ char* platform_init_fsel_data(const char* path, file_list* fsel_list) {
   DIR* dirp = opendir(path);
   struct dirent* cur;
   if (dirp == NULL) return "Failed to open directory";
-  char * error;
+  char* error;
 
   while ((cur = readdir(dirp)) != NULL) {
     if (strlen(cur->d_name) == 0) continue;
     error = insert_file(fsel_list, cur->d_name, cur->d_type == DT_DIR);
-    if (error) return error;
+    if (error) {
+      closedir(dirp);
+      return error;
+    }
   }
   closedir(dirp);
-  return 0;
+  return NULL;
 }
 
