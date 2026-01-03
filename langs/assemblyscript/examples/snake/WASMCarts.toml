@@ -1,5 +1,5 @@
 [package]
-name = "assemblyscript-example"
+name = "asc-snake"
 author = "pgattic"
 version = "0.1.0"
 
