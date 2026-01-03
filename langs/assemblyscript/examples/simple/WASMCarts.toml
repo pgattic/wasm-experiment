@@ -1,0 +1,15 @@
+[package]
+name = "assemblyscript-example"
+author = "pgattic"
+version = "0.1.0"
+
+[build.code]
+command = ["asc", "src/main.ts", "-o", "build/release.wasm", "-O3z", "--runtime", "stub", "--noAssert", "--use", "abort="]
+output = "build/release.wasm"
+
+[build.assets]
+dir = "assets"
+sprite_tiles = "spr.4bpp"
+background_tiles = "bg.4bpp"
+background_map = "bg.map"
+

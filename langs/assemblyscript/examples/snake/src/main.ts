@@ -2,7 +2,7 @@ import * as env from "./env";
 
 enum Direction { Up, Down, Left, Right, }
 
-const screenDimensions: Array<u16> = [256, 192];
+const screenDimensions: Array<u16> = [240, 160];
 
 const gridSize: u8 = 8;
 
@@ -33,12 +33,6 @@ export function update(): void {
     frameCount = 0;
     let playerHead = playerBody[0];
 
-    // Eat food
-    if (playerHead[0] == foodPos[0] && playerHead[1] == foodPos[1]) {
-      playerSize += 5;
-      foodPos = [(env.rand() % gridDimensions[0] as u32) as u8, (env.rand() % gridDimensions[1] as u32) as u8];
-    }
-
     // Advance player
     switch (playerDirection) {
       case Direction.Left:
@@ -60,6 +54,13 @@ export function update(): void {
     }
 
     playerHead = playerBody[0];
+
+    // Eat food
+    if (playerHead[0] == foodPos[0] && playerHead[1] == foodPos[1]) {
+      playerSize += 5;
+      foodPos = [(env.rand() % gridDimensions[0] as u32) as u8, (env.rand() % gridDimensions[1] as u32) as u8];
+    }
+
     // Death/reset cases
     for (let s = 1; s < playerBody.length; s++) {
       const segment = playerBody[s];
@@ -80,6 +81,7 @@ export function update(): void {
   }
 
   // Rendering
+  env.clearScreen(1);
   for (let s = 0; s < playerBody.length; s++) {
     let segment = playerBody[s];
     env.rectFill(segment[0] * gridSize, segment[1] * gridSize, gridSize, gridSize, 11);
