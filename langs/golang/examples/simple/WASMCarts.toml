@@ -1,0 +1,14 @@
+[package]
+name = "tinygo-simple"
+author = "pgattic"
+version = "0.1.0"
+
+[build.code]
+command = ["tinygo", "build", "-o", "build/out.wasm", "-target=wasm", "-opt=z", "-no-debug", "-gc=leaking", "-scheduler=none", "-panic=trap", "./src"] # gc=leaking is kinda sus, but it removes ~3kb of output bin size
+output = "build/out.wasm"
+
+[build.assets]
+dir = "assets"
+sprite_tiles = "spr.4bpp"
+background_tiles = "bg.4bpp"
+background_map = "bg.map"

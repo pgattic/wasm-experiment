@@ -4,8 +4,6 @@ import (
 	"unsafe"
 )
 
-// --- Imports from the host environment ---
-
 //go:wasm-module env
 //export _rand
 func _rand() uint32
@@ -16,19 +14,19 @@ func _clearScreen(c uint8)
 
 //go:wasm-module env
 //export _pSet
-func _pSet(x, y, c uint8)
+func _pSet(x, y int32, c uint8)
 
 //go:wasm-module env
 //export _rect
-func _rect(x, y, w, h, c uint8)
+func _rect(x, y int32, w, h uint32, c uint8)
 
 //go:wasm-module env
 //export _rectFill
-func _rectFill(x, y, w, h, c uint8)
+func _rectFill(x, y int32, w, h uint32, c uint8)
 
 //go:wasm-module env
 //export _sprite
-func _sprite(x, y, id uint8)
+func _sprite(x, y int32, id uint8)
 
 //go:wasm-module env
 //export _btn
@@ -42,7 +40,6 @@ func _btnP(btn uint8) bool
 //export _printLnDbg
 func _printLnDbg(ptr uintptr)
 
-// --- Go wrappers around imported functions ---
 
 func rand() uint32 {
 	return _rand()
@@ -52,19 +49,19 @@ func clearScreen(c uint8) {
 	_clearScreen(c)
 }
 
-func pSet(x, y, c uint8) {
+func pSet(x, y int32, c uint8) {
 	_pSet(x, y, c)
 }
 
-func rect(x, y, w, h, c uint8) {
+func rect(x, y int32, w, h uint32, c uint8) {
 	_rect(x, y, w, h, c)
 }
 
-func rectFill(x, y, w, h, c uint8) {
+func rectFill(x, y int32, w, h uint32, c uint8) {
 	_rectFill(x, y, w, h, c)
 }
 
-func sprite(x, y, id uint8) {
+func sprite(x, y int32, id uint8) {
 	_sprite(x, y, id)
 }
 
@@ -76,15 +73,12 @@ func btnP(button Button) bool {
 	return _btnP(uint8(button))
 }
 
-// --- UTF-8 String Encoding Helper ---
-
 func print(str string) {
 	// Allocate buffer and call debug print function
 	data := []byte(str)
 	_printLnDbg(uintptr(unsafe.Pointer(&data[0])))
 }
 
-// --- Button enum equivalent ---
 type Button uint8
 
 const (
@@ -103,14 +97,4 @@ const (
 )
 
 func main() {}
-
-//export setup
-func setup() {
-	print("Hello from Golang!")
-}
-
-//export update
-func update() {
-	rectFill(12, 12, 24, 24, 2)
-}
 
