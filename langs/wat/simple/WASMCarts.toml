@@ -4,8 +4,8 @@ author = "pgattic"
 version = "0.1.0"
 
 [build.code]
-command = ["wat2wasm", "src/main.wat", "-o", "src/main.wasm"]
-output = "src/main.wasm"
+command = ["wat2wasm", "src/main.wat", "-o", "out.wasm"]
+output = "out.wasm"
 
 [build.assets]
 dir = "assets"

@@ -1,9 +1,10 @@
-;; Simple WASM Text file that renders a sprite.
+;; Simple WASM program that renders a sprite.
 ;; You DO NOT have to know how to write this code to use the engine, and are encouraged to use your favorite programming language instead :)
 ;; See https://github.com/pgattic/wasm-experiment/blob/master/langs/README.md
 
 (module
   ;; Import the engine functions I'll use
+  (import "env" "_clearScreen" (func $clear_screen (param i32)))
   (import "env" "_sprite" (func $sprite (param i32 i32 i32)))
 
   ;; Export setup and update functions to the engine
@@ -13,6 +14,10 @@
   (func $setup nop)
 
   (func $update
+    ;; Clear the screen
+    i32.const 1
+    call $clear_screen
+
     ;; Place parameters on stack
     i32.const 50 ;; x
     i32.const 50 ;; y
