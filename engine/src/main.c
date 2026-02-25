@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
   if (argc > 1) {
     printf("Loading file: %s\n", argv[1]);
     err_msg = load_cartridge(argv[1]);
-    if (err_msg == 0) {
+    if (err_msg == NULL) {
       platform_prepare_cartridge();
       err_msg = wasm_init();
       current_screen = PLAYING;

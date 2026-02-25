@@ -63,10 +63,21 @@ Please note that this project is in early stages of development, and the process
     - [X] Create Wii implementation
 - [X] Build tool
 - [X] Ingame menu
-- [ ] Sprite/map editing solution
 - [ ] Support background tiles
 - [ ] Memory mapping for tilemap/sprite manipulation
 - [X] Printing text on the screen
+- [ ] Gamepad support on Linux
+- [ ] SDK to replace the build tool (probably keep it in Rust)
+    - [ ] Learn proper Rust graphics patterns
+    - [ ] Sprite editor
+        - [ ] Selecting a sprite from the grid
+        - [ ] Selecting palette colors and painting them to the sprite
+    - [ ] Map editor
+        - [ ] Scrolling in all directions
+        - [ ] Zoom (optional)
+    - [ ] (optional) built-in code editor?
+    - [ ] Come up with some way to detect/run each compiler from the user's system
+- [ ] Nix packaging for all systems (Docker is a poor long-term solution)
 
 ## Stretch Goals
 
@@ -76,6 +87,8 @@ Please note that this project is in early stages of development, and the process
     - Would require including the wasm as part of ROM data
     - Some heavy source code customization would be in order
     - Look into [Butano](https://github.com/GValiente/butano) for graphics
+- Sound/noise support (engine and SDK)
+- Music support (engine and SDK)
 
 ## Engine Spec
 
