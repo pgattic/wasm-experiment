@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 4.1)
 
-# Automatically select toolchain file if not already set
+# ------------------------------------------------------------------------------
+# Target selection / toolchain
+# ------------------------------------------------------------------------------
+
 if(NOT DEFINED TARGET)
-  message(FATAL_ERROR "No TARGET specified. Use `-DTARGET=` to specify one.\nSupported values: 'linux', 'nds', 'wii', 'gamecube'.")
+  message(FATAL_ERROR
+    "No TARGET specified. Use `-DTARGET=` to specify one.\n"
+    "Supported values: 'linux', 'nds', 'wii', 'gamecube'."
+  )
 endif()
 
-# Automatically configure toolchain file based on TARGET
-if(NOT CMAKE_TOOLCHAIN_FILE)
+# Automatically configure toolchain file based on TARGET (unless user already set one)
+# if(NOT CMAKE_TOOLCHAIN_FILE)
   if("${TARGET}" STREQUAL "nds")
     if(DEFINED ENV{BLOCKSDS})
       set(CMAKE_TOOLCHAIN_FILE "$ENV{BLOCKSDS}/cmake/BlocksDS.cmake" CACHE STRING "Toolchain for NDS" FORCE)
@@ -26,58 +32,44 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
       message(FATAL_ERROR "DEVKITPRO environment variable not set")
     endif()
   endif()
-endif()
+# endif()
 
-# Actual project declaration
 project(WASMCarts C)
 
-include(CheckCCompilerFlag)
-include(FetchContent)
+# ------------------------------------------------------------------------------
+# wasm3 from $WASM3_SOURCE
+# ------------------------------------------------------------------------------
 
-option(WASM3_LTO "Try to enable LTO for wasm3" OFF)
-set(WASM3_GIT_TAG "v0.5.0" CACHE STRING "wasm3 git tag or commit")
-
-# Helper to add wasm3 to the build. Outputs: target + include dir
-function(_wasm3_add_to_build out_target out_include_dir)
-  FetchContent_Declare(
-    wasm3
-    GIT_REPOSITORY https://github.com/wasm3/wasm3.git
-    GIT_TAG        ${WASM3_GIT_TAG}
+if(NOT DEFINED ENV{WASM3_SOURCE})
+  message(FATAL_ERROR
+    "WASM3_SOURCE environment variable not set.\n"
+    "Set it to the root of the wasm3 source checkout (it must contain 'source/*.c')."
   )
-  # Skip unnecessary tests and other stuff
-  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-  set(WASM3_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-  set(WASM3_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+endif()
 
-  FetchContent_MakeAvailable(wasm3)
-  set(_wasm3_SOURCE_DIR "${wasm3_SOURCE_DIR}")
+set(WASM3_ROOT "$ENV{WASM3_SOURCE}")
+set(WASM3_SRC  "${WASM3_ROOT}/source")
 
-  # Might someday need to change this to "wasm3" instead of "m3"
-  set(_wasm3_real_target m3)
-  set(_wasm3_inc "${_wasm3_SOURCE_DIR}/source")
+if(NOT EXISTS "${WASM3_SRC}")
+  message(FATAL_ERROR "WASM3_SOURCE='${WASM3_ROOT}' does not contain a 'source/' directory.")
+endif()
 
-  # Optional LTO
-  if(WASM3_LTO AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    check_c_compiler_flag(-flto HAS_FLTO)
-    if(HAS_FLTO)
-      target_compile_options(${_wasm3_real_target} PRIVATE -flto)
-      target_link_options(${_wasm3_real_target} PRIVATE -flto)
-    endif()
-  endif()
+# This collects a list of wasm3's .c files
+file(GLOB WASM3_SOURCES "${WASM3_SRC}/*.c")
 
-  # PIE is fine across platforms and harmless on consoles
-  set_target_properties(${_wasm3_real_target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-  # Return real target + include dir
-  set(${out_target} ${_wasm3_real_target} PARENT_SCOPE)
-  set(${out_include_dir} "${_wasm3_inc}" PARENT_SCOPE)
-endfunction()
+# ------------------------------------------------------------------------------
+# Main executable
+# ------------------------------------------------------------------------------
 
 add_executable(WASMCarts "")
 target_compile_options(WASMCarts PRIVATE -Wall)
-target_compile_definitions(WASMCarts PRIVATE "$<$<CONFIG:Debug>:DEBUG>") # Define DEBUG macro for CMake Debug config
+target_compile_definitions(WASMCarts PRIVATE "$<$<CONFIG:Debug>:DEBUG>")
 
-# Set CMake variables, and preprocessor macros for the C code to use
+# Include + compile wasm3 directly into the executable
+target_include_directories(WASMCarts PRIVATE "${WASM3_SRC}")
+target_sources(WASMCarts PRIVATE ${WASM3_SOURCES})
+
+# Set platform defines
 if("${TARGET}" STREQUAL "linux")
   set(LINUX TRUE)
   target_compile_definitions(WASMCarts PRIVATE PLATFORM_LINUX)
@@ -93,7 +85,10 @@ elseif("${TARGET}" STREQUAL "gamecube")
   set(OGC_PLATFORM "gamecube")
   target_compile_definitions(WASMCarts PRIVATE PLATFORM_GAMECUBE)
 else()
-  message(FATAL_ERROR "Unknown TARGET value '${TARGET}'.\nSupported values: 'linux', 'nds', 'wii', 'gamecube'.")
+  message(FATAL_ERROR
+    "Unknown TARGET value '${TARGET}'.\n"
+    "Supported values: 'linux', 'nds', 'wii', 'gamecube'."
+  )
 endif()
 
 # General source files
@@ -106,23 +101,22 @@ target_sources(WASMCarts PRIVATE
   src/main.c
 )
 
+# ------------------------------------------------------------------------------
+# Platform-specific sections
+# ------------------------------------------------------------------------------
+
 if(LINUX)
 
-  # LINUX VERSION #
-
-  set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts) # Program name should be lowercased
+  # LINUX VERSION
+  set_target_properties(WASMCarts PROPERTIES OUTPUT_NAME wasmcarts)
 
   target_sources(WASMCarts PRIVATE
     src/linux/platform.c
     src/linux/graphics.c
   )
 
-  # Add wasm3 and link it
-  set(BUILD_NATIVE OFF CACHE BOOL "" FORCE) # Don't assume native build
-  set(BUILD_WASI none CACHE STRING "" FORCE) # Don't want WASM System Interface
-  _wasm3_add_to_build(WASM3_TGT WASM3_INC)
-  target_include_directories(WASMCarts PRIVATE ${WASM3_INC})
-  target_link_libraries(WASMCarts PRIVATE ${WASM3_TGT} m)
+  # wasm3 uses math on some platforms/configs
+  target_link_libraries(WASMCarts PRIVATE m)
 
   # SDL3 via pkg-config
   find_package(PkgConfig REQUIRED)
@@ -131,21 +125,14 @@ if(LINUX)
 
 elseif(NINTENDO_DS)
 
-  # NINTENDO DS VERSION #
-
-  # BlocksDS toolchain is already set above; just add your DS sources
+  # NINTENDO DS VERSION
   target_sources(WASMCarts PRIVATE
     src/nds/platform.c
     src/nds/graphics.c
     src/nds/keys.c
   )
 
-  # Add wasm3 and link it
-  set(BUILD_NATIVE OFF CACHE BOOL "" FORCE) # Don't assume native build
-  set(BUILD_WASI none CACHE STRING "" FORCE) # Don't want WASM System Interface
-  _wasm3_add_to_build(WASM3_TGT WASM3_INC)
-  target_include_directories(WASMCarts PRIVATE ${WASM3_INC})
-  target_link_libraries(WASMCarts PRIVATE ${WASM3_TGT} m)
+  target_link_libraries(WASMCarts PRIVATE m)
 
   nds_create_rom(WASMCarts
     NAME "WASMCarts"
@@ -156,16 +143,22 @@ elseif(NINTENDO_DS)
 
 elseif(NINTENDO_OGC)
 
-  # NINTENDO WII/GAMECUBE VERSION #
+  # NINTENDO WII / GAMECUBE VERSION
 
-  # devkitPro paths (libogc, portlibs) remain as before
   if(NOT DEFINED ENV{DEVKITPRO})
-    message(FATAL_ERROR "Ensure that environment variable DEVKITPRO is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
+    message(FATAL_ERROR
+      "Ensure that environment variable DEVKITPRO is set.\n"
+      "(see https://devkitpro.org/wiki/devkitPro_pacman)"
+    )
   else()
     set(DEVKITPRO $ENV{DEVKITPRO})
   endif()
+
   if(NOT DEFINED ENV{DEVKITPPC})
-    message(FATAL_ERROR "Ensure that environment variable DEVKITPPC is set.\n(see https://devkitpro.org/wiki/devkitPro_pacman)")
+    message(FATAL_ERROR
+      "Ensure that environment variable DEVKITPPC is set.\n"
+      "(see https://devkitpro.org/wiki/devkitPro_pacman)"
+    )
   else()
     set(DEVKITPPC $ENV{DEVKITPPC})
   endif()
@@ -181,44 +174,21 @@ elseif(NINTENDO_OGC)
     ${DEVKITPRO}/portlibs/${OGC_PLATFORM}/lib
   )
 
-  # Add wasm3 and link it
-  set(BUILD_NATIVE OFF CACHE BOOL "" FORCE) # Don't assume native build
-  set(BUILD_WASI none CACHE STRING "" FORCE) # Don't want WASM System Interface
-  _wasm3_add_to_build(WASM3_TGT WASM3_INC)
-  target_include_directories(WASMCarts PRIVATE ${WASM3_INC})
-
-  if (OGC_PLATFORM STREQUAL "wii")
-    target_link_libraries(WASMCarts PRIVATE
-      ${WASM3_TGT}
-      grrlib
-      freetype
-      png
-      jpeg
-      z
-      m
-      wiiuse
-      fat
-      ogc
-    )
-  else()
-    target_link_libraries(WASMCarts PRIVATE
-      ${WASM3_TGT}
-      grrlib
-      freetype
-      png
-      jpeg
-      z
-      m
-      fat
-      ogc
-    )
-  endif()
-
   target_sources(WASMCarts PRIVATE
     src/gcwii/graphics.c
     src/gcwii/keys_${OGC_PLATFORM}.c
     src/gcwii/platform.c
   )
+
+  if(OGC_PLATFORM STREQUAL "wii")
+    target_link_libraries(WASMCarts PRIVATE
+      grrlib freetype png jpeg z m wiiuse fat ogc
+    )
+  else()
+    target_link_libraries(WASMCarts PRIVATE
+      grrlib freetype png jpeg z m fat ogc
+    )
+  endif()
 
   ogc_create_dol("WASMCarts")
 endif()
