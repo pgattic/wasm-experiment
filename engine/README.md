@@ -1,44 +1,62 @@
 
 # WASMCarts Engine
 
-Note that this is very much a work-in-progress
+## Compiling
 
-## Setup
+This project uses [CMake](https://cmake.org) and [Nix](https://nixos.org) as the main supported build setup.
 
-[CMake](https://cmake.org/) is the build system used for compiling this software. [Nix](https://nixos.org/) is available as a build environment for the Linux target, and [Docker](https://www.docker.com/) is available for building all targets, including Linux. If you'd rather use some other setup, refer to the [Dockerfile](./Dockerfile), which can also serve as a description for what is required to build the project.
+### Linux
 
-### Nix (Targeting Linux)
+- `nix build ..#engine-linux` to build, or
+- `nix run ..#engine-linux` to run
 
-- `nix develop`
-- `mkdir -p build/linux && cd build/linux`
-- `cmake ../.. -DTARGET=linux`
-- `make`
+### Nintendo DS
 
-### Docker (Targeting All Supported Systems)
+- `nix build ..#engine-nds` to build
 
-First, make sure the Docker service is running (`sudo systemctl start docker`)
+### Nintendo Wii
 
-- (`sudo`) `docker build --tag wasmcarts:latest .` (may require `--network=host`)
-- (`sudo`) `docker run --rm -v .:/work -it wasmcarts:latest` (may require `--network=host`)
-- Then, within the container, do one of the following:
-    - Linux build:
-        - `mkdir -p build/linux && cd build/linux`
-        - `cmake ../.. -DTARGET=linux`
-        - `make`
-    - Nintendo DS build:
-        - `mkdir -p build/nds && cd build/nds`
-        - `cmake ../.. -DTARGET=nds`
-        - `make`
-    - Nintendo Wii build:
-        - `mkdir -p build/wii && cd build/wii`
-        - `cmake ../.. -DTARGET=wii`
-        - `make`
-    - Nintendo GameCube build:
-        - `mkdir -p build/gamecube && cd build/gamecube`
-        - `cmake ../.. -DTARGET=gamecube`
-        - `make`
+- `nix build ..#engine-wii` to build
 
-Add `-DCMAKE_BUILD_TYPE=Debug` to the `cmake` invocation to produce a debug build environment (disables LTO and other compiler optimizations, uses bottom screen as console on NDS, etc.)
+### Nintendo GameCube
+
+- `nix build ..#engine-gamecube` to build
+
+Output will be in `./result`.
+
+## Development Shell
+
+Type `nix develop ..#engine` to enter the development shell, which includes all required toolchains and libraries. Once in the shell, run these commands to build for the following systems:
+
+- Build for Linux:
+    - `cmake -S . -B build/linux -DTARGET=linux`
+    - `cmake --build build/linux`
+- Build for Nintendo DS:
+    - `cmake -S . -B build/nds -DTARGET=nds -DCMAKE_TOOLCHAIN_FILE="$BLOCKSDS/cmake/BlocksDS.cmake"`
+    - `cmake --build build/nds`
+- Build for Nintendo Wii:
+    - `cmake -S . -B build/wii -DTARGET=wii -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake"`
+    - `cmake --build build/wii`
+- Build for Nintendo GameCube:
+    - `cmake -S . -B build/gamecube -DTARGET=gamecube -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/GameCube.cmake"`
+    - `cmake --build build/gamecube`
+
+The outputted program will be in `build/linux` or `build/nds`, etc. depending on the selected system.
+
+Add `-DCMAKE_BUILD_TYPE=Debug` to the first `cmake` invocation to produce debug build scripts (disables LTO and other compiler optimizations, uses bottom screen as console on NDS, etc.)
+
+## Not using Nix?
+
+Too bad!
+
+Just kidding. However, the following build steps aren't officially supported.
+
+1. Have the [wasm3](https://github.com/wasm3/wasm3) repo cloned somewhere, with the `WASM3_SOURCE` env var set to the repository root.
+2. Ensure you have the following dependencies installed for each system you'd like to build for:
+    - Linux: `sdl3` development libraries (sometimes called `SDL3-devel`, `libsdl3-dev` or something, depending on your distribution)
+    - Nintendo DS: [BlocksDS](https://blocksds.skylyrac.net/docs/setup), including the `BLOCKSDS` and `BLOCKSDSEXT` env vars
+    - Nintendo Wii/GameCube: [DevkitPro](https://devkitpro.org/wiki/devkitPro_pacman) with the `wii-dev` and/or `gamecube-dev` packages, including the `DEVKITPRO` and `DEVKITPPC` env vars
+3. Run the desired commands in the [Development Shell](#development-shell) section to build WASMCarts!
 
 ## File Structure
 

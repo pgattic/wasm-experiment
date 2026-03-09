@@ -1,23 +1,23 @@
 #pragma once
 #include <stdint.h>
-#include <grrlib.h>
 #include "../game.h"
 
-// 16-color RGBA (GRRLIB expects RGBA u32)
-extern u32 wii_colors[16];
+// 16-color RGBA palette
+extern uint32_t wii_colors[16];
 
-extern GRRLIB_texImg *font_tileset;  // 128 tiles, 8×1024
-extern GRRLIB_texImg *spr_tileset;   // 256 tiles, 8×2048
+// Decoded tile data, one palette index per pixel (8x8 tiles).
+extern uint8_t font_tiles[128][64];
+extern uint8_t spr_tiles[256][64];
 
 // Loads embedded palette -> wii_colors (index 0 gets alpha=0)
 void load_palette(void);
 
-// Build the 8×(8*128) font atlas from embedded 4bpp
+// Decode embedded 4bpp font tiles into font_tiles
 void load_font_tiles(void);
 
-// Build the 8×(8*256) sprite atlas from 4bpp tiles
+// Decode 4bpp sprite tiles into spr_tiles
 void load_sprite_tiles(uint8_t tile_data[SPR_TILES_SIZE]);
 
-// Free textures
+// Free graphics resources (no-op for current implementation)
 void unload_graphics(void);
 

@@ -4,11 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    blocksds = {
+    blocksds-nix = {
       url = "github:pgattic/blocksds-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    devkitnix = {
+    devkitNix = {
       url = "github:bandithedoge/devkitNix/";
       inputs.nixpkgs.follows = "nixpkgs";
     };

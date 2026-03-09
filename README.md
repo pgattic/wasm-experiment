@@ -50,7 +50,6 @@ Please note that this project is in early stages of development, and the process
 
 ## Roadmap
 
-- [X] Learn some Docker
 - [X] Get [WASM on NDS](https://softwayre.com/blog/2021/09/13/webassembly-on-your-nintendo-ds) running in a reproducible environment
 - [X] Have it run a wasm file compiled from a different language than AssemblyScript
 - [X] Have it load a file from file storage instead of embedding it
@@ -77,7 +76,7 @@ Please note that this project is in early stages of development, and the process
         - [ ] Zoom (optional)
     - [ ] (optional) built-in code editor?
     - [ ] Come up with some way to detect/run each compiler from the user's system
-- [ ] Nix packaging for all systems (Docker is a poor long-term solution)
+- [X] Nix packaging for all systems
 
 ## Stretch Goals
 

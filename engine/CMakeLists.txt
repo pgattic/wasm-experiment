@@ -182,11 +182,11 @@ elseif(NINTENDO_OGC)
 
   if(OGC_PLATFORM STREQUAL "wii")
     target_link_libraries(WASMCarts PRIVATE
-      grrlib freetype png jpeg z m wiiuse fat ogc
+      m wiiuse fat ogc
     )
   else()
     target_link_libraries(WASMCarts PRIVATE
-      grrlib freetype png jpeg z m fat ogc
+      m fat ogc
     )
   endif()
 
