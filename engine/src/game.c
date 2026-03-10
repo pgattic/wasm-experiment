@@ -22,13 +22,13 @@ char* wasm_init() {
   result = m3_ParseModule(cart_env, &cart_module, loaded_cartridge.prg_code, wasm_size);
   if (result) {
     printf("Error parsing module: %s\n", result);
-    return "Error parsing WASM3 module";
+    return "Error parsing WASM module";
   }
 
   result = m3_LoadModule(cart_runtime, cart_module);
   if (result) {
     printf("Error loading module: %s\n", result);
-    return "Error loading WASM3 module";
+    return "Error loading WASM module";
   }
 
   link_api_functions(cart_module);

@@ -29,16 +29,16 @@ Output will be in `./result`.
 Type `nix develop ..#engine` to enter the development shell, which includes all required toolchains and libraries. Once in the shell, run these commands to build for the following systems:
 
 - Build for Linux:
-    - `cmake -S . -B build/linux -DTARGET=linux`
+    - `cmake -S . -B build/linux`
     - `cmake --build build/linux`
 - Build for Nintendo DS:
-    - `cmake -S . -B build/nds -DTARGET=nds -DCMAKE_TOOLCHAIN_FILE="$BLOCKSDS/cmake/BlocksDS.cmake"`
+    - `cmake -S . -B build/nds -DCMAKE_TOOLCHAIN_FILE="$BLOCKSDS/cmake/BlocksDS.cmake"`
     - `cmake --build build/nds`
 - Build for Nintendo Wii:
-    - `cmake -S . -B build/wii -DTARGET=wii -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake"`
+    - `cmake -S . -B build/wii -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake"`
     - `cmake --build build/wii`
 - Build for Nintendo GameCube:
-    - `cmake -S . -B build/gamecube -DTARGET=gamecube -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/GameCube.cmake"`
+    - `cmake -S . -B build/gamecube -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/GameCube.cmake"`
     - `cmake --build build/gamecube`
 
 The outputted program will be in `build/linux` or `build/nds`, etc. depending on the selected system.

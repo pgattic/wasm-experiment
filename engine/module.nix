@@ -51,7 +51,7 @@
         ];
 
         configurePhase = ''
-          cmake -S . -B build/linux -DTARGET=linux \
+          cmake -S . -B build/linux \
             ${pkgs.lib.concatStringsSep " " cmakeCommon}
         '';
 
@@ -73,7 +73,7 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
-          ${pkgs.cmake}/bin/cmake -S . -B build/nds -DTARGET=nds \
+          ${pkgs.cmake}/bin/cmake -S . -B build/nds \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$BLOCKSDS/cmake/BlocksDS.cmake"
         '';
@@ -96,7 +96,7 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
-          ${pkgs.cmake}/bin/cmake -S . -B build/wii -DTARGET=wii \
+          ${pkgs.cmake}/bin/cmake -S . -B build/wii \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake"
         '';
@@ -119,7 +119,7 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
-          ${pkgs.cmake}/bin/cmake -S . -B build/gamecube -DTARGET=gamecube \
+          ${pkgs.cmake}/bin/cmake -S . -B build/gamecube \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/GameCube.cmake"
         '';
