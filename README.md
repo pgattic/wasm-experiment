@@ -1,4 +1,6 @@
 
+<img align="right" width="64" height="64" src="/icon.svg">
+
 # WASM Experiment - WASMCarts
 
 This is a work-in-progress Fantasy Console that targets embedded systems and allows users to create games in any language that [compiles to WebAssembly](https://webassembly.org/getting-started/developers-guide/).
