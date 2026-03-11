@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>WASMCarts</name>
+  <coder>pgattic (Preston Corless)</coder>
+  <version>0.1.0</version>
+  <release_date>20260311000000</release_date>
+  <short_description>Anything on Everything</short_description>
+  <long_description>
+    WASMCarts is an embeddable, WASM-powered fantasy console that takes advantage of WebAssembly's
+    ease-of-use, embeddability, and performance to bring a modern development experience to old or
+    underpowered systems.
+  </long_description>
+</app>
+

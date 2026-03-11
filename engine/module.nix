@@ -44,24 +44,48 @@
         WASM3_SOURCE = wasm3-source;
 
         nativeBuildInputs = with pkgs; [
-          cmake
-          gnumake
           pkg-config
+          copyDesktopItems
+        ];
+
+        buildInputs = with pkgs; [
           sdl3
         ];
 
         configurePhase = ''
-          cmake -S . -B build/linux \
+          runHook preConfigure
+          ${pkgs.cmake}/bin/cmake -S . -B build/linux \
             ${pkgs.lib.concatStringsSep " " cmakeCommon}
+          runHook postConfigure
         '';
 
         buildPhase = ''
-          cmake --build build/linux
+          runHook preBuild
+          ${pkgs.cmake}/bin/cmake --build build/linux
+          runHook postBuild
         '';
 
+        desktopItems = [
+          (pkgs.makeDesktopItem {
+            name = "wasmcarts";
+            desktopName = "WASMCarts";
+            comment = "A WASM-powered fantasy console";
+            exec = "wasmcarts";
+            icon = "wasmcarts";
+            categories = [ "Game" "Development" ];
+            terminal = false;
+          })
+        ];
+
         installPhase = ''
+          runHook preInstall
           mkdir -p $out/bin
           cp -v build/linux/wasmcarts $out/bin/
+
+          mkdir -p $out/share/icons/hicolor/scalable/apps
+          cp -v assets/icon.svg \
+            $out/share/icons/hicolor/scalable/apps/wasmcarts.svg
+          runHook postInstall
         '';
       };
 
@@ -106,8 +130,11 @@
         '';
 
         installPhase = ''
-          mkdir -p $out
-          cp build/wii/*.dol $out/
+          APPDIR=$out/apps/WASMCarts
+          mkdir -p $APPDIR
+          cp build/wii/WASMCarts.dol $APPDIR/boot.dol
+          cp assets/wii-meta.xml $APPDIR/meta.xml
+          cp assets/wii-banner.png $APPDIR/icon.png
         '';
       };
 

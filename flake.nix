@@ -21,39 +21,37 @@
         perSystem = { pkgs, ... }: {
           packages.gen-icons = pkgs.writeShellScriptBin "gen-icons" ''
             # Generate icons for their places across the repo
-            CONVERT="${pkgs.librsvg}/bin/rsvg-convert"
+            CONVERT="${pkgs.imagemagick}/bin/magick"
             ROOT=$1
 
-            # $CONVERT -w 32 -h 32 -o $ROOT/engine/assets/nds-icon.bmp $ROOT/icon.svg
+            # Copy of the SVG version
+            cp $ROOT/icon.svg $ROOT/engine/assets/icon.svg
 
-            # ${pkgs.imagemagick}/bin/magick -background "#FF00FF" -size 32x32 $ROOT/icon.svg \
-            # \( +clone -colors 16 -unique-colors \
-            #   xc:"#FF00FF" +swap +append -write mpr:palette +delete \) \
-            # -remap mpr:palette -type Palette -colors 16 BMP3:$ROOT/engine/assets/nds-icon.bmp
-
-            # ${pkgs.imagemagick}/bin/magick -background "#FF00FF" -size 1024x1024 $ROOT/icon.svg \
-            #   \( xc:"#FF00FF" \) \
-            #   \( +clone -colors 15 -unique-colors \) \
-            #   +insert +append -write mpr:palette +delete \
-            #   -remap mpr:palette -type Palette -colors 16 BMP3:$ROOT/engine/assets/nds-icon.bmp
-
-            # ${pkgs.imagemagick}/bin/magick -background "#FF00FF" -size 32x32 $ROOT/icon.svg \
-            #   \( +clone -colors 15 -unique-colors -write mpr:colors +delete \) \
-            #   \( xc:"#FF00FF" mpr:colors +append -write mpr:palette +delete \) \
-            #   -remap mpr:palette BMP3:$ROOT/engine/assets/nds-icon.bmp
-
-            ${pkgs.imagemagick}/bin/magick $ROOT/icon.svg \
-              -background none \
+            # Nintendo DS icon (only ImageMagick is capable of this one)
+            $CONVERT -background none $ROOT/icon.svg \
               -resize 32x32 \
               -gravity center \
               -extent 32x32 \
               -background "#FF00FF" \
-              -alpha background \
+              -alpha remove \
               +dither \
               -colors 15 \
               -type Palette \
               BMP3:$ROOT/engine/assets/nds-icon.bmp
 
+            # Wii Homebrew Channel banner
+            $CONVERT -background none $ROOT/icon.svg \
+              -resize 128x48 \
+              -gravity center \
+              -extent 128x48 \
+              $ROOT/engine/assets/wii-banner.png
+
+            # App icon used by SDL
+            $CONVERT -background none $ROOT/icon.svg \
+              -resize 64x64 \
+              -gravity center \
+              -extent 64x64 \
+              $ROOT/engine/assets/icon-64.png
 
           '';
         };
