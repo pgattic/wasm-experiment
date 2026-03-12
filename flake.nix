@@ -27,17 +27,14 @@
             # Copy of the SVG version
             cp $ROOT/icon.svg $ROOT/engine/assets/icon.svg
 
-            # Nintendo DS icon (only ImageMagick is capable of this one)
+            # Nintendo DS icon
             $CONVERT -background none $ROOT/icon.svg \
               -resize 32x32 \
               -gravity center \
               -extent 32x32 \
-              -background "#FF00FF" \
-              -alpha remove \
               +dither \
               -colors 15 \
-              -type Palette \
-              BMP3:$ROOT/engine/assets/nds-icon.bmp
+              PNG8:$ROOT/engine/assets/nds-icon.png
 
             # Wii Homebrew Channel banner
             $CONVERT -background none $ROOT/icon.svg \
