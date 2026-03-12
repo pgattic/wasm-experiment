@@ -69,7 +69,7 @@
           (pkgs.makeDesktopItem {
             name = "wasmcarts";
             desktopName = "WASMCarts";
-            comment = "A WASM-powered fantasy console";
+            comment = "A WebAssembly-powered fantasy console";
             exec = "wasmcarts";
             icon = "wasmcarts";
             categories = [ "Game" "Development" ];

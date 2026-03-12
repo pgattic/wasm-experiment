@@ -98,7 +98,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoDS")
     NAME "WASMCarts"
     SUBTITLE "Lightweight Fantasy Console"
     AUTHOR "By pgattic"
-    ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/nds-icon.bmp"
+    ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/nds-icon.png"
   )
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoWii" OR CMAKE_SYSTEM_NAME STREQUAL "NintendoGameCube")
