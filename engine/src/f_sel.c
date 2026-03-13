@@ -8,7 +8,8 @@
 #include "f_sel.h"
 
 char fsel_path[MAX_FILE_PATH];
-size_t fsel_cursor_location = 0;
+size_t fsel_cursor_locations[MAX_FILE_PATH] = { 0 }; // These are 1-indexed index values; 0 treated as null
+size_t fsel_dir_depth = 0;
 file_list fsel_list = {0, NULL, NULL};
 
 size_t str_char_count(char* str, char ch) {
@@ -19,19 +20,23 @@ size_t str_char_count(char* str, char ch) {
   return count;
 }
 
-bool at_root(char* path) {
-  return (str_char_count(path, '/') <= 1);
-}
-
 #define FSEL_ROWS 17
+
+void setup_file_select() {
+  fsel_dir_depth = str_char_count(fsel_path, '/') - 1;
+  for (int i = 0; i <= fsel_dir_depth; i++) {
+    fsel_cursor_locations[i] = 1;
+  }
+}
 
 char* update_file_select() {
   char* result = 0;
+  size_t cursor_location = fsel_cursor_locations[fsel_dir_depth];
 
   platform_clear_screen(1);
   // Render file select
   char progress[16];
-  sprintf(progress, "[%zu/%zu]", fsel_cursor_location+1, fsel_list.length);
+  sprintf(progress, "[%zu/%zu]", cursor_location, fsel_list.length);
   int fsel_p_len = strlen(fsel_path);
   if (fsel_p_len > (WC_SCREEN_WIDTH / 8)) {
     platform_print(0, 0, "...");
@@ -46,7 +51,7 @@ char* update_file_select() {
   }
   platform_render_char(0, 72, '>');
 
-  file_list_node* sel_line = file_list_seek(&fsel_list, fsel_cursor_location);
+  file_list_node* sel_line = file_list_seek(&fsel_list, cursor_location-1);
   file_list_node* curr_line = sel_line;
   const size_t middle_row = (FSEL_ROWS - 1) / 2; // 8. the middle value between 0 and 16 inclusive.
   if (sel_line != NULL) {
@@ -76,9 +81,17 @@ char* update_file_select() {
       if (strcmp(sel_line->name, "../") == 0) { // ".." selected, actually going up
         fsel_path[strlen(fsel_path) - 1] = '\0'; // delete '/' at end
         *(strrchr(fsel_path, '/') + 1) = '\0';
+        fsel_dir_depth--;
+        if (fsel_cursor_locations[fsel_dir_depth] == 0) {
+          fsel_cursor_locations[fsel_dir_depth] = 1;
+        }
       } else {
         strcat(fsel_path, sel_line->name);
-        fsel_cursor_location = 0;
+        fsel_dir_depth++;
+        if (fsel_cursor_locations[fsel_dir_depth] == 0) {
+          fsel_cursor_locations[fsel_dir_depth] = 1;
+          fsel_cursor_locations[fsel_dir_depth+1] = 0;
+        }
       }
       clear_file_list(&fsel_list);
       result = platform_init_fsel_data(fsel_path, &fsel_list);
@@ -97,37 +110,45 @@ char* update_file_select() {
     }
   }
   if (platform_button_pressed(5)) { // "B" button
-    if (!at_root(fsel_path)) {
+    if (fsel_dir_depth > 0) {
       fsel_path[strlen(fsel_path) - 1] = '\0'; // delete '/' at end
       *(strrchr(fsel_path, '/') + 1) = '\0';
+      fsel_dir_depth--;
+      if (fsel_cursor_locations[fsel_dir_depth] == 0) {
+        fsel_cursor_locations[fsel_dir_depth] = 1;
+      }
       clear_file_list(&fsel_list);
       result = platform_init_fsel_data(fsel_path, &fsel_list);
       if (result) return result;
     }
   }
   if (platform_button_pressed(0)) { // Left button
-    if (fsel_cursor_location < 10) {
-      fsel_cursor_location = 0;
+    if (cursor_location <= 10) {
+      fsel_cursor_locations[fsel_dir_depth] = 1;
     } else {
-      fsel_cursor_location -= 10;
+      fsel_cursor_locations[fsel_dir_depth] -= 10;
     }
+    fsel_cursor_locations[fsel_dir_depth+1] = 0;
   }
   if (platform_button_pressed(1)) { // Right button
-    if (fsel_cursor_location + 10 >= fsel_list.length) {
-      fsel_cursor_location = fsel_list.length - 1;
+    if (cursor_location + 10 >= fsel_list.length) {
+      fsel_cursor_locations[fsel_dir_depth] = fsel_list.length;
     } else {
-      fsel_cursor_location += 10;
+      fsel_cursor_locations[fsel_dir_depth] += 10;
     }
+    fsel_cursor_locations[fsel_dir_depth+1] = 0;
   }
   if (platform_button_pressed(2)) { // Up button
-    if (fsel_cursor_location == 0) {
-      fsel_cursor_location = fsel_list.length - 1;
+    if (cursor_location == 1) {
+      fsel_cursor_locations[fsel_dir_depth] = fsel_list.length;
     } else {
-      fsel_cursor_location--;
+      fsel_cursor_locations[fsel_dir_depth]--;
     }
+    fsel_cursor_locations[fsel_dir_depth+1] = 0;
   }
   if (platform_button_pressed(3)) { // Down button
-    fsel_cursor_location = (fsel_cursor_location + 1) % fsel_list.length;
+    fsel_cursor_locations[fsel_dir_depth] = (fsel_cursor_locations[fsel_dir_depth] % fsel_list.length) + 1;
+    fsel_cursor_locations[fsel_dir_depth+1] = 0;
   }
 
   if (platform_button_pressed(11)) { // "Select" button

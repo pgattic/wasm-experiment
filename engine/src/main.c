@@ -20,6 +20,7 @@ char* startup() {
   if (result) return result;
   result = platform_init_fsel_data(fsel_path, &fsel_list);
   if (result) return result;
+  setup_file_select();
   return NULL;
 }
 
