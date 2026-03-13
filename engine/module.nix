@@ -97,18 +97,24 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
+          runHook preConfigure
           ${pkgs.cmake}/bin/cmake -S . -B build/nds \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$BLOCKSDS/cmake/BlocksDS.cmake"
+          runHook postConfigure
         '';
 
         buildPhase = ''
+          runHook preBuild
           ${pkgs.cmake}/bin/cmake --build build/nds
+          runHook postBuild
         '';
 
         installPhase = ''
+          runHook preInstall
           mkdir -p $out
           cp build/nds/*.nds $out/
+          runHook postInstall
         '';
       };
 
@@ -120,21 +126,27 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
+          runHook preConfigure
           ${pkgs.cmake}/bin/cmake -S . -B build/wii \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake"
+          runHook postConfigure
         '';
 
         buildPhase = ''
+          runHook preBuild
           ${pkgs.cmake}/bin/cmake --build build/wii
+          runHook postBuild
         '';
 
         installPhase = ''
+          runHook preInstall
           APPDIR=$out/apps/WASMCarts
           mkdir -p $APPDIR
           cp build/wii/WASMCarts.dol $APPDIR/boot.dol
           cp assets/wii-meta.xml $APPDIR/meta.xml
           cp assets/wii-banner.png $APPDIR/icon.png
+          runHook postInstall
         '';
       };
 
@@ -146,18 +158,24 @@
         WASM3_SOURCE = wasm3-source;
 
         configurePhase = ''
+          runHook preConfigure
           ${pkgs.cmake}/bin/cmake -S . -B build/gamecube \
             ${pkgs.lib.concatStringsSep " " cmakeCommon} \
             -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/GameCube.cmake"
+          runHook postConfigure
         '';
 
         buildPhase = ''
+          runHook preBuild
           ${pkgs.cmake}/bin/cmake --build build/gamecube
+          runHook postBuild
         '';
 
         installPhase = ''
+          runHook preInstall
           mkdir -p $out
           cp build/gamecube/*.dol $out/
+          runHook postInstall
         '';
       };
 

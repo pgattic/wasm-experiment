@@ -21,14 +21,14 @@
         perSystem = { pkgs, ... }: {
           packages.gen-icons = pkgs.writeShellScriptBin "gen-icons" ''
             # Generate icons for their places across the repo
-            CONVERT="${pkgs.imagemagick}/bin/magick"
+            MAGICK="${pkgs.imagemagick}/bin/magick"
             ROOT=$1
 
             # Copy of the SVG version
             cp $ROOT/icon.svg $ROOT/engine/assets/icon.svg
 
             # Nintendo DS icon
-            $CONVERT -background none $ROOT/icon.svg \
+            $MAGICK -background none $ROOT/icon.svg \
               -resize 32x32 \
               -gravity center \
               -extent 32x32 \
@@ -37,14 +37,14 @@
               PNG8:$ROOT/engine/assets/nds-icon.png
 
             # Wii Homebrew Channel banner
-            $CONVERT -background none $ROOT/icon.svg \
+            $MAGICK -background none $ROOT/icon.svg \
               -resize 128x48 \
               -gravity center \
               -extent 128x48 \
               $ROOT/engine/assets/wii-banner.png
 
             # App icon used by SDL
-            $CONVERT -background none $ROOT/icon.svg \
+            $MAGICK -background none $ROOT/icon.svg \
               -resize 64x64 \
               -gravity center \
               -extent 64x64 \

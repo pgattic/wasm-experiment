@@ -5,7 +5,7 @@
       <stop offset="10%"  stop-color="#F74C00" />
       <stop offset="40%"  stop-color="#654FF0" />
       <stop offset="60%"  stop-color="#654FF0" />
-      <stop offset="90%"  stop-color="#FEB309" />
+      <stop offset="90%"  stop-color="#FEB309" /> <!-- Linux -->
       <stop offset="100%" stop-color="#FEB309" />
     </linearGradient>
 
@@ -14,7 +14,7 @@
       <stop offset="10%"  stop-color="#3178C6" />
       <stop offset="40%"  stop-color="#654FF0" />
       <stop offset="60%"  stop-color="#654FF0" />
-      <stop offset="90%"  stop-color="#6D60B0" />
+      <stop offset="90%"  stop-color="#6D60B0" /> <!-- GameCube -->
       <stop offset="100%" stop-color="#6D60B0" />
     </linearGradient>
 
@@ -23,7 +23,7 @@
       <stop offset="10%"  stop-color="#F7A41D" />
       <stop offset="40%"  stop-color="#654FF0" />
       <stop offset="60%"  stop-color="#654FF0" />
-      <stop offset="90%"  stop-color="#23B9E7" />
+      <stop offset="90%"  stop-color="#23B9E7" /> <!-- Wii -->
       <stop offset="100%" stop-color="#23B9E7" />
     </linearGradient>
 
@@ -32,7 +32,7 @@
       <stop offset="10%"  stop-color="#00599C" />
       <stop offset="40%"  stop-color="#654FF0" />
       <stop offset="60%"  stop-color="#654FF0" />
-      <stop offset="90%"  stop-color="#AAAAAA" />
+      <stop offset="90%"  stop-color="#AAAAAA" /> <!-- Nintendo DS -->
       <stop offset="100%" stop-color="#AAAAAA" />
     </linearGradient>
   </defs>
@@ -42,6 +42,5 @@
   <line x1="10" y1="50" x2="90" y2="50" stroke="url(#grad2)" stroke-width="7" stroke-linecap="round" transform="rotate(15, 50, 50)" />
   <line x1="10" y1="50" x2="90" y2="50" stroke="url(#grad3)" stroke-width="7" stroke-linecap="round" transform="rotate(345, 50, 50)" />
   <line x1="10" y1="50" x2="90" y2="50" stroke="url(#grad4)" stroke-width="7" stroke-linecap="round" transform="rotate(315, 50, 50)" />
-  <!-- <circle cx="50" cy="50" r="48" stroke="black" stroke-width="4" fill="#0000" /> -->
 </svg>
 
